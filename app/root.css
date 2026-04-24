@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+	--color-cafe-blue-1-dark: oklch(0.55 0.15 223);
+	--color-cafe-blue-2-dark: oklch(0.66 0.18 223);
+	--color-cafe-blue-3-dark: oklch(0.18 0.02 223);
+	--color-cafe-blue-1: oklch(0.72 0.18 223);
+	--color-cafe-blue-2: oklch(0.61 0.14 223);
+	--color-cafe-blue-3: oklch(0.95 0.02 223);
+}

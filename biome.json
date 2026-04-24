@@ -1,0 +1,14 @@
+{
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
+  },
+  "files": {
+    "includes": [
+      "**",
+      "!**/generated",
+      "!!**/dist"
+    ]
+  }
+}
