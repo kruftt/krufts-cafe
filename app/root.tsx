@@ -1,8 +1,11 @@
 import AppBar from "@components/app-bar";
 import { themeAtom } from "@state/atoms/theme";
-import { useAtomValue } from "jotai";
+import { Button } from "@ui/button";
+import { useAtom } from "jotai";
+import { BsMoonStarsFill, BsSunFill } from "react-icons/bs";
 import { Outlet, Scripts } from "react-router";
-import "./root.css";
+import "./globals.css";
+import { IconContext } from "react-icons";
 
 export function Layout({ children }: React.PropsWithChildren) {
 	return (
@@ -17,7 +20,7 @@ export function Layout({ children }: React.PropsWithChildren) {
 }
 
 export default function App() {
-	const theme = useAtomValue(themeAtom);
+	const [theme, setTheme] = useAtom(themeAtom);
 
 	return (
 		<body
@@ -26,9 +29,14 @@ export default function App() {
 			bg-cafe-blue-3 text-black 
 			dark:bg-cafe-blue-3-dark dark:text-white`}
 		>
-			<AppBar />
-			inside App function
+			<IconContext.Provider value={{ color: "black" }}>
+				<AppBar />
+				inside App function
+			</IconContext.Provider>
 			<Outlet />
+			<Button className="absolute bottom-4 left-4 rounded-full" onClick={() => setTheme(!theme)}>
+				{theme ? <BsSunFill /> : <BsMoonStarsFill />}
+			</Button>
 			<Scripts />
 		</body>
 	);

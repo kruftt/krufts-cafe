@@ -8,7 +8,8 @@
     "includes": [
       "**",
       "!**/generated",
-      "!!**/dist"
+      "!**/dist",
+      "!app/components/ui"
     ]
   }
 }

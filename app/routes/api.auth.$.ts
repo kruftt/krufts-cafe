@@ -1,5 +1,5 @@
-import { auth } from "@lib/auth"; // Adjust the path as necessary
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router"; // or "@remix-run/node"
+import auth from "@lib/auth"; // Adjust the path as necessary
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 
 export async function loader({ request }: LoaderFunctionArgs) {
 	return auth.handler(request);
