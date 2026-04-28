@@ -39,5 +39,5 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
 # custom
 build
-app/state/generated
+prisma/generated
 .vscode

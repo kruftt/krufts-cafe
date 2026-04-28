@@ -71,7 +71,12 @@ export default function CreationForm() {
 	}
 
 	return (
-		<Dialog open={open} onOpenChange={(isOpen) => {setOpen(isOpen)}}>
+		<Dialog
+			open={open}
+			onOpenChange={(isOpen) => {
+				setOpen(isOpen);
+			}}
+		>
 			<DialogTrigger render={<Button variant="link">Create Account</Button>} />
 			<DialogContent>
 				<DialogHeader className="text-center">

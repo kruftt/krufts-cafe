@@ -1,5 +1,5 @@
+import { themeAtom } from "@atoms/theme";
 import AppBar from "@components/app-bar";
-import { themeAtom } from "@state/atoms/theme";
 import { Button } from "@ui/button";
 import { useAtom } from "jotai";
 import { BsMoonStarsFill, BsSunFill } from "react-icons/bs";
@@ -31,10 +31,12 @@ export default function App() {
 		>
 			<IconContext.Provider value={{ color: "black" }}>
 				<AppBar />
-				inside App function
 			</IconContext.Provider>
 			<Outlet />
-			<Button className="absolute bottom-4 left-4 rounded-full" onClick={() => setTheme(!theme)}>
+			<Button
+				className="absolute bottom-4 left-4 rounded-full"
+				onClick={() => setTheme(!theme)}
+			>
 				{theme ? <BsSunFill /> : <BsMoonStarsFill />}
 			</Button>
 			<Scripts />

@@ -1,3 +1,4 @@
+export { Id } from './id'
 export * as Ingredient from './ingredient'
 export * as Instruction from './instruction'
 export * as Recipe from './recipe'

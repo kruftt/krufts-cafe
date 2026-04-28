@@ -7,7 +7,7 @@ import ProfileMenu from "./account/profile-menu";
 export default function AppBar() {
 	const { data: session, isPending } = auth.useSession();
 	const isLoggedIn = !isPending && session !== null;
-	
+
 	return (
 		<header
 			className={`
@@ -23,7 +23,7 @@ export default function AppBar() {
 				<BsCupHotFill className="w-6! h-6!" />
 			</a>
 			<h1 className="text-3xl font-bold text-white">Kruft's Cafe</h1>
-			{isLoggedIn ? <ProfileMenu name={ session.user.name } /> : <LoginForm />}
+			{isLoggedIn ? <ProfileMenu name={session.user.name} /> : <LoginForm />}
 		</header>
 	);
 }

@@ -5,7 +5,7 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../generated"
+  output   = "./generated"
 }
 
 datasource db {
@@ -32,12 +32,13 @@ model Recipe {
 }
 
 model Step {
-  id            Int       @id @default(autoincrement())
+  id            Int           @id @default(autoincrement())
   name          String
   description   String
   recipeId      Int
-  recipe        Recipe    @relation(fields: [recipeId], references: [id])
+  recipe        Recipe        @relation(fields: [recipeId], references: [id])
   instructions  Instruction[]
+  ingredients   Ingredient[]
 
   @@map("step")
 }
@@ -57,6 +58,8 @@ model Ingredient {
   units         String
   name          String
   description   String
+  stepId        Int
+  step          Step      @relation(fields: [stepId], references: [id])
 
   @@map("ingredient")
 }

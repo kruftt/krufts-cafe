@@ -2,16 +2,12 @@ import * as z from 'zod'
 
 export const Model = z.object({
   id: z.number(),
-  amount: z.number(),
-  units: z.string(),
-  name: z.string(),
   description: z.string(),
+  stepId: z.number(),
 });
 
 
-export const Create = Model.omit({ id: true }).partial({
-  description: true,
-});
+export const Create = Model.omit({ id: true, stepId: true });
 
 
 export const Update = Model.partial();

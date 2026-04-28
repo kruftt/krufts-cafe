@@ -11,23 +11,25 @@ import {
 } from "@ui/dropdown-menu";
 
 export default function ProfileMenu({ name }: { name: string }) {
-  
-  return (
-			<DropdownMenu>
-				<DropdownMenuTrigger render={<Button className="drop-shadow-md/30" />}>{name}</DropdownMenuTrigger>
-				<DropdownMenuContent>
-					<DropdownMenuGroup>
-						<DropdownMenuItem>Recipes</DropdownMenuItem>
-					</DropdownMenuGroup>
-					<DropdownMenuSeparator />
-					<DropdownMenuGroup>
-            
-						<DropdownMenuItem
-              variant="destructive"
-              onClick={() => auth.signOut()}
-            >Logout</DropdownMenuItem>
-					</DropdownMenuGroup>
-				</DropdownMenuContent>
-			</DropdownMenu>
-		);
+	return (
+		<DropdownMenu>
+			<DropdownMenuTrigger render={<Button className="drop-shadow-md/30" />}>
+				{name}
+			</DropdownMenuTrigger>
+			<DropdownMenuContent>
+				<DropdownMenuGroup>
+					<DropdownMenuItem>My Recipes</DropdownMenuItem>
+				</DropdownMenuGroup>
+				<DropdownMenuSeparator />
+				<DropdownMenuGroup>
+					<DropdownMenuItem
+						variant="destructive"
+						onClick={() => auth.signOut()}
+					>
+						Logout
+					</DropdownMenuItem>
+				</DropdownMenuGroup>
+			</DropdownMenuContent>
+		</DropdownMenu>
+	);
 }
