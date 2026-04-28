@@ -3,6 +3,7 @@
 
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
+// Config
 generator client {
   provider = "prisma-client"
   output   = "./generated"
@@ -12,9 +13,14 @@ datasource db {
   provider = "postgresql"
 }
 
+
+// Models
+
 model Profile {
   id            Int       @id @default(autoincrement())
   name          String
+  userId        String    @unique
+  user          User      @relation(fields: [userId], references: [id])
   recipes       Recipe[]
 
   @@map("profile")
@@ -77,6 +83,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+  profile       Profile?
 
   @@unique([email])
   @@map("user")

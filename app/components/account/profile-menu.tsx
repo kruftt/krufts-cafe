@@ -1,4 +1,4 @@
-import auth from "@lib/auth-client";
+import { auth } from "@lib/auth-client";
 import { Button } from "@ui/button";
 import {
 	DropdownMenu,

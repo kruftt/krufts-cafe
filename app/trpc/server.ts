@@ -1,7 +1,23 @@
-import { initTRPC } from '@trpc/server'
+import { auth } from "@lib/auth-server";
+import { ensureProfile } from "@services/profile";
+import { initTRPC, TRPCError } from "@trpc/server";
 
-const t = initTRPC.create();
+export const createContext = async ({ request }: { request: Request }) => {
+	const session = await auth.api.getSession({ headers: request.headers });
+	return { session };
+};
+
+const t = initTRPC
+	.context<Awaited<ReturnType<typeof createContext>>>()
+	.create();
+
+const isAuthenticated = t.middleware(async ({ ctx, next }) => {
+	const session = ctx.session;
+	if (!session) throw new TRPCError({ code: "UNAUTHORIZED" });
+	await ensureProfile(session.user);
+	return next({ ctx: { session } });
+});
 
 export const router = t.router;
 export const procedure = t.procedure;
-
+export const authedProcedure = t.procedure.use(isAuthenticated);

@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import auth from "@lib/auth-client";
+import { auth } from "@lib/auth-client";
 import { Button } from "@ui/button";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@ui/field";
 import { Input } from "@ui/input";

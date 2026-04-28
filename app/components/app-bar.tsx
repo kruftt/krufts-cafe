@@ -1,4 +1,4 @@
-import auth from "@lib/auth-client";
+import { auth } from "@lib/auth-client";
 import { buttonVariants } from "@ui/button";
 import { BsCupHotFill } from "react-icons/bs";
 import LoginForm from "./account/login-form";

@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import auth from "@lib/auth-client";
+import { auth } from "@lib/auth-client";
 import { Button } from "@ui/button";
 import {
 	Dialog,
