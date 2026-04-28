@@ -20,8 +20,7 @@ model Profile {
   id            Int       @id @default(autoincrement())
   name          String
   userId        String    @unique
-  user          User      @relation(fields: [userId], references: [id])
-  recipes       Recipe[]
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("profile")
 }
@@ -31,18 +30,19 @@ model Recipe {
   name          String
   description   String
   steps         Step[]
-  authorId      Int
-  author        Profile      @relation(fields: [authorId], references: [id])
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("recipe")
 }
 
 model Step {
   id            Int           @id @default(autoincrement())
+  userId        String
   name          String
   description   String
   recipeId      Int
-  recipe        Recipe        @relation(fields: [recipeId], references: [id])
+  recipe        Recipe        @relation(fields: [recipeId], references: [id], onDelete: Cascade)
   instructions  Instruction[]
   ingredients   Ingredient[]
 
@@ -51,21 +51,23 @@ model Step {
 
 model Instruction {
   id            Int       @id @default(autoincrement())
+  userId        String
   description   String
   stepId        Int
-  step          Step      @relation(fields: [stepId], references: [id])
+  step          Step      @relation(fields: [stepId], references: [id], onDelete: Cascade)
 
   @@map("instruction")
 }
 
 model Ingredient {
   id            Int       @id @default(autoincrement())
+  userId        String
   amount        Float
   units         String
   name          String
   description   String
   stepId        Int
-  step          Step      @relation(fields: [stepId], references: [id])
+  step          Step      @relation(fields: [stepId], references: [id], onDelete: Cascade)
 
   @@map("ingredient")
 }
@@ -84,6 +86,7 @@ model User {
   sessions      Session[]
   accounts      Account[]
   profile       Profile?
+  recipes       Recipe[]
 
   @@unique([email])
   @@map("user")

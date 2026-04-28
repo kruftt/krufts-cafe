@@ -3,21 +3,18 @@ import * as z from "zod";
 
 export const Model = z.object({
 	id: z.number(),
-	name: z.string(),
+	name: z.string().min(1),
 	description: z.string(),
-	authorId: z.number(),
+	userId: z.string(),
 });
 
-export const Create = Model.omit({ id: true }).extend({
-	steps: z.array(Step.Create),
+export const Create = Model.omit({ id: true, userId: true });
+
+export const Full = Model.extend({
+	steps: z.array(Step.Full),
 });
 
-export const WithSteps = Model.extend({
-	steps: z.array(Step.WithInstructions),
-});
-
-export const Update = Create.extend({ id: z.number() });
 
 export type Model = z.infer<typeof Model>;
 export type Create = z.infer<typeof Create>;
-export type Update = z.infer<typeof Update>;
+export type Full = z.infer<typeof Full>;

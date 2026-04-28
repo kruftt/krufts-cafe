@@ -3,26 +3,21 @@ import * as z from 'zod'
 
 export const Model = z.object({
   id: z.number(),
+  userId: z.string(),
   name: z.string(),
   description: z.string(),
   recipeId: z.number(),
 });
 
-export const Create = Model.omit({ id: true, recipeId: true }).extend({
-  ingredients: z.array(Ingredient.Create),
-  instructions: z.array(Instruction.Create),
-});
+export const Create = Model.omit({ id: true, userId: true });
 
 
-export const Update = Model.partial();
-
-
-export const WithInstructions = Model.extend({
+export const Full = Model.extend({
 	instructions: z.array(Instruction.Model),
+	ingredients: z.array(Ingredient.Model),
 });
 
 
 export type Model = z.infer<typeof Model>;
 export type Create = z.infer<typeof Create>;
-export type Update = z.infer<typeof Update>;
-export type WithInstructions = z.infer<typeof WithInstructions>
+export type Full = z.infer<typeof Full>

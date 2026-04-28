@@ -5,12 +5,13 @@ import { authedProcedure, procedure, router } from "../server";
 
 export const recipeRouter = router({
 	get: procedure.input(Id).query(async ({ input }) => {
-		prisma.recipe.findUnique({
+		return prisma.recipe.findUnique({
 			where: { id: input.id },
 			include: {
 				steps: {
 					include: {
 						instructions: true,
+						ingredients: true,
 					},
 				},
 			},
@@ -18,53 +19,24 @@ export const recipeRouter = router({
 	}),
 
 	list: procedure.query(async () => {
-		const recipes: Recipe.Model[] = [];
-		return recipes;
+		return prisma.recipe.findMany();
 	}),
 
-	create: authedProcedure.input(Recipe.Create).mutation(async ({ input }) => {
-		const { steps, ...recipe } = input;
-		return prisma.recipe.create({
-			data: {
-				...recipe,
-				steps: {
-					create: steps.map(({ ingredients, instructions, ...step }) => ({
-						...step,
-						ingredients: { create: ingredients },
-						instructions: { create: instructions },
-					})),
-				},
-			},
-		});
+	create: authedProcedure.input(Recipe.Create).mutation(async ({ input, ctx }) => {
+		return prisma.recipe.create({ data: { ...input, userId: ctx.session.user.id } });
 	}),
 
-	update: authedProcedure.input(Recipe.Update).mutation(async ({ input, ctx }) => {
-		const { id, steps, ...recipe } = input;
+	update: authedProcedure.input(Recipe.Model).mutation(async ({ input, ctx }) => {
+		const recipe = await prisma.recipe.findUnique({ where: { id: input.id } });
+		if (!recipe) throw new TRPCError({ code: "NOT_FOUND" });
+		if (recipe.userId !== ctx.session.user.id) throw new TRPCError({ code: "FORBIDDEN" });
+		return prisma.recipe.update({ where: { id: input.id }, data: input });
+	}),
 
-		const existing = await prisma.recipe.findUnique({
-			where: { id },
-			include: { author: true },
-		});
-		if (!existing) throw new TRPCError({ code: "NOT_FOUND" });
-		if (existing.author.userId !== ctx.session.user.id) throw new TRPCError({ code: "FORBIDDEN" });
-
-		return prisma.$transaction([
-			prisma.ingredient.deleteMany({ where: { step: { recipeId: id } } }),
-			prisma.instruction.deleteMany({ where: { step: { recipeId: id } } }),
-			prisma.step.deleteMany({ where: { recipeId: id } }),
-			prisma.recipe.update({
-				where: { id },
-				data: {
-					...recipe,
-					steps: {
-						create: steps.map(({ ingredients, instructions, ...step }) => ({
-							...step,
-							ingredients: { create: ingredients },
-							instructions: { create: instructions },
-						})),
-					},
-				},
-			}),
-		]);
+	delete: authedProcedure.input(Id).mutation(async ({ input, ctx }) => {
+		const recipe = await prisma.recipe.findUnique({ where: { id: input.id } });
+		if (!recipe) throw new TRPCError({ code: "NOT_FOUND" });
+		if (recipe.userId !== ctx.session.user.id) throw new TRPCError({ code: "FORBIDDEN" });
+		return prisma.recipe.delete({ where: { id: input.id } });
 	}),
 });
