@@ -1,7 +1,7 @@
 import * as z from 'zod'
 
 export const Model = z.object({
-  id: z.number(),
+  id: z.int(),
   userId: z.string(),
   amount: z.number(),
   units: z.string(),

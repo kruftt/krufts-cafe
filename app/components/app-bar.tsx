@@ -1,8 +1,8 @@
 import { auth } from "@lib/auth-client";
 import { buttonVariants } from "@ui/button";
 import { BsCupHotFill } from "react-icons/bs";
-import LoginForm from "./account/login-form";
-import ProfileMenu from "./account/profile-menu";
+import LoginForm from "./user/login-form";
+import ProfileMenu from "./user/profile-menu";
 
 export default function AppBar() {
 	const { data: session, isPending } = auth.useSession();

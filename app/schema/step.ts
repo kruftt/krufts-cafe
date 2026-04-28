@@ -2,11 +2,11 @@ import { Ingredient, Instruction } from '@schema';
 import * as z from 'zod'
 
 export const Model = z.object({
-  id: z.number(),
+  id: z.int(),
   userId: z.string(),
   name: z.string(),
   description: z.string(),
-  recipeId: z.number(),
+  recipeId: z.int(),
 });
 
 export const Create = Model.omit({ id: true, userId: true });

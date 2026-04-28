@@ -1,10 +1,10 @@
 import * as z from 'zod'
 
 export const Model = z.object({
-  id: z.number(),
+  id: z.int(),
   userId: z.string(),
   description: z.string(),
-  stepId: z.number(),
+  stepId: z.int(),
 });
 
 export const Create = Model.omit({ id: true, userId: true });
