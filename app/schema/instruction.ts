@@ -4,6 +4,7 @@ export const Model = z.object({
   id: z.int(),
   userId: z.string(),
   description: z.string(),
+  index: z.int(),
   stepId: z.int(),
 });
 

@@ -1,6 +1,5 @@
-export { Id } from './id'
-export * as Ingredient from './ingredient'
-export * as Instruction from './instruction'
-export * as Recipe from './recipe'
-export * as Step from './step'
-export * as User from './user'
+export * as Ingredient from "./ingredient";
+export * as Instruction from "./instruction";
+export * as Model from "./model";
+export * as Recipe from "./recipe";
+export * as Step from "./step";

@@ -5,7 +5,7 @@ import {
 	DropdownMenuContent,
 	DropdownMenuGroup,
 	DropdownMenuItem,
-	DropdownMenuLabel,
+	// DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@ui/dropdown-menu";
@@ -18,7 +18,9 @@ export default function ProfileMenu({ name }: { name: string }) {
 			</DropdownMenuTrigger>
 			<DropdownMenuContent>
 				<DropdownMenuGroup>
-					<DropdownMenuItem>My Recipes</DropdownMenuItem>
+					<DropdownMenuItem>Favorites</DropdownMenuItem>
+					<DropdownMenuItem>Recipes</DropdownMenuItem>
+					<DropdownMenuItem>Meal Plans</DropdownMenuItem>
 				</DropdownMenuGroup>
 				<DropdownMenuSeparator />
 				<DropdownMenuGroup>

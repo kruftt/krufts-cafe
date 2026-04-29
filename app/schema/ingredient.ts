@@ -7,6 +7,7 @@ export const Model = z.object({
   units: z.string(),
   name: z.string().min(1),
   description: z.string(),
+  index: z.int(),
   stepId: z.int(),
 });
 

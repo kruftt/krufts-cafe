@@ -18,22 +18,26 @@ Client:
 - react
 - jotai
 - tailwindcss
-- shadcn
+- shadcn/ui
 - lucide
 
 
 ## Structure
 - app/ - application code
+- app/atoms - jotai atoms
 - app/components/ - react components
 - app/components/ui - shadcn base components (unedited)
+- app/hooks - react hooks
 - app/lib - library-like modules
 - app/routes - file-based routes
+- app/schema - shared zod schemata
 - app/services - service modules / functions
-- app/state - contains the database schema and client for prisma, zod models for the database, jotai atoms for the frontend, and tRPC configuration
 - app/utils - utility functions
+- prisma - prisma schema + migrations
+- prisma/generated - ORM client
 - public - publicly hosted files
 
 
 ## Instructions
-- I am using bun, so prefer bun commands. Also, remember that when running prisma commands/migrations we must include the --bun flag, e.g. `bunx --bun prisma generate`
+- Prefer to use bun/bunx commands. When running prisma commands/migrations we must include the --bun flag, e.g. `bunx --bun prisma migrate dev` and `bunx --bun prisma generate`
 

@@ -6,6 +6,7 @@ export const Model = z.object({
   userId: z.string(),
   name: z.string(),
   description: z.string(),
+  index: z.int(),
   recipeId: z.int(),
 });
 
