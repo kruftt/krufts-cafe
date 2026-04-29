@@ -9,8 +9,11 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@ui/dropdown-menu";
+import { useNavigate } from "react-router";
 
 export default function ProfileMenu({ name }: { name: string }) {
+	const navigate = useNavigate();
+
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger render={<Button className="drop-shadow-md/30" />}>
@@ -26,7 +29,10 @@ export default function ProfileMenu({ name }: { name: string }) {
 				<DropdownMenuGroup>
 					<DropdownMenuItem
 						variant="destructive"
-						onClick={() => auth.signOut()}
+						onClick={() => {
+							auth.signOut();
+							navigate("/");
+						}}
 					>
 						Logout
 					</DropdownMenuItem>

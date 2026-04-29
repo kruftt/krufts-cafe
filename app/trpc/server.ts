@@ -1,5 +1,4 @@
 import { auth } from "@lib/auth-server";
-import { ensureProfile } from "@services/profile";
 import { initTRPC, TRPCError } from "@trpc/server";
 
 export const createContext = async ({ request }: { request: Request }) => {
@@ -14,7 +13,6 @@ const t = initTRPC
 const isAuthenticated = t.middleware(async ({ ctx, next }) => {
 	const session = ctx.session;
 	if (!session) throw new TRPCError({ code: "UNAUTHORIZED" });
-	await ensureProfile(session.user);
 	return next({ ctx: { session } });
 });
 

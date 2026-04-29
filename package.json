@@ -30,6 +30,7 @@
     "@react-router/node": "^7.14.1",
     "@react-router/serve": "^7.14.1",
     "@tailwindcss/vite": "^4.2.4",
+    "@tanstack/react-virtual": "^3.13.24",
     "@trpc/client": "^11.16.0",
     "@trpc/server": "^11.16.0",
     "better-auth": "^1.6.7",

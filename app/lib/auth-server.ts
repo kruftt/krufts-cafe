@@ -1,5 +1,4 @@
 import { prisma } from "@lib/prisma";
-import { ensureProfile } from "@services/profile";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 
@@ -9,14 +8,4 @@ export const auth = betterAuth({
 	}),
 
 	emailAndPassword: { enabled: true },
-
-	databaseHooks: {
-		user: {
-			create: {
-				after: async (user) => {
-					await ensureProfile(user);
-				},
-			},
-		},
-	},
 });

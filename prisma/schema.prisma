@@ -16,15 +16,6 @@ datasource db {
 
 // Models
 
-model Profile {
-  id            Int       @id @default(autoincrement())
-  name          String
-  userId        String    @unique
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("profile")
-}
-
 model Recipe {
   id            Int       @id @default(autoincrement())
   name          String
@@ -88,7 +79,6 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
-  profile       Profile?
   recipes       Recipe[]
 
   @@unique([email])
