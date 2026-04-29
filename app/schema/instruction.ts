@@ -5,7 +5,7 @@ export const Model = z.object({
   userId: z.string(),
   description: z.string(),
   index: z.int(),
-  stepId: z.int(),
+  sectionId: z.int(),
 });
 
 export const Create = Model.omit({ id: true, userId: true });

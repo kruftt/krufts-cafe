@@ -1,4 +1,4 @@
-import { Step } from "@schema";
+import { Section } from "@schema";
 import * as z from "zod";
 
 export const Model = z.object({
@@ -11,7 +11,7 @@ export const Model = z.object({
 export const Create = Model.omit({ id: true, userId: true });
 
 export const Full = Model.extend({
-	steps: z.array(Step.Full),
+	sections: z.array(Section.Full),
 });
 
 

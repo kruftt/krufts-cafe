@@ -8,7 +8,7 @@ export const recipeRouter = router({
 		return prisma.recipe.findUnique({
 			where: { id: input.id },
 			include: {
-				steps: {
+				sections: {
 					include: {
 						instructions: true,
 						ingredients: true,

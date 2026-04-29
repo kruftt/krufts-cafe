@@ -20,14 +20,14 @@ model Recipe {
   id            Int       @id @default(autoincrement())
   name          String
   description   String
-  steps         Step[]
+  sections         Section[]
   userId        String
   user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("recipe")
 }
 
-model Step {
+model Section {
   id            Int           @id @default(autoincrement())
   userId        String
   name          String
@@ -38,7 +38,7 @@ model Step {
   instructions  Instruction[]
   ingredients   Ingredient[]
 
-  @@map("step")
+  @@map("section")
 }
 
 model Instruction {
@@ -46,8 +46,8 @@ model Instruction {
   userId        String
   description   String
   index         Int
-  stepId        Int
-  step          Step      @relation(fields: [stepId], references: [id], onDelete: Cascade)
+  sectionId        Int
+  section       Section   @relation(fields: [sectionId], references: [id], onDelete: Cascade)
 
   @@map("instruction")
 }
@@ -60,8 +60,8 @@ model Ingredient {
   name          String
   description   String
   index         Int
-  stepId        Int
-  step          Step      @relation(fields: [stepId], references: [id], onDelete: Cascade)
+  sectionId        Int
+  section       Section   @relation(fields: [sectionId], references: [id], onDelete: Cascade)
 
   @@map("ingredient")
 }
