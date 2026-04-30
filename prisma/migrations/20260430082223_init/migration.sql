@@ -1,36 +1,33 @@
 -- CreateTable
-CREATE TABLE "profile" (
-    "id" SERIAL NOT NULL,
-    "name" TEXT NOT NULL,
-
-    CONSTRAINT "profile_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "recipe" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
+    "slug" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "authorId" INTEGER NOT NULL,
+    "userId" TEXT NOT NULL,
 
     CONSTRAINT "recipe_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "step" (
+CREATE TABLE "section" (
     "id" SERIAL NOT NULL,
+    "userId" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
+    "index" INTEGER NOT NULL,
     "recipeId" INTEGER NOT NULL,
 
-    CONSTRAINT "step_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "section_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "instruction" (
     "id" SERIAL NOT NULL,
+    "userId" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "stepId" INTEGER NOT NULL,
+    "index" INTEGER NOT NULL,
+    "sectionId" INTEGER NOT NULL,
 
     CONSTRAINT "instruction_pkey" PRIMARY KEY ("id")
 );
@@ -38,10 +35,13 @@ CREATE TABLE "instruction" (
 -- CreateTable
 CREATE TABLE "ingredient" (
     "id" SERIAL NOT NULL,
+    "userId" TEXT NOT NULL,
     "amount" DOUBLE PRECISION NOT NULL,
     "units" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
+    "index" INTEGER NOT NULL,
+    "sectionId" INTEGER NOT NULL,
 
     CONSTRAINT "ingredient_pkey" PRIMARY KEY ("id")
 );
@@ -55,6 +55,7 @@ CREATE TABLE "user" (
     "image" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "handle" TEXT NOT NULL,
 
     CONSTRAINT "user_pkey" PRIMARY KEY ("id")
 );
@@ -105,6 +106,12 @@ CREATE TABLE "verification" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "recipe_userId_slug_key" ON "recipe"("userId", "slug");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "user_handle_key" ON "user"("handle");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
 
 -- CreateIndex
@@ -120,13 +127,16 @@ CREATE INDEX "account_userId_idx" ON "account"("userId");
 CREATE INDEX "verification_identifier_idx" ON "verification"("identifier");
 
 -- AddForeignKey
-ALTER TABLE "recipe" ADD CONSTRAINT "recipe_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "profile"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "recipe" ADD CONSTRAINT "recipe_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "step" ADD CONSTRAINT "step_recipeId_fkey" FOREIGN KEY ("recipeId") REFERENCES "recipe"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "section" ADD CONSTRAINT "section_recipeId_fkey" FOREIGN KEY ("recipeId") REFERENCES "recipe"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "instruction" ADD CONSTRAINT "instruction_stepId_fkey" FOREIGN KEY ("stepId") REFERENCES "step"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "instruction" ADD CONSTRAINT "instruction_sectionId_fkey" FOREIGN KEY ("sectionId") REFERENCES "section"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ingredient" ADD CONSTRAINT "ingredient_sectionId_fkey" FOREIGN KEY ("sectionId") REFERENCES "section"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "session" ADD CONSTRAINT "session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;

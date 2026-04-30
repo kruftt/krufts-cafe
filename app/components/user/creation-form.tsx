@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { auth } from "@lib/auth-client";
+import { User } from "@schema";
 import { Button } from "@ui/button";
 import {
 	Dialog,
@@ -11,32 +12,19 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@ui/dialog";
-import { Field, FieldError, FieldGroup, FieldLabel } from "@ui/field";
+import {
+	Field,
+	FieldDescription,
+	FieldError,
+	FieldGroup,
+	FieldLabel,
+} from "@ui/field";
 import { Input } from "@ui/input";
 import { Separator } from "@ui/separator";
 import { Spinner } from "@ui/spinner";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import * as z from "zod";
-
-const creationSchema = z.object({
-	name: z.string().min(1).max(16),
-	email: z.email(),
-	password: z
-		.string()
-		.min(8)
-		.max(24)
-		.regex(
-			/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()_\-+=[\]\\|;:'"`,.<>/?]).*$/,
-			{
-				message:
-					"Password must contain an uppercase letter, a lowercase letter, a number, and a special character.",
-			},
-		),
-});
-
-type CreationSchema = z.infer<typeof creationSchema>;
 
 // export default function CreationForm({ onOpen }: { onOpen: () => void }) {
 export default function CreationForm() {
@@ -45,8 +33,8 @@ export default function CreationForm() {
 	const [requesting, setRequesting] = useState(false);
 	const [requestError, setRequestError] = useState("");
 
-	const form = useForm<CreationSchema>({
-		resolver: zodResolver(creationSchema),
+	const form = useForm<User.Create>({
+		resolver: zodResolver(User.Create),
 		defaultValues: {
 			name: "",
 			email: "",
@@ -54,7 +42,7 @@ export default function CreationForm() {
 		},
 	});
 
-	async function onSubmit(data: CreationSchema) {
+	async function onSubmit(data: User.Create) {
 		await auth.signUp.email(data, {
 			onRequest: (ctx) => {
 				setRequesting(true);
@@ -97,7 +85,7 @@ export default function CreationForm() {
 										id="form-create-profile-name"
 										type="text"
 										aria-invalid={fieldState.invalid}
-										placeholder="display name"
+										placeholder="John Smith"
 										autoComplete="off"
 										disabled={requesting}
 									/>

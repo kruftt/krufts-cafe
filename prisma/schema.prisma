@@ -19,12 +19,14 @@ datasource db {
 model Recipe {
   id            Int       @id @default(autoincrement())
   name          String
+  slug          String
   description   String
-  sections         Section[]
+  sections      Section[]
   userId        String
   user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("recipe")
+  @@unique([userId, slug])
 }
 
 model Section {
@@ -46,7 +48,7 @@ model Instruction {
   userId        String
   description   String
   index         Int
-  sectionId        Int
+  sectionId     Int
   section       Section   @relation(fields: [sectionId], references: [id], onDelete: Cascade)
 
   @@map("instruction")
@@ -60,7 +62,7 @@ model Ingredient {
   name          String
   description   String
   index         Int
-  sectionId        Int
+  sectionId     Int
   section       Section   @relation(fields: [sectionId], references: [id], onDelete: Cascade)
 
   @@map("ingredient")
@@ -70,13 +72,14 @@ model Ingredient {
 // Better auth models:
 
 model User {
-  id            String    @id
+  id            String      @id
   name          String
   email         String
-  emailVerified Boolean   @default(false)
+  emailVerified Boolean     @default(false)
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  handle        String      @unique
   sessions      Session[]
   accounts      Account[]
   recipes       Recipe[]
@@ -86,15 +89,15 @@ model User {
 }
 
 model Session {
-  id        String   @id
-  expiresAt DateTime
-  token     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  ipAddress String?
-  userAgent String?
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id            String      @id
+  expiresAt     DateTime
+  token         String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  ipAddress     String?
+  userAgent     String?
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([token])
   @@index([userId])
@@ -122,12 +125,12 @@ model Account {
 }
 
 model Verification {
-  id         String   @id
-  identifier String
-  value      String
-  expiresAt  DateTime
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id            String       @id
+  identifier    String
+  value         String
+  expiresAt     DateTime
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
 
   @@index([identifier])
   @@map("verification")

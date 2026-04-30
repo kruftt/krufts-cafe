@@ -11,7 +11,7 @@ import {
 } from "@ui/dropdown-menu";
 import { useNavigate } from "react-router";
 
-export default function ProfileMenu({ name }: { name: string }) {
+export default function UserMenu({ name }: { name: string }) {
 	const navigate = useNavigate();
 
 	return (

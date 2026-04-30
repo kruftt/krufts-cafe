@@ -1,19 +1,28 @@
-import { requireAuth } from "@lib/auth-loader"
-import type { Route } from "./+types/my-recipes"
+import CreationForm from "@components/recipe/creation-form";
+import RecipeList from "@components/recipe/recipe-list";
+import { requireAuth } from "@lib/auth-loader";
+import { prisma } from "@lib/prisma";
+import type { Route } from "./+types/my-recipes";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  await requireAuth(request);
-  // const session = requireAuth(request);
-  // (await session).user.name
+	const session = await requireAuth(request);
+	// (await session).user.name
+
+	const recipes = await prisma.recipe.findMany({
+		where: { userId: session.user.id },
+	});
+
+	return { recipes };
 }
 
-export default function MyRecipes() {
-  return (
-    <div className="w-1/1 flex justify-center">
-      <div>
-        <h2>My Recipes</h2>
-        {/* Populate with recipe list */}
-      </div>
-    </div>
-  )
+export default function MyRecipes({ loaderData }: Route.ComponentProps) {
+	return (
+		<div className="text-center m-4">
+			<h2 className="text-2xl mt-8">My Recipes</h2>
+			<div className="max-w-200 m-auto">
+				<CreationForm />
+				<RecipeList recipes={loaderData.recipes} />
+			</div>
+		</div>
+	);
 }

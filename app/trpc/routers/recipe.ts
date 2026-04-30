@@ -1,33 +1,30 @@
 import { prisma } from "@lib/prisma";
 import { Model, Recipe } from "@schema";
 import { TRPCError } from "@trpc/server";
-import { authedProcedure, procedure, router } from "../server";
+import { Prisma } from "prisma/generated/client";
+import { authedProcedure, router } from "../server";
 
 export const recipeRouter = router({
-	get: procedure.input(Model.Id).query(async ({ input }) => {
-		return prisma.recipe.findUnique({
-			where: { id: input.id },
-			include: {
-				sections: {
-					include: {
-						instructions: true,
-						ingredients: true,
-					},
-				},
-			},
-		});
-	}),
-
-	list: procedure.query(async () => {
-		return prisma.recipe.findMany();
-	}),
-
 	create: authedProcedure
 		.input(Recipe.Create)
 		.mutation(async ({ input, ctx }) => {
-			return prisma.recipe.create({
-				data: { ...input, userId: ctx.session.user.id },
-			});
+			const slug = input.name.toLowerCase().replace(" ", "-");
+			try {
+				return await prisma.recipe.create({
+					data: { ...input, slug, userId: ctx.session.user.id },
+				});
+			} catch (e) {
+				if (
+					e instanceof Prisma.PrismaClientKnownRequestError &&
+					e.code === "P2002"
+				) {
+					throw new TRPCError({
+						code: "CONFLICT",
+						message: "You already have a recipe with that name",
+					});
+				}
+				throw e;
+			}
 		}),
 
 	update: authedProcedure

@@ -40,4 +40,4 @@ Client:
 
 ## Instructions
 - Prefer to use bun/bunx commands. When running prisma commands/migrations we must include the --bun flag, e.g. `bunx --bun prisma migrate dev` and `bunx --bun prisma generate`
-
+- Make sure to give up-to-date patterns and instructions for react router v7, not for previous versions.
