@@ -61,7 +61,7 @@ export default function App() {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
-				<IconContext.Provider value={{ color: "black" }}>
+				<IconContext.Provider value={{ color: `${ theme ? 'black' : 'white' }` }}>
 					<body
 						className={`
 			${theme && "dark"} 
@@ -69,7 +69,9 @@ export default function App() {
 			dark:bg-cafe-blue-3-dark dark:text-white`}
 					>
 						<AppBar />
-						<Outlet />
+						<div className="m-auto max-w-200">
+							<Outlet />
+						</div>
 						<Button
 							className="absolute bottom-4 left-4 rounded-full"
 							onClick={() => setTheme(!theme)}

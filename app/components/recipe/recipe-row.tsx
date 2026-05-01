@@ -21,9 +21,9 @@ import {
 } from "@ui/item";
 import { EditIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
-import { useRevalidator } from "react-router";
+import { useNavigate, useRevalidator } from "react-router";
 
-export default function RecipeItem({
+export default function RecipeRow({
 	edit,
 	recipe,
 }: {
@@ -32,6 +32,7 @@ export default function RecipeItem({
 }) {
 	const trpc = useTRPC();
 	const deleteMutation = useMutation(trpc.recipe.delete.mutationOptions());
+	const navigate = useNavigate();
   const revalidator = useRevalidator();
   const [open, setOpen] = useState(false);
 
@@ -43,9 +44,9 @@ export default function RecipeItem({
   }
 
 	return (
-		<Item className="bg-gray-900 py-1.5" variant="outline" size="xs">
+		<Item className="py-1.5" variant="outline" size="xs">
 			{edit && (
-				<Button>
+				<Button onClick={() => navigate(`/edit/${recipe.id}`)}>
 					<EditIcon />
 				</Button>
 			)}

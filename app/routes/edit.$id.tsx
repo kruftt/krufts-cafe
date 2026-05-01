@@ -33,7 +33,7 @@ export default function RecipeEditor({ loaderData }: Route.ComponentProps) {
 
 	return (
 		<div>
-			<h1>{recipe.name}</h1>
+			<h1 className="text-center my-4 text-2xl">{recipe.name}</h1>
 		</div>
 	);
 }

@@ -21,8 +21,8 @@ export default function UserMenu({ name }: { name: string }) {
 			</DropdownMenuTrigger>
 			<DropdownMenuContent>
 				<DropdownMenuGroup>
+					<DropdownMenuItem onClick={() => navigate('/my-recipes/')}>My Recipes</DropdownMenuItem>
 					<DropdownMenuItem>Favorites</DropdownMenuItem>
-					<DropdownMenuItem>Recipes</DropdownMenuItem>
 					<DropdownMenuItem>Meal Plans</DropdownMenuItem>
 				</DropdownMenuGroup>
 				<DropdownMenuSeparator />
