@@ -11,8 +11,8 @@ export async function generateHandle(name: string) {
   if (!existing.length) return base
 
   const indices = existing
-    .map(user => parseInt(user.handle.replace(base + '-', '') || '1'))
-    .filter(n => !isNaN(n))
+    .map(user => parseInt(user.handle.replace(`${base}-`, '') || '1', 10))
+    .filter(n => !Number.isNaN(n))
   
   return `${base}-${Math.max(...indices) + 1}`
 }

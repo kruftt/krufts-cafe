@@ -1,20 +1,22 @@
 import { prisma } from "@lib/prisma";
 import { Model, Recipe } from "@schema";
+import { newRecipeName } from "@services/recipe";
 import { TRPCError } from "@trpc/server";
 import { authedProcedure, router } from "../server";
 
 export const recipeRouter = router({
-	create: authedProcedure
-		.mutation(async ({ ctx }) => {
-			return prisma.recipe.create({
-				data: {
-					name: "",
-					description: "",
-					slug: null,
-					userId: ctx.session.user.id
-				},
-			});
-		}),
+	create: authedProcedure.mutation(async ({ ctx }) => {
+		const name = await newRecipeName(ctx.session.user.id);
+
+		return prisma.recipe.create({
+			data: {
+				name,
+				description: "",
+				slug: null,
+				userId: ctx.session.user.id,
+			},
+		});
+	}),
 
 	update: authedProcedure
 		.input(Recipe.Model)
