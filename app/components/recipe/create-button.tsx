@@ -13,8 +13,8 @@ export default function CreateButton() {
 	function submit() {
 		createRecipe.mutate(undefined, {
 			onSuccess: (data) => {
-				// navigate(`/my-recipes/${data.id}`)
-				revalidator.revalidate();
+				navigate(`/edit/${data.id}`)
+				// revalidator.revalidate();
 			},
 		});
 	}
