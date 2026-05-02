@@ -16,7 +16,7 @@ const loginSchema = z.object({
 
 type LoginSchema = z.infer<typeof loginSchema>;
 
-export default function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
+export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
 	const emailRef = useRef<HTMLInputElement>(null);
 	const [requesting, setRequesting] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);

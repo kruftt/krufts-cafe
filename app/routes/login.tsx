@@ -1,4 +1,4 @@
-import LoginForm from "@components/user/login-form";
+import { LoginForm } from "@components/user";
 import { auth } from "@lib/auth-server";
 import { redirect, useLoaderData, useNavigate } from "react-router";
 import type { Route } from "./+types/login";
@@ -16,10 +16,8 @@ export default function LoginPage() {
 	const navigate = useNavigate();
 
 	return (
-		<div className="w-1/1 pt-16 flex justify-center">
-			<div className="max-w-80 grow">
-				<LoginForm onSuccess={() => navigate(redirectTo)} />
-			</div>
+		<div className="m-auto max-w-80 pt-12">
+			<LoginForm onSuccess={() => navigate(redirectTo)} />
 		</div>
 	);
 }

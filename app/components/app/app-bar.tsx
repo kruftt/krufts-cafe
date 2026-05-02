@@ -1,10 +1,9 @@
 import { auth } from "@lib/auth-client";
 import { buttonVariants } from "@ui/button";
 import { BsCupHotFill } from "react-icons/bs";
-import LoginPopover from "./user/login-popover";
-import UserMenu from "./user/user-menu";
+import { LoginPopover, UserMenu } from "../user";
 
-export default function AppBar() {
+export function AppBar() {
 	const { data: session, isPending } = auth.useSession();
 	const isLoggedIn = !isPending && session !== null;
 

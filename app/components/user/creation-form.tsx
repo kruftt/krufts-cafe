@@ -27,7 +27,7 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 // export default function CreationForm({ onOpen }: { onOpen: () => void }) {
-export default function CreationForm() {
+export function CreationForm() {
 	const [open, setOpen] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
 	const [requesting, setRequesting] = useState(false);

@@ -1,5 +1,5 @@
 import { themeAtom } from "@atoms/theme";
-import AppBar from "@components/app-bar";
+import { AppBar } from "@components/app";
 import { Button } from "@ui/button";
 import { useAtom } from "jotai";
 import { BsMoonStarsFill, BsSunFill } from "react-icons/bs";
@@ -69,9 +69,7 @@ export default function App() {
 			dark:bg-cafe-blue-3-dark dark:text-white`}
 					>
 						<AppBar />
-						<div className="m-auto max-w-200">
-							<Outlet />
-						</div>
+						<Outlet />
 						<Button
 							className="absolute bottom-4 left-4 rounded-full"
 							onClick={() => setTheme(!theme)}
