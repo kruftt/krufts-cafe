@@ -1,5 +1,5 @@
 
-export function RecipeIngredient() {
+export function Ingredient() {
   return (
     <div>
 

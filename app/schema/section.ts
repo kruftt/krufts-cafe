@@ -1,7 +1,6 @@
 import * as z from "zod";
 import * as Ingredient from "./ingredient";
 import * as Instruction from "./instruction";
-import * as Recipe from './recipe';
 
 export const Model = z.object({
 	id: z.int(),
@@ -12,7 +11,12 @@ export const Model = z.object({
 	recipeId: z.int(),
 });
 
-export const Create = Model.omit({ id: true, userId: true });
+export const Create = Model.omit({
+	id: true,
+	userId: true,
+	name: true,
+	description: true,
+});
 
 export const Full = Model.extend({
 	instructions: z.array(Instruction.Model),

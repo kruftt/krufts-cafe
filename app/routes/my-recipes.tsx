@@ -1,6 +1,5 @@
 import { ContentContainer, ContentHeader } from "@components/app";
-import { CreateRecipe } from "@components/recipe";
-import { RecipeList } from "@components/recipe/list";
+import { CreateRecipeButton, RecipeList } from "@components/list";
 import { requireAuth } from "@lib/auth-loader";
 import { prisma } from "@lib/prisma";
 import type { Route } from "./+types/my-recipes";
@@ -21,7 +20,7 @@ export default function MyRecipes({ loaderData }: Route.ComponentProps) {
 		<ContentContainer>
 			<ContentHeader>
 				<h2 className="my-4">My Recipes</h2>
-				<CreateRecipe />
+				<CreateRecipeButton />
 			</ContentHeader>
 			<RecipeList edit recipes={loaderData.recipes} />
 		</ContentContainer>

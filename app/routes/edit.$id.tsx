@@ -1,10 +1,6 @@
-import { ContentContainer, ContentHeader } from "@components/app";
-import { RecipeTitleEditor } from "@components/recipe/edit";
+import { RecipeEditor } from "@components/edit";
 import { requireAuth } from "@lib/auth-loader";
 import { prisma } from "@lib/prisma";
-import { useTRPC } from "@lib/trpc";
-import type { Recipe } from "@schema";
-import { useMutation } from "@tanstack/react-query";
 import { redirect } from "react-router";
 import type { Route } from "./+types/edit.$id";
 
@@ -32,23 +28,8 @@ export async function loader({ request, params }: Route.LoaderArgs) {
 	return { recipe };
 }
 
-export default function RecipeEditor({ loaderData }: Route.ComponentProps) {
-	const { recipe } = loaderData;
-	const trpc = useTRPC();
-	const updateRecipe = useMutation(trpc.recipe.update.mutationOptions());
-
-	function saveRecipe(field: keyof Recipe.Model, value: string) {
-		updateRecipe.mutate({ ...recipe, [field]: value });
-	}
-
+export default function EditPage({ loaderData }: Route.ComponentProps) {
 	return (
-		<ContentContainer>
-			<ContentHeader>
-				<RecipeTitleEditor
-					value={recipe.name}
-					onSave={(v) => saveRecipe("name", v)}
-				></RecipeTitleEditor>
-			</ContentHeader>
-		</ContentContainer>
+		<RecipeEditor recipe={loaderData.recipe} />
 	);
 }

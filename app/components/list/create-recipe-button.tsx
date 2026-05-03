@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Button } from "@ui/button";
 import { useNavigate } from "react-router";
 
-export function CreateRecipe() {
+export function CreateRecipeButton() {
 	const trpc = useTRPC();
 	const createRecipe = useMutation(trpc.recipe.create.mutationOptions());
 	const navigate = useNavigate();

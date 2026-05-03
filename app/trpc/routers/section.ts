@@ -7,9 +7,20 @@ export const sectionRouter = router({
 	create: authedProcedure
 		.input(Section.Create)
 		.mutation(async ({ input, ctx }) => {
-			return prisma.section.create({
-				data: { ...input, userId: ctx.session.user.id },
+			const section = await prisma.section.create({
+				data: {
+					userId: ctx.session.user.id,
+					name: "",
+					description: "",
+					...input
+				},
 			});
+
+			return {
+				...section,
+				instructions: [],
+				ingredients: [],
+			}
 		}),
 
 	update: authedProcedure

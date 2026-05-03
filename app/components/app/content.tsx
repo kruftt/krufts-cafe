@@ -9,12 +9,12 @@ export function ContentContainer({ children }: PropsWithChildren) {
 }
 
 export function ContentHeader({ children }: PropsWithChildren) {
-	return <div className="my-6 text-center text-2xl">{children}</div>;
+	return <div className="my-6 text-center">{children}</div>;
 }
 
 export function ContentPane({ children }: PropsWithChildren) {
   return (
-    <div>
+    <div className="w-1/1 border rounded-2xl">
       { children }
     </div>
   )
