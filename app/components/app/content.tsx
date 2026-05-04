@@ -14,7 +14,7 @@ export function ContentHeader({ children }: PropsWithChildren) {
 
 export function ContentPane({ children }: PropsWithChildren) {
   return (
-    <div className="w-1/1 border rounded-2xl">
+    <div className="w-1/1 border rounded-2xl mt-6 p-4">
       { children }
     </div>
   )

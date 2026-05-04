@@ -1,5 +1,6 @@
 import { useEditor } from "@hooks/editor";
 import { Input } from "@ui/input";
+import { useEffect, useRef } from "react";
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
 	onSave: (value: string) => void;
@@ -14,11 +15,12 @@ export function InputEditor({
 	onSave,
 	...rest
 }: Props) {
-	const { editor, setEditor, draft, setDraft, submit } = useEditor(children, onSave);
-
-
+	const inputRef = useRef<HTMLInputElement>(null);
+	const { editor, setEditor, draft, setDraft, submit } = useEditor(inputRef, children, onSave);
+	
 	return editor ? (
 		<Input
+			ref={inputRef}
 			className={`border-0 ring-0! ${className}`}
 			value={draft}
 			onChange={(e) => setDraft(e.target.value)}

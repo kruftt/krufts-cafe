@@ -1,5 +1,6 @@
 import { useEditor } from "@hooks/editor";
 import { Textarea } from "@ui/textarea";
+import { useEffect, useRef } from "react";
 
 interface Props extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
 	onSave: (value: string) => void;
@@ -14,16 +15,19 @@ export function TextareaEditor({
 	onSave,
 	...rest
 }: Props) {
+	const textareaRef = useRef<HTMLTextAreaElement>(null);
 	const { editor, setEditor, draft, setDraft, submit } = useEditor(
+		textareaRef,
 		children,
 		onSave,
 	);
 
 	return draft === "" || editor ? (
 		<Textarea
+			ref={textareaRef}
 			className={`border-0 ring-0! ${className}`}
 			value={draft}
-			// onFocus={() => setEditor(true)}
+			onFocus={() => setEditor(true)}
 			onBlur={submit}
 			onChange={(e) => setDraft(e.target.value)}
 			onKeyDown={(e) =>

@@ -9,10 +9,9 @@ export const sectionRouter = router({
 		.mutation(async ({ input, ctx }) => {
 			const section = await prisma.section.create({
 				data: {
+					...input,
 					userId: ctx.session.user.id,
-					name: "",
 					description: "",
-					...input
 				},
 			});
 

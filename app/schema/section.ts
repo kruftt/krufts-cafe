@@ -14,7 +14,6 @@ export const Model = z.object({
 export const Create = Model.omit({
 	id: true,
 	userId: true,
-	name: true,
 	description: true,
 });
 

@@ -1,0 +1,50 @@
+import { Button } from "@ui/button";
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "@ui/dialog";
+import { useState } from "react";
+
+export function DeletionDialog({
+	children,
+	title,
+	message,
+  item,
+  onConfirm,
+}: React.PropsWithChildren & {
+  children: React.ReactElement
+	title: string;
+	message: string;
+  item: string;
+  onConfirm: () => void
+}) {
+	const [open, setOpen] = useState(false);
+
+	return (
+		<Dialog open={open} onOpenChange={(isOpen) => setOpen(isOpen)}>
+			<DialogTrigger
+				render={ children }
+			/>
+			<DialogContent>
+				<DialogHeader>
+					<DialogTitle>{ title }</DialogTitle>
+					<DialogDescription>{ message }</DialogDescription>
+				</DialogHeader>
+				<div className="text-center">{item}</div>
+				<div className="flex gap-3 justify-around">
+					<Button>
+						<DialogClose>Cancel</DialogClose>
+					</Button>
+					<Button variant="destructive" onClick={onConfirm}>
+						Delete
+					</Button>
+				</div>
+			</DialogContent>
+		</Dialog>
+	);
+}

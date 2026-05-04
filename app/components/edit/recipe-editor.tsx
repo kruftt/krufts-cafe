@@ -7,7 +7,7 @@ import {
 	recipeTitleStyles,
 } from "@components/view";
 import { useTRPC } from "@lib/trpc";
-import type { Recipe } from "@schema";
+import type { Recipe, Section } from "@schema";
 import { useMutation } from "@tanstack/react-query";
 import { Button } from "@ui/button";
 import { useState } from "react";
@@ -20,6 +20,14 @@ export function RecipeEditor({ recipe }: { recipe: Recipe.Full }) {
 	const updateRecipeMutation = useMutation({
 		...trpc.recipe.update.mutationOptions(),
 	});
+	
+	const createSectionMutation = useMutation({
+		...trpc.section.create.mutationOptions(),
+	});
+	
+	const deleteSectionMutation = useMutation({
+		...trpc.section.delete.mutationOptions(),
+	});
 
 	function updateRecipe(
 		field: keyof Recipe.Model,
@@ -29,19 +37,22 @@ export function RecipeEditor({ recipe }: { recipe: Recipe.Full }) {
 		updateRecipeMutation.mutate({ ...recipe, [field]: value }, { onError });
 	}
 
-	const createSectionMutation = useMutation({
-		...trpc.section.create.mutationOptions(),
-	});
-
 	function createSection() {
+		const index = sections.length;
 		createSectionMutation.mutate({
 			recipeId: recipe.id,
-			index: sections.length,
+			name: `Section ${index}`,
+			index,
 		}, {
 			onSuccess: (data) => {
 				sections.push(data);
 			}
 		})
+	}
+
+	function deleteSection(section: Section.Full) {
+		setSections(sections.filter((s) => s !== section));
+		deleteSectionMutation.mutate({ id: section.id });
 	}
 
 	return (
@@ -66,7 +77,12 @@ export function RecipeEditor({ recipe }: { recipe: Recipe.Full }) {
 				</TextareaEditor>
 			</ContentPane>
 			{
-				sections.map(section => <SectionEditor key={section.id} section={section} />)
+				sections.map(section => 
+					<SectionEditor
+						key={section.id}
+						section={section}
+						deleteSection={() => deleteSection(section)}
+					/>)
 			}
 			<div className="w-1/1 mt-6 text-center">
 				<Button onClick={createSection}>Add Section</Button>
