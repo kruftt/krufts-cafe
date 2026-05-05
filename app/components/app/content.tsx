@@ -2,7 +2,7 @@ import type { PropsWithChildren } from "react";
 
 export function ContentContainer({ children }: PropsWithChildren) {
   return (
-    <div className="m-auto max-w-200">
+    <div className="m-auto max-w-296 px-4">
       { children }
     </div>
   )

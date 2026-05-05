@@ -1,5 +1,5 @@
 
-export const recipeDescStyles = "text-center whitespace-pre-wrap p-4 font-light";
+export const recipeDescStyles = "text-base! whitespace-pre-wrap text-center font-normal p-2";
 
 export function RecipeDescription({ children }: React.PropsWithChildren) {
 	return <div className={recipeDescStyles}>{children}</div>;

@@ -45,7 +45,7 @@ export function RecipeEditor({ recipe }: { recipe: Recipe.Full }) {
 			index,
 		}, {
 			onSuccess: (data) => {
-				sections.push(data);
+				setSections([...sections, data]);
 			}
 		})
 	}
@@ -60,30 +60,31 @@ export function RecipeEditor({ recipe }: { recipe: Recipe.Full }) {
 			<ContentHeader>
 				<InputEditor
 					Component={RecipeTitle}
-					className={recipeTitleStyles}
+					styles={recipeTitleStyles}
+					className="rounded-2xl"
 					onSave={(v) => updateRecipe("name", v)}
 				>
 					{recipe.name}
 				</InputEditor>
 			</ContentHeader>
-			<ContentPane>
-				<TextareaEditor
-					Component={RecipeDescription}
-					className={recipeDescStyles}
-					onSave={(v) => updateRecipe("description", v)}
-					placeholder="Recipe description..."
-				>
-					{recipe.description}
-				</TextareaEditor>
-			</ContentPane>
-			{
-				sections.map(section => 
-					<SectionEditor
-						key={section.id}
-						section={section}
-						deleteSection={() => deleteSection(section)}
-					/>)
-			}
+
+			<TextareaEditor
+				Component={RecipeDescription}
+				styles={recipeDescStyles}
+				className="rounded-lg"
+				onSave={(v) => updateRecipe("description", v)}
+				placeholder="Recipe description..."
+			>
+				{recipe.description}
+			</TextareaEditor>
+
+			{sections.map((section) => (
+				<SectionEditor
+					key={section.id}
+					section={section}
+					deleteSection={() => deleteSection(section)}
+				/>
+			))}
 			<div className="w-1/1 mt-6 text-center">
 				<Button onClick={createSection}>Add Section</Button>
 			</div>
