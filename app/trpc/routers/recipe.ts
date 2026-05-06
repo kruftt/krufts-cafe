@@ -11,7 +11,6 @@ export const recipeRouter = router({
 		return prisma.recipe.create({
 			data: {
 				name,
-				description: "",
 				slug: null,
 				userId: ctx.session.user.id,
 			},

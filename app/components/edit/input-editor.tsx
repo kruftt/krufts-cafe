@@ -1,74 +1,45 @@
-import { useEditor } from "@hooks/editor";
-import { Button } from "@ui/button";
-import { Input } from "@ui/input";
-import { useRef } from "react";
+import { type KeyboardEventHandler, useState } from "react";
 
-interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
+interface Props extends React.ComponentProps<"input"> {
 	onSave: (value: string) => void;
-	children: string;
-	Component: React.ComponentType<React.PropsWithChildren>;
-	styles: string
+	clear?: boolean;
+	resize?: boolean;
 }
 
 export function InputEditor({
-	children,
 	className,
-	styles,
-	Component,
+	clear,
 	onSave,
+	value,
+	resize,
 	...rest
 }: Props) {
-	const inputRef = useRef<HTMLInputElement>(null);
-	const { editor, setEditor, draft, setDraft, submit } = useEditor(
-		inputRef,
-		children,
-		onSave,
-	);
+	const [draft, setDraft] = useState(value || "");
+
+	function submit() {
+		onSave(draft as string);
+		if (clear) setDraft("");
+	}
+
+	function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+		if (e.key === "Enter") {
+			submit();
+			e.currentTarget.blur();
+		}
+	}
 
 	return (
-		<div className={className}>
-			{ editor
-				? <input
-						ref={inputRef}
-						className={`w-1/1 outline-0 ${styles}`}
-						value={draft}
-						onChange={(e) => setDraft(e.target.value)}
-						onBlur={submit}
-						onKeyDown={(e) => e.key === "Enter" && submit()}
-						{...rest}
-					/>
-				
-				: <button
-						type="button"
-						className={`w-1/1 hover:bg-white/5 ${draft ? "" : "text-gray-400"} `}
-						onClick={() => setEditor(true)}
-						onFocus={() => setEditor(true)}
-					>
-						<Component>{draft || rest.placeholder}</Component>
-					</button>
-			}
-		</div>
+		<input
+			className={`
+				block bg-transparent border-none outline-none p-0 m-0 font-inherit text-inherit
+				${resize ? "field-sizing-content" : "w-1/1"}
+				${className}
+			`}
+			value={draft}
+			onChange={(e) => setDraft(e.target.value)}
+			onBlur={submit}
+			onKeyDown={onKeyDown}
+			{...rest}
+		/>
 	);
-
-	// return editor ? (
-	// 	<div className={className}>
-	// 		<input
-	// 			ref={inputRef}
-	// 			className={`w-1/1 outline-0 ${styles}`}
-	// 			value={draft}
-	// 			onChange={(e) => setDraft(e.target.value)}
-	// 			onBlur={submit}
-	// 			onKeyDown={(e) => e.key === "Enter" && submit()}
-	// 			{...rest}
-	// 		/>
-	// 	</div>
-	// ) : (
-	// 	<button
-	// 		type="button"
-	// 		className={`w-1/1 hover:bg-white/5 ${draft ? "" : "text-gray-400"} ${className}`}
-	// 		onClick={() => setEditor(true)}
-	// 	>
-	// 		<Component>{draft || rest.placeholder}</Component>
-	// 	</button>
-	// );
 }

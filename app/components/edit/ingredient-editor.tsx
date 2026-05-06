@@ -1,4 +1,4 @@
-import { DynamicInputEditor, InputEditor } from "@components/edit";
+import { InputEditor, TextareaEditor } from "@components/edit";
 import { AmountView, amountStyles, DescriptionView, descriptionStyles, NameView, nameStyles, UnitsView, unitsStyles } from "@components/view/ingredient-view";
 import { useTRPC } from "@lib/trpc";
 import type { Ingredient } from "@schema";
@@ -25,49 +25,43 @@ export function IngredientEditor({
 	}
 
 	return (
-		<div className="group flex items-center gap-2 py-1">
+		<div className="flex items-center">
 			<Button
 				variant="ghost"
-				className="opacity-100 md:opacity-0 md:group-hover:opacity-100 p-1 h-auto"
+				className="p-1 m-1 h-8 w-8"
 				onClick={onDelete}
 			>
 				<XIcon className="h-4 w-4" color="red" />
 			</Button>
-			<DynamicInputEditor
-				type="number"
-				Component={AmountView}
-				styles={amountStyles}
-				className="p-0 shrink"
-				onSave={(v) => save("amount", v)}
-			>
-				{String(ingredient.amount)}
-			</DynamicInputEditor>
-			<InputEditor
-				Component={UnitsView}
-				styles={unitsStyles}
-				className="p-0"
-				onSave={(v) => save("units", v)}
-				placeholder="units"
-			>
-				{ingredient.units}
-			</InputEditor>
-			<InputEditor
-				Component={NameView}
-				styles={nameStyles}
-				className="p-0 text-nowrap"
-				onSave={(v) => save("name", v)}
-			>
-				{ingredient.name}
-			</InputEditor>
-			<InputEditor
-				Component={DescriptionView}
-				styles={descriptionStyles}
-				className="p-0 grow text-left"
-				placeholder="preparation"
-				onSave={(v) => save("description", v)}
-			>
-				{ingredient.description}
-			</InputEditor>
+			<div className="flex flex-wrap justify-start items-start py-1 gap-x-1 gap-y-0 max-w-150">
+				<InputEditor
+					type="number"
+					value={String(ingredient.amount)}
+					className={amountStyles} // "p-0 shrink"
+					onSave={(v) => save("amount", v)}
+					resize
+				/>
+				<InputEditor
+					value={ingredient.units}
+					className={unitsStyles}
+					onSave={(v) => save("units", v)}
+					placeholder="units"
+					resize
+				/>
+				<InputEditor
+					value={ingredient.name}
+					className={nameStyles}
+					onSave={(v) => save("name", v)}
+					resize
+				/>
+				<TextareaEditor
+					value={ingredient.description}
+					className={descriptionStyles}
+					placeholder="preparation"
+					onSave={(v) => save("description", v)}
+					resize
+				/>
+			</div>
 		</div>
 	);
 }

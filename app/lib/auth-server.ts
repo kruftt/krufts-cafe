@@ -26,13 +26,18 @@ export const auth = betterAuth({
 			create: {
 				before: async (user) => {
 					const result = User.Create.omit({ password: true }).safeParse(user);
-					if (!result.success)
-						throw new Error("Invalid user data.")
-					
+					if (!result.success) throw new Error("Invalid user data.");
+
 					const handle = await generateHandle(user.name);
 					return { data: { ...user, handle } };
 				},
 			},
 		},
 	},
+
+	trustedOrigins: [
+		"http://localhost:5173",
+		"http://192.168.0.106:5173",
+		"http://192.168.0.159:5173"
+	],
 });

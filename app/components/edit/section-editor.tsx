@@ -2,14 +2,14 @@ import { ContentPane } from "@components/app";
 import { DeletionDialog, InputEditor, TextareaEditor } from "@components/edit";
 import { IngredientEditor } from "@components/edit/ingredient-editor";
 import { InstructionEditor } from "@components/edit/instruction-editor";
-import { SectionTitle, sectionTitleStyles } from "@components/view";
-import { SectionDescription, sectionDescriptionStyles } from "@components/view/section/section-description";
+import { sectionTitleStyles } from "@components/view";
+import { sectionDescriptionStyles } from "@components/view/section/section-description";
 import { useTRPC } from "@lib/trpc";
 import type { Section } from "@schema";
 import { useMutation } from "@tanstack/react-query";
 import { Button } from "@ui/button";
 import { XIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function SectionEditor({
 	section,
@@ -20,6 +20,22 @@ export function SectionEditor({
 }) {
   const [instructions, setInstructions] = useState(section.instructions);
   const [ingredients, setIngredients] = useState(section.ingredients);
+  const instructionsRef = useRef<HTMLDivElement>(null);
+  const ingredientsRef = useRef<HTMLDivElement>(null);
+
+	// biome-ignore lint: length is the proper dependency
+  useEffect(() => {
+    instructionsRef.current
+					?.querySelector<HTMLInputElement>(":scope div:last-child input")
+					?.focus();
+  }, [instructions.length]);
+
+  // biome-ignore lint: length is the proper dependency
+	useEffect(() => {
+		ingredientsRef.current
+			?.querySelector<HTMLInputElement>(':scope div:last-child div input')
+			?.focus();
+	}, [ingredients.length]);
 
 	const trpc = useTRPC();
 	const updateSectionMutation = useMutation(trpc.section.update.mutationOptions());
@@ -62,13 +78,10 @@ export function SectionEditor({
 		<ContentPane>
 			<div className="relative mb-4">
 				<InputEditor
-					Component={SectionTitle}
-					styles={sectionTitleStyles}
-					className="rounded-xl"
+					value={section.name}
+					className={sectionTitleStyles}
 					onSave={(v) => updateSection("name", v)}
-				>
-					{section.name}
-				</InputEditor>
+				/>
 
 				<DeletionDialog
 					title="Delete Section"
@@ -86,38 +99,42 @@ export function SectionEditor({
 			</div>
 
 			<TextareaEditor
-				Component={SectionDescription}
-				styles={sectionDescriptionStyles}
-        className="rounded-lg"
+				className={sectionDescriptionStyles}
 				onSave={(v) => updateSection("description", v)}
 				placeholder="Section description..."
-			>
-				{section.description}
-			</TextareaEditor>
-			<div className="mt-6 flex flex-wrap">
-				<div className="grow basis-80 mb-2 bg-blue-600">
+				value={section.description}
+			/>
+
+			<div className="mt-6 flex flex-wrap gap-y-4">
+				<div className="grow basis-80 mb-2">
 					<h3 className="text-center text-xl font-semibold">Ingredients</h3>
-					{ingredients.map((ingredient) => (
-						<IngredientEditor
-							key={ingredient.id}
-							ingredient={ingredient}
-							onDelete={() => deleteIngredient(ingredient.id)}
-						/>
-					))}
-					<div className="text-center">
+					<div ref={ingredientsRef}>
+						{ingredients.map((ingredient) => (
+							<IngredientEditor
+								key={ingredient.id}
+								ingredient={ingredient}
+								onDelete={() => deleteIngredient(ingredient.id)}
+							/>
+						))}
+					</div>
+					<div className="text-center  my-4">
 						<Button onClick={addIngredient}>Add Ingredient</Button>
 					</div>
 				</div>
-				<div className="grow-2 basis-120 mb-2  bg-green-600">
+
+				<div className="grow-2 basis-120 mb-2">
 					<h3 className="text-center text-xl font-semibold">Instructions</h3>
-					{instructions.map((instruction) => (
-						<InstructionEditor
-							key={instruction.id}
-							instruction={instruction}
-							onDelete={() => deleteInstruction(instruction.id)}
-						/>
-					))}
-					<div className="text-center">
+					<div ref={instructionsRef}>
+						{instructions.map((instruction, i) => (
+							<InstructionEditor
+								key={instruction.id}
+								index={i + 1}
+								instruction={instruction}
+								onDelete={() => deleteInstruction(instruction.id)}
+							/>
+						))}
+					</div>
+					<div className="text-center  my-4">
 						<Button onClick={addInstruction}>Add Instruction</Button>
 					</div>
 				</div>

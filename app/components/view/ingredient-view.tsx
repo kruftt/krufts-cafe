@@ -1,9 +1,9 @@
 import type { Ingredient } from "@schema";
 
-export const amountStyles = "font-semibold text-sm min-w-0!";
-export const unitsStyles = "text-sm min-w-0! w-auto!";
-export const nameStyles = "text-sm font-medium min-w-0! w-auto!";
-export const descriptionStyles = "text-sm text-gray-500 min-w-0! w-auto!";
+export const amountStyles = "font-semibold text-sm";
+export const unitsStyles = "text-sm";
+export const nameStyles = "text-sm font-medium";
+export const descriptionStyles = "text-sm ml-1";
 
 export function AmountView({ children }: React.PropsWithChildren) {
 	return <span className={amountStyles}>{children}</span>;

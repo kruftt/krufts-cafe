@@ -1,8 +1,6 @@
 import { ContentContainer, ContentHeader, ContentPane } from "@components/app";
-import { InputEditor, TextareaEditor } from "@components/edit";
+import { InputEditor, TagEditor, TextareaEditor } from "@components/edit";
 import {
-	RecipeDescription,
-	RecipeTitle,
 	recipeDescStyles,
 	recipeTitleStyles,
 } from "@components/view";
@@ -31,7 +29,7 @@ export function RecipeEditor({ recipe }: { recipe: Recipe.Full }) {
 
 	function updateRecipe(
 		field: keyof Recipe.Model,
-		value: string,
+		value: string | string[],
 		onError?: () => void,
 	) {
 		updateRecipeMutation.mutate({ ...recipe, [field]: value }, { onError });
@@ -59,24 +57,33 @@ export function RecipeEditor({ recipe }: { recipe: Recipe.Full }) {
 		<ContentContainer>
 			<ContentHeader>
 				<InputEditor
-					Component={RecipeTitle}
-					styles={recipeTitleStyles}
-					className="rounded-2xl"
+					value={recipe.name}
+					className={recipeTitleStyles}
 					onSave={(v) => updateRecipe("name", v)}
-				>
-					{recipe.name}
-				</InputEditor>
+				/>
+				
+				<InputEditor
+					className={recipeDescStyles}
+					onSave={(v) => updateRecipe("description", v)}
+					placeholder="Recipe description..."
+					value={recipe.description}
+				/>
+
+				<TagEditor
+					className="max-w-150 m-auto"
+					tags={recipe.tags}
+					onSave={(v) => updateRecipe("tags", v)}
+				/>
 			</ContentHeader>
 
-			<TextareaEditor
-				Component={RecipeDescription}
-				styles={recipeDescStyles}
-				className="rounded-lg"
-				onSave={(v) => updateRecipe("description", v)}
-				placeholder="Recipe description..."
-			>
-				{recipe.description}
-			</TextareaEditor>
+			<ContentPane>
+				<TextareaEditor
+					className=""
+					onSave={(v) => updateRecipe("intro", v)}
+					placeholder="Recipe Introduction..."
+					value={recipe.intro}
+				/>
+			</ContentPane>
 
 			{sections.map((section) => (
 				<SectionEditor

@@ -10,8 +10,10 @@ export const Name = z
 export const Model = z.object({
 	id: z.int(),
 	name: Name,
+	tags: z.array(z.string()),
 	slug: z.string().nullable(),
 	description: z.string(),
+	intro: z.string(),
 	userId: z.string(),
 });
 

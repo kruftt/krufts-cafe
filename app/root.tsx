@@ -71,7 +71,7 @@ export default function App() {
 						<AppBar />
 						<Outlet />
 						<Button
-							className="absolute bottom-4 left-4 rounded-full"
+							className="fixed bottom-4 left-4 rounded-full"
 							onClick={() => setTheme(!theme)}
 						>
 							{theme ? <BsSunFill /> : <BsMoonStarsFill />}
