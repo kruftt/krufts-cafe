@@ -1,5 +1,4 @@
 import { InputEditor } from "@components/edit/input-editor";
-import { InstructionView, instructionStyles } from "@components/view";
 import { useTRPC } from "@lib/trpc";
 import type { Instruction } from "@schema";
 import { useMutation } from "@tanstack/react-query";
@@ -17,7 +16,7 @@ export function InstructionEditor({ instruction, onDelete, index }: Props) {
 	const updateMutation = useMutation(trpc.instruction.update.mutationOptions());
 
 	return (
-		<div className="group flex items-center gap-2">
+		<div className="instruction">
 			<Button
 				variant="ghost"
 				className="p-1 h-auto"
@@ -28,7 +27,6 @@ export function InstructionEditor({ instruction, onDelete, index }: Props) {
 			<span>{index}.</span>
 			<InputEditor
 				value={instruction.description}
-				className={instructionStyles}
 				placeholder="Insert instruction here"
 				onSave={(description) =>
 					updateMutation.mutate({ ...instruction, description })

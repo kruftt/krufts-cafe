@@ -1,5 +1,4 @@
 import { InputEditor, TextareaEditor } from "@components/edit";
-import { AmountView, amountStyles, DescriptionView, descriptionStyles, NameView, nameStyles, UnitsView, unitsStyles } from "@components/view/ingredient-view";
 import { useTRPC } from "@lib/trpc";
 import type { Ingredient } from "@schema";
 import { useMutation } from "@tanstack/react-query";
@@ -26,37 +25,30 @@ export function IngredientEditor({
 
 	return (
 		<div className="flex items-center">
-			<Button
-				variant="ghost"
-				className="p-1 m-1 h-8 w-8"
-				onClick={onDelete}
-			>
+			<Button variant="ghost" className="p-1 m-1 h-8 w-8" onClick={onDelete}>
 				<XIcon className="h-4 w-4" color="red" />
 			</Button>
-			<div className="flex flex-wrap justify-start items-start py-1 gap-x-1 gap-y-0 max-w-150">
+			<div className="ingredient">
 				<InputEditor
 					type="number"
 					value={String(ingredient.amount)}
-					className={amountStyles} // "p-0 shrink"
 					onSave={(v) => save("amount", v)}
 					resize
 				/>
 				<InputEditor
 					value={ingredient.units}
-					className={unitsStyles}
 					onSave={(v) => save("units", v)}
 					placeholder="units"
 					resize
 				/>
 				<InputEditor
 					value={ingredient.name}
-					className={nameStyles}
 					onSave={(v) => save("name", v)}
 					resize
 				/>
 				<TextareaEditor
 					value={ingredient.description}
-					className={descriptionStyles}
+					className="ingredient__description"
 					placeholder="preparation"
 					onSave={(v) => save("description", v)}
 					resize

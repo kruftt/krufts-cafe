@@ -2,8 +2,6 @@ import { ContentPane } from "@components/app";
 import { DeletionDialog, InputEditor, TextareaEditor } from "@components/edit";
 import { IngredientEditor } from "@components/edit/ingredient-editor";
 import { InstructionEditor } from "@components/edit/instruction-editor";
-import { sectionTitleStyles } from "@components/view";
-import { sectionDescriptionStyles } from "@components/view/section/section-description";
 import { useTRPC } from "@lib/trpc";
 import type { Section } from "@schema";
 import { useMutation } from "@tanstack/react-query";
@@ -76,10 +74,10 @@ export function SectionEditor({
 
 	return (
 		<ContentPane>
-			<div className="relative mb-4">
+			<div className="section__header relative">
 				<InputEditor
 					value={section.name}
-					className={sectionTitleStyles}
+					className="section__title"
 					onSave={(v) => updateSection("name", v)}
 				/>
 
@@ -96,18 +94,18 @@ export function SectionEditor({
 						<XIcon color="red" className="w-6! h-6!" />
 					</Button>
 				</DeletionDialog>
+
+				<TextareaEditor
+					className="section__description"
+					onSave={(v) => updateSection("description", v)}
+					placeholder="Section description..."
+					value={section.description}
+				/>
 			</div>
 
-			<TextareaEditor
-				className={sectionDescriptionStyles}
-				onSave={(v) => updateSection("description", v)}
-				placeholder="Section description..."
-				value={section.description}
-			/>
-
-			<div className="mt-6 flex flex-wrap gap-y-4">
-				<div className="grow basis-80 mb-2">
-					<h3 className="text-center text-xl font-semibold">Ingredients</h3>
+			<div className="section__body">
+				<div className="ingredients">
+					<h3 className="subsection__title">Ingredients</h3>
 					<div ref={ingredientsRef}>
 						{ingredients.map((ingredient) => (
 							<IngredientEditor
@@ -122,8 +120,8 @@ export function SectionEditor({
 					</div>
 				</div>
 
-				<div className="grow-2 basis-120 mb-2">
-					<h3 className="text-center text-xl font-semibold">Instructions</h3>
+				<div className="instructions">
+					<h3 className="subsection__title">Instructions</h3>
 					<div ref={instructionsRef}>
 						{instructions.map((instruction, i) => (
 							<InstructionEditor
@@ -134,7 +132,7 @@ export function SectionEditor({
 							/>
 						))}
 					</div>
-					<div className="text-center  my-4">
+					<div className="text-center my-4">
 						<Button onClick={addInstruction}>Add Instruction</Button>
 					</div>
 				</div>

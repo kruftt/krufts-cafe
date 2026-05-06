@@ -130,20 +130,78 @@
 @layer base {
   * {
 			@apply border-border outline-ring/50;
-		}
-		body {
-			@apply bg-background text-foreground;
-		}
-		html {
-			@apply font-sans;
-		}
-		button:not(:disabled),
-		[role="button"]:not(:disabled) {
-			cursor: pointer;
-		}
+	}
 
-		[type="number"]::-webkit-outer-spin-button,
-		[type="number"]::-webkit-inner-spin-button {
-			-webkit-appearance: none;
-		}
+	body {
+		@apply bg-background text-foreground;
+	}
+
+	html {
+		@apply font-sans;
+	}
+
+	button:not(:disabled),
+	[role="button"]:not(:disabled) {
+		cursor: pointer;
+	}
+
+	[type="number"]::-webkit-outer-spin-button,
+	[type="number"]::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+	}
+}
+
+
+@layer components {
+	.recipe__title {
+		@apply my-4 text-center font-bold text-4xl!;
+	}
+
+	.recipe__description {
+		@apply text-base! whitespace-pre-wrap text-center font-normal p-2;
+	}
+
+	.recipe__tags {
+		@apply flex flex-wrap justify-center gap-1 max-w-150 m-auto;
+	}
+
+	.section__header {
+		@apply mb-4;
+	}
+
+	.section__title {
+		@apply text-center text-2xl! p-1 font-bold!;
+	}
+
+	.section__description {
+		@apply p-2 text-left text-base! font-light whitespace-pre-wrap;
+	}
+
+	.section__body {
+		@apply mt-6 flex flex-wrap gap-y-4;
+	}
+
+	.ingredients {
+		@apply grow basis-80 mb-2;
+	}
+
+	.instructions {
+		@apply grow-2 basis-120 mb-2;
+	}
+
+	.subsection__title {
+		@apply text-center text-xl font-semibold;
+	}
+
+	.instruction {
+		@apply flex items-center gap-2 text-sm text-left font-light py-1;
+	}
+
+	.ingredient {
+		@apply flex flex-wrap justify-start items-start py-1 gap-x-1 gap-y-0 max-w-150 text-sm; 
+	}
+
+	.ingredient__description {
+		@apply font-light;
+	}
 }

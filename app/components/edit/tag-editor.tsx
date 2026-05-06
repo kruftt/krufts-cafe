@@ -9,7 +9,7 @@ interface Props extends React.ComponentProps<'div'> {
 	onSave: (v: string[]) => void;
 }
 
-export function TagEditor({ className, onSave, tags: _tags }: Props) {
+export function TagEditor({ onSave, tags: _tags }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
 	const [tags, setTags] = useState(_tags);
 
@@ -31,7 +31,7 @@ export function TagEditor({ className, onSave, tags: _tags }: Props) {
 	}
 
 	return (
-		<div className={`flex flex-wrap justify-center gap-1 ${className}`}>
+		<div className="recipe__tags">
 			{tags.map((tag, i) => (
 				<Badge key={tag}>
 					<Button

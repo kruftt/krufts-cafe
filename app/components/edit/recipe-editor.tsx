@@ -1,9 +1,5 @@
 import { ContentContainer, ContentHeader, ContentPane } from "@components/app";
 import { InputEditor, TagEditor, TextareaEditor } from "@components/edit";
-import {
-	recipeDescStyles,
-	recipeTitleStyles,
-} from "@components/view";
 import { useTRPC } from "@lib/trpc";
 import type { Recipe, Section } from "@schema";
 import { useMutation } from "@tanstack/react-query";
@@ -58,19 +54,18 @@ export function RecipeEditor({ recipe }: { recipe: Recipe.Full }) {
 			<ContentHeader>
 				<InputEditor
 					value={recipe.name}
-					className={recipeTitleStyles}
+					className="recipe__title"
 					onSave={(v) => updateRecipe("name", v)}
 				/>
-				
+
 				<InputEditor
-					className={recipeDescStyles}
+					className="recipe__description"
 					onSave={(v) => updateRecipe("description", v)}
 					placeholder="Recipe description..."
 					value={recipe.description}
 				/>
 
 				<TagEditor
-					className="max-w-150 m-auto"
 					tags={recipe.tags}
 					onSave={(v) => updateRecipe("tags", v)}
 				/>
@@ -78,7 +73,6 @@ export function RecipeEditor({ recipe }: { recipe: Recipe.Full }) {
 
 			<ContentPane>
 				<TextareaEditor
-					className=""
 					onSave={(v) => updateRecipe("intro", v)}
 					placeholder="Recipe Introduction..."
 					value={recipe.intro}
