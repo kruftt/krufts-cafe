@@ -1,4 +1,5 @@
 import { auth } from "@lib/auth-client";
+import { cn } from "@lib/utils";
 import { buttonVariants } from "@ui/button";
 import { BsCupHotFill } from "react-icons/bs";
 import { LoginPopover, UserMenu } from "../user";
@@ -9,11 +10,11 @@ export function AppBar() {
 
 	return (
 		<header
-			className={`
-        w-1/1 h-16 flex justify-between items-center p-4 text-white drop-shadow-md/30 
-        bg-cafe-blue-1
-        dark:bg-cafe-blue-1-d
-      `}
+			className={cn(
+				"w-1/1 h-16 flex justify-between items-center p-4 text-white drop-shadow-md/30",
+				"bg-cafe-blue-1",
+				"dark:bg-cafe-blue-1-d",
+			)}
 		>
 			<a
 				href="/"

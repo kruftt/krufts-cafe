@@ -17,6 +17,14 @@ export const Create = Model.omit({
 	description: true,
 });
 
+export const Partial = Model.partial({
+	userId: true,
+	name: true,
+	description: true,
+	index: true,
+	recipeId: true,
+})
+
 export const Full = Model.extend({
 	instructions: z.array(Instruction.Model),
 	ingredients: z.array(Ingredient.Model),
@@ -24,4 +32,5 @@ export const Full = Model.extend({
 
 export type Model = z.infer<typeof Model>;
 export type Create = z.infer<typeof Create>;
+export type Partial = z.infer<typeof Partial>;
 export type Full = z.infer<typeof Full>;

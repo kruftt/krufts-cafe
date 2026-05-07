@@ -6,6 +6,7 @@ import { BsMoonStarsFill, BsSunFill } from "react-icons/bs";
 import { Outlet, Scripts } from "react-router";
 import "./globals.css";
 import { TRPCProvider } from "@lib/trpc";
+import { cn } from "@lib/utils";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import { useState } from "react";
@@ -61,12 +62,13 @@ export default function App() {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
-				<IconContext.Provider value={{ color: `${ theme ? 'black' : 'white' }` }}>
+				<IconContext.Provider value={{ color: `${theme ? "black" : "white"}` }}>
 					<body
-						className={`
-			${theme && "dark"} 
-			bg-cafe-blue-3 text-black 
-			dark:bg-cafe-blue-3-dark dark:text-white`}
+						className={cn(
+							theme ? "dark" : "",
+							"bg-cafe-blue-3 text-black",
+							"dark:bg-cafe-blue-3-dark dark:text-white",
+						)}
 					>
 						<AppBar />
 						<Outlet />

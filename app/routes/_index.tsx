@@ -1,15 +1,28 @@
-
 import { ContentContainer, ContentHeader } from "@components/app";
+import { CreateRecipeButton, RecipeList } from "@components/list";
+import { prisma } from "@lib/prisma";
+import type { Route } from "./+types/_index";
 
-export default function Home () {
-  return (
-    <ContentContainer>
-      <ContentHeader>
-        <h1>Hello world!</h1>
-      </ContentHeader>
-      viewing _index.tsx in{" "}
-      {process.env.NODE_ENV === "production" ? "production" : "development"}{" "}
-      environment
-    </ContentContainer>
-  );
+export async function loader({ request }: Route.LoaderArgs) {
+	const recipes = await prisma.recipe.findMany({
+    include: { user: { select: { handle: true }}}
+  });
+
+	return { recipes };
+}
+
+export default function Home({ loaderData }: Route.ComponentProps) {
+	return (
+		<ContentContainer>
+			<ContentHeader>
+				<h1>
+					Environment:
+					{process.env.NODE_ENV === "production"
+						? "production"
+						: "development"}
+				</h1>
+			</ContentHeader>
+			<RecipeList recipes={loaderData.recipes} />
+		</ContentContainer>
+	);
 }

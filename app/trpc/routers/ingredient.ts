@@ -8,7 +8,7 @@ export const ingredientRouter = router({
 		return prisma.ingredient.create({ data: { ...input, userId: ctx.session.user.id } });
 	}),
 
-	update: authedProcedure.input(Ingredient.Model).mutation(async ({ input, ctx }) => {
+	update: authedProcedure.input(Ingredient.Partial).mutation(async ({ input, ctx }) => {
 		const ingredient = await prisma.ingredient.findUnique({ where: { id: input.id } });
 		if (!ingredient) throw new TRPCError({ code: "NOT_FOUND" });
 		if (ingredient.userId !== ctx.session.user.id) throw new TRPCError({ code: "FORBIDDEN" });

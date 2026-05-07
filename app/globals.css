@@ -154,7 +154,7 @@
 
 @layer components {
 	.recipe__title {
-		@apply my-4 text-center font-bold text-4xl!;
+		@apply my-4 text-center font-bold text-4xl! rounded-xl;
 	}
 
 	.recipe__description {

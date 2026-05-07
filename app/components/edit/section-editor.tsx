@@ -21,20 +21,6 @@ export function SectionEditor({
   const instructionsRef = useRef<HTMLDivElement>(null);
   const ingredientsRef = useRef<HTMLDivElement>(null);
 
-	// biome-ignore lint: length is the proper dependency
-  useEffect(() => {
-    instructionsRef.current
-					?.querySelector<HTMLInputElement>(":scope div:last-child input")
-					?.focus();
-  }, [instructions.length]);
-
-  // biome-ignore lint: length is the proper dependency
-	useEffect(() => {
-		ingredientsRef.current
-			?.querySelector<HTMLInputElement>(':scope div:last-child div input')
-			?.focus();
-	}, [ingredients.length]);
-
 	const trpc = useTRPC();
 	const updateSectionMutation = useMutation(trpc.section.update.mutationOptions());
 	const createIngredientMutation = useMutation(trpc.ingredient.create.mutationOptions());
@@ -43,7 +29,7 @@ export function SectionEditor({
 	const deleteInstructionMutation = useMutation(trpc.instruction.delete.mutationOptions());
   
 	function updateSection(field: keyof Section.Model, value: string, onError?: () => void) {
-		updateSectionMutation.mutate({ ...section, [field]: value }, { onError });
+		updateSectionMutation.mutate({ id: section.id, [field]: value }, { onError });
 	}
 
 	function deleteIngredient(id: number) {
@@ -71,6 +57,22 @@ export function SectionEditor({
 			onSuccess: (created) => setInstructions([...instructions, created]),
 		});
 	}
+	
+	// biome-ignore lint: length is the proper dependency
+		useEffect(() => {
+			instructionsRef.current
+				?.querySelector<HTMLInputElement>(":scope div:last-child input")
+				?.focus();
+		}, [instructions.length]);
+
+		// biome-ignore lint: length is the proper dependency
+		useEffect(() => {
+			ingredientsRef.current
+				?.querySelector<HTMLInputElement>(
+					":scope div:last-child > .ingredient input",
+				)
+				?.focus();
+		}, [ingredients.length]);
 
 	return (
 		<ContentPane>

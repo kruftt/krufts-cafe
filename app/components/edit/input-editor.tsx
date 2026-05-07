@@ -1,7 +1,9 @@
-import { type KeyboardEventHandler, useState } from "react";
+import { cn } from "@lib/utils";
+import { useState } from "react";
 
 interface Props extends React.ComponentProps<"input"> {
 	onSave: (value: string) => void;
+	validate?: (value: string) => string | undefined;
 	clear?: boolean;
 	resize?: boolean;
 }
@@ -10,13 +12,20 @@ export function InputEditor({
 	className,
 	clear,
 	onSave,
+	validate,
 	value,
 	resize,
 	...rest
 }: Props) {
 	const [draft, setDraft] = useState(value || "");
+	const [error, setError] = useState<string>();
 
 	function submit() {
+		const message = validate?.(draft as string);
+		if (message) {
+			setError(message);
+			return;
+		}
 		onSave(draft as string);
 		if (clear) setDraft("");
 	}
@@ -29,17 +38,28 @@ export function InputEditor({
 	}
 
 	return (
-		<input
-			className={`
-				block bg-transparent border-none outline-none p-0 m-0 font-inherit text-inherit
-				${resize ? "field-sizing-content" : "w-1/1"}
-				${className}
-			`}
-			value={draft}
-			onChange={(e) => setDraft(e.target.value)}
-			onBlur={submit}
-			onKeyDown={onKeyDown}
-			{...rest}
-		/>
+		<div className={cn("relative grow")}>
+			<input
+				className={cn(
+					"bg-transparent border-none outline-none p-0 m-0 font-inherit text-inherit aria-invalid:ring-3 aria-invalid:border-destructive aria-invalid:ring-destructive:20 dark:aria-invalid:ring-destructive/50 max-w-none",
+					resize ? "field-sizing-content" : "w-1/1",
+					className,
+				)}
+				aria-invalid={!!error}
+				value={draft}
+				onChange={(e) => {
+					setDraft(e.target.value);
+					if (error) setError(undefined);
+				}}
+				onBlur={submit}
+				onKeyDown={onKeyDown}
+				{...rest}
+			/>
+			{error && (
+				<span className="absolute top-full left-0 right-0 m-auto mt-3 text-sm text-destructive bg-popover border border-destructive rounded-lg px-3 py-2 z-100 ring-2 ring-destructive w-fit">
+					{error}
+				</span>
+			)}
+		</div>
 	);
 }

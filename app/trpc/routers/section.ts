@@ -23,7 +23,7 @@ export const sectionRouter = router({
 		}),
 
 	update: authedProcedure
-		.input(Section.Model)
+		.input(Section.Partial)
 		.mutation(async ({ input, ctx }) => {
 			const section = await prisma.section.findUnique({ where: { id: input.id } });
 			if (!section) throw new TRPCError({ code: "NOT_FOUND" });

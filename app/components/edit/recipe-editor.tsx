@@ -1,7 +1,7 @@
 import { ContentContainer, ContentHeader, ContentPane } from "@components/app";
 import { InputEditor, TagEditor, TextareaEditor } from "@components/edit";
 import { useTRPC } from "@lib/trpc";
-import type { Recipe, Section } from "@schema";
+import { Recipe, type Section } from "@schema";
 import { useMutation } from "@tanstack/react-query";
 import { Button } from "@ui/button";
 import { useState } from "react";
@@ -14,11 +14,11 @@ export function RecipeEditor({ recipe }: { recipe: Recipe.Full }) {
 	const updateRecipeMutation = useMutation({
 		...trpc.recipe.update.mutationOptions(),
 	});
-	
+
 	const createSectionMutation = useMutation({
 		...trpc.section.create.mutationOptions(),
 	});
-	
+
 	const deleteSectionMutation = useMutation({
 		...trpc.section.delete.mutationOptions(),
 	});
@@ -28,20 +28,23 @@ export function RecipeEditor({ recipe }: { recipe: Recipe.Full }) {
 		value: string | string[],
 		onError?: () => void,
 	) {
-		updateRecipeMutation.mutate({ ...recipe, [field]: value }, { onError });
+		updateRecipeMutation.mutate({ id: recipe.id, [field]: value }, { onError });
 	}
 
 	function createSection() {
 		const index = sections.length;
-		createSectionMutation.mutate({
-			recipeId: recipe.id,
-			name: `Section ${index}`,
-			index,
-		}, {
-			onSuccess: (data) => {
-				setSections([...sections, data]);
-			}
-		})
+		createSectionMutation.mutate(
+			{
+				recipeId: recipe.id,
+				name: `Section ${index}`,
+				index,
+			},
+			{
+				onSuccess: (data) => {
+					setSections([...sections, data]);
+				},
+			},
+		);
 	}
 
 	function deleteSection(section: Section.Full) {
@@ -56,6 +59,8 @@ export function RecipeEditor({ recipe }: { recipe: Recipe.Full }) {
 					value={recipe.name}
 					className="recipe__title"
 					onSave={(v) => updateRecipe("name", v)}
+					validate={(v) => Recipe.Name.safeParse(v).error?.issues[0]?.message}
+					// aria-invalid
 				/>
 
 				<InputEditor
@@ -65,10 +70,7 @@ export function RecipeEditor({ recipe }: { recipe: Recipe.Full }) {
 					value={recipe.description}
 				/>
 
-				<TagEditor
-					tags={recipe.tags}
-					onSave={(v) => updateRecipe("tags", v)}
-				/>
+				<TagEditor tags={recipe.tags} onSave={(v) => updateRecipe("tags", v)} />
 			</ContentHeader>
 
 			<ContentPane>

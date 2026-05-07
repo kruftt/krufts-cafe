@@ -18,9 +18,9 @@ export function IngredientEditor({
 
 	function save(field: keyof Ingredient.Model, value: string) {
     if (field === "amount")
-		  updateMutation.mutate({ ...ingredient, amount: parseFloat(value) });
+		  updateMutation.mutate({ id: ingredient.id, amount: parseFloat(value) });
     else
-	  	updateMutation.mutate({ ...ingredient, [field]: value });
+	  	updateMutation.mutate({ id: ingredient.id, [field]: value });
 	}
 
 	return (

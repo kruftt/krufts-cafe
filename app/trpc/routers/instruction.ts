@@ -13,7 +13,7 @@ export const instructionRouter = router({
 		}),
 
 	update: authedProcedure
-		.input(Instruction.Model)
+		.input(Instruction.Partial)
 		.mutation(async ({ input, ctx }) => {
 			const instruction = await prisma.instruction.findUnique({
 				where: { id: input.id },

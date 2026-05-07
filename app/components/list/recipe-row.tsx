@@ -10,18 +10,16 @@ import {
 
 
 export function RecipeRow({
-	edit,
 	recipe,
 }: {
-	edit: boolean;
-	recipe: Recipe.Model;
+	recipe: Recipe.WithHandle;
 }) {
 	return (
 		<Item
 			className="py-1.5"
 			variant="outline"
 			render={
-				<a href={edit ? `/edit/${recipe.id}` : `/recipes/${recipe.slug}`}>
+				<a href={`/recipes/${recipe.user.handle}/${recipe.slug}`}>
 					<ItemContent>
 						<ItemTitle>{recipe.name}</ItemTitle>
 						<ItemDescription>{recipe.description}</ItemDescription>

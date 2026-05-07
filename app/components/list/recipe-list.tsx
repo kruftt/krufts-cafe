@@ -4,8 +4,9 @@ import type { Recipe } from "@schema";
 import { useMutation } from "@tanstack/react-query";
 import { Button } from "@ui/button";
 import { ItemGroup } from "@ui/item";
-import { Trash2Icon } from "lucide-react";
+import { EditIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import { RecipeRow } from "./recipe-row";
 
 // TODO: change to @tanstack/react-virtual
@@ -13,9 +14,10 @@ export function RecipeList({
 	edit,
 	recipes,
 }: {
-	edit: boolean;
-	recipes: Recipe.Model[];
+	edit?: boolean;
+	recipes: Recipe.WithHandle[];
 }) {
+	const navigate = useNavigate();
 	const trpc = useTRPC();
 	const deleteMutation = useMutation(trpc.recipe.delete.mutationOptions());
 
@@ -34,7 +36,12 @@ export function RecipeList({
 		<ItemGroup className="gap-1!">
 			{list.map((recipe) => (
 				<div key={recipe.id} className="flex items-center gap-2">
-					<RecipeRow edit={edit} recipe={recipe} />
+					{edit && (
+						<Button onClick={() => navigate(`/edit/${recipe.id}`)}>
+							<EditIcon />
+						</Button>
+					)}
+					<RecipeRow recipe={recipe} />
 					{edit && (
 						<DeletionDialog
 							title="Delete Recipe"
