@@ -38,12 +38,17 @@ export function InputEditor({
 	}
 
 	return (
-		<div className={cn("relative grow")}>
+		<div
+			className={cn(
+				"relative flex items-center",
+				resize ? "" : "grow",
+				className,
+			)}
+		>
 			<input
 				className={cn(
-					"bg-transparent border-none outline-none p-0 m-0 font-inherit text-inherit aria-invalid:ring-3 aria-invalid:border-destructive aria-invalid:ring-destructive:20 dark:aria-invalid:ring-destructive/50 max-w-none",
+					"bg-transparent border-none outline-none p-0 m-0 font-inherit! text-inherit! aria-invalid:ring-3 aria-invalid:border-destructive aria-invalid:ring-destructive:20 dark:aria-invalid:ring-destructive/50 max-w-none",
 					resize ? "field-sizing-content" : "w-1/1",
-					className,
 				)}
 				aria-invalid={!!error}
 				value={draft}

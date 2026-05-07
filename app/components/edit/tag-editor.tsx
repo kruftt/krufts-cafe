@@ -31,22 +31,25 @@ export function TagEditor({ onSave, tags: _tags }: Props) {
 	}
 
 	return (
-		<div className="recipe__tags">
-			{tags.map((tag, i) => (
-				<Badge key={tag}>
-					<Button
-            variant="ghost"
-            className="p-0"
-            onClick={() => removeTag(i)}
-          >
-						<XIcon color="red" />
-					</Button>
-					<InputEditor onSave={(v) => editTag(v, i)} value={tag} resize />
-				</Badge>
-			))}
+		<div>
+			<div className="recipe__tags">
+				{tags.map((tag, i) => (
+					<Badge key={tag}>
+						<Button
+							data-icon="inline-start"
+							variant="ghost"
+							className="rounded p-0"
+							onClick={() => removeTag(i)}
+						>
+							<XIcon className="" color="red" />
+						</Button>
+						<InputEditor onSave={(v) => editTag(v, i)} value={tag} resize />
+					</Badge>
+				))}
+			</div>
 			<InputEditor
 				ref={inputRef}
-				className="text-center"
+				className="text-center -mt-1.5"
 				onSave={createTag}
 				placeholder="Add new tag..."
 				clear

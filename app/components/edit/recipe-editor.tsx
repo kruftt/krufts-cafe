@@ -32,7 +32,9 @@ export function RecipeEditor({ recipe }: { recipe: Recipe.Full }) {
 	}
 
 	function createSection() {
-		const index = sections.length;
+		const last = sections[sections.length -1];
+		const index = last ? last.index + 1 : 0;
+
 		createSectionMutation.mutate(
 			{
 				recipeId: recipe.id,

@@ -4,6 +4,7 @@ import type { Instruction } from "@schema";
 import { useMutation } from "@tanstack/react-query";
 import { Button } from "@ui/button";
 import { XIcon } from "lucide-react";
+import { TextareaEditor } from "./textarea-editor";
 
 interface Props extends React.ComponentProps<"div"> {
 	instruction: Instruction.Model;
@@ -16,22 +17,24 @@ export function InstructionEditor({ instruction, onDelete, index }: Props) {
 	const updateMutation = useMutation(trpc.instruction.update.mutationOptions());
 
 	return (
-		<div className="instruction">
+		<div className="flex items-start justify-start gap-1">
 			<Button
 				variant="ghost"
-				className="p-1 h-auto"
+				className="w-8 h-8 relative -top-0.5"
 				onClick={onDelete}
 			>
 				<XIcon className="h-4 w-4" color="red" />
 			</Button>
-			<span>{index}.</span>
-			<InputEditor
-				value={instruction.description}
-				placeholder="Insert instruction here"
-				onSave={(description) =>
-					updateMutation.mutate({ ...instruction, description })
-				}
-			/>
+			<div className="instruction">
+				<span className="">{index}.</span>
+				<TextareaEditor
+					value={instruction.description}
+					placeholder="Insert instruction here"
+					onSave={(description) =>
+						updateMutation.mutate({ ...instruction, description })
+					}
+				/>
+			</div>
 		</div>
 	);
 }

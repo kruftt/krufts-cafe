@@ -17,9 +17,10 @@ export async function loader({ request, params }: Route.LoaderArgs) {
 		where: { userId_slug: { userId: user.id, slug: params.slug } },
 		include: {
 			sections: {
+				orderBy: { index: "asc" },
 				include: {
-					instructions: true,
-					ingredients: true,
+					instructions: { orderBy: { index: "asc" } },
+					ingredients: { orderBy: { index: "asc" } },
 				}
 			}
 		}

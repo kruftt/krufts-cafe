@@ -24,11 +24,11 @@ export function IngredientEditor({
 	}
 
 	return (
-		<div className="flex items-center">
+		<div className="flex items-start justify-start">
 			<Button variant="ghost" className="p-1 m-1 h-8 w-8" onClick={onDelete}>
 				<XIcon className="h-4 w-4" color="red" />
 			</Button>
-			<div className="ingredient">
+			<div className="ingredient mt-1.5">
 				<InputEditor
 					type="number"
 					value={String(ingredient.amount)}

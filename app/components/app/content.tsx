@@ -1,6 +1,6 @@
-import type { PropsWithChildren } from "react";
+import { cn } from "@lib/utils";
 
-export function ContentContainer({ children }: PropsWithChildren) {
+export function ContentContainer({ children }: React.ComponentProps<'div'>) {
   return (
     <div className="m-auto max-w-296 px-4">
       { children }
@@ -8,13 +8,13 @@ export function ContentContainer({ children }: PropsWithChildren) {
   )
 }
 
-export function ContentHeader({ children }: PropsWithChildren) {
-	return <div className="my-6 text-center">{children}</div>;
+export function ContentHeader({ children }: React.ComponentProps<'div'>) {
+	return <div className="mt-6 mb-8 text-center">{children}</div>;
 }
 
-export function ContentPane({ children }: PropsWithChildren) {
+export function ContentPane({ children, className }: React.ComponentProps<'div'>) {
   return (
-    <div className="w-1/1 border rounded-2xl mt-6 p-4">
+    <div className={cn("w-1/1 border rounded-2xl mt-6 p-6", className)}>
       { children }
     </div>
   )

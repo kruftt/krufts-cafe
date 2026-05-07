@@ -45,14 +45,24 @@ export function SectionEditor({
 	}
 
 	function addIngredient() {
-		const newIngredient = { amount: 0, units: "", name: "new ingredient", description: "", index: ingredients.length, sectionId: section.id };
+		const last = ingredients[ingredients.length - 1];
+		const index = last ? last.index + 1 : 0;
+		
+		const newIngredient = { amount: 0, units: "", name: "new ingredient", description: "", index, sectionId: section.id };
 		createIngredientMutation.mutate(newIngredient, {
 			onSuccess: (created) => setIngredients([...ingredients, created]),
 		});
 	}
 
 	function addInstruction() {
-		const newInstruction = { description: "", index: instructions.length, sectionId: section.id };
+		const last = instructions[instructions.length - 1];
+		const index = last ? last.index + 1 : 0;
+
+		const newInstruction = {
+			description: "",
+			index,
+			sectionId: section.id,
+		};
 		createInstructionMutation.mutate(newInstruction, {
 			onSuccess: (created) => setInstructions([...instructions, created]),
 		});
@@ -75,27 +85,27 @@ export function SectionEditor({
 		}, [ingredients.length]);
 
 	return (
-		<ContentPane>
+		<ContentPane className="relative">
+			<DeletionDialog
+				title="Delete Section"
+				message="Are you sure you wish to delete this section?"
+				item={section.name}
+				onConfirm={deleteSection}
+			>
+				<Button
+					className="h-10 w-10 absolute right-2 top-2 rounded-xl z-50" // border-l-accent
+					variant="ghost"
+				>
+					<XIcon color="red" className="w-6! h-6!" />
+				</Button>
+			</DeletionDialog>
+
 			<div className="section__header relative">
 				<InputEditor
 					value={section.name}
 					className="section__title"
 					onSave={(v) => updateSection("name", v)}
 				/>
-
-				<DeletionDialog
-					title="Delete Section"
-					message="Are you sure you wish to delete this section?"
-					item={section.name}
-					onConfirm={deleteSection}
-				>
-					<Button
-						className="h-1/1 w-12 absolute right-0 top-0 rounded-l-none rounded-r-xl" // border-l-accent
-						variant="ghost"
-					>
-						<XIcon color="red" className="w-6! h-6!" />
-					</Button>
-				</DeletionDialog>
 
 				<TextareaEditor
 					className="section__description"
