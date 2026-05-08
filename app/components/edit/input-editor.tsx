@@ -1,5 +1,5 @@
+import { useEditor } from "@hooks";
 import { cn } from "@lib/utils";
-import { useState } from "react";
 
 interface Props extends React.ComponentProps<"input"> {
 	onSave: (value: string) => void;
@@ -17,25 +17,7 @@ export function InputEditor({
 	resize,
 	...rest
 }: Props) {
-	const [draft, setDraft] = useState(value || "");
-	const [error, setError] = useState<string>();
-
-	function submit() {
-		const message = validate?.(draft as string);
-		if (message) {
-			setError(message);
-			return;
-		}
-		onSave(draft as string);
-		if (clear) setDraft("");
-	}
-
-	function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-		if (e.key === "Enter") {
-			submit();
-			e.currentTarget.blur();
-		}
-	}
+	const {draft, error, onKeyDown, onChange, submit} = useEditor(value || "", onSave, validate, false, clear);
 
 	return (
 		<div
@@ -52,10 +34,7 @@ export function InputEditor({
 				)}
 				aria-invalid={!!error}
 				value={draft}
-				onChange={(e) => {
-					setDraft(e.target.value);
-					if (error) setError(undefined);
-				}}
+				onChange={onChange}
 				onBlur={submit}
 				onKeyDown={onKeyDown}
 				{...rest}

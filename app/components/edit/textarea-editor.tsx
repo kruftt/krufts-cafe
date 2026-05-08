@@ -1,5 +1,5 @@
+import { useEditor } from "@hooks";
 import { cn } from "@lib/utils";
-import { useState } from "react";
 
 interface Props extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
 	onSave: (value: string) => void;
@@ -15,24 +15,7 @@ export function TextareaEditor({
 		value,
 		...rest
 	}: Props) {
-		const [draft, setDraft] = useState(value);
-		const [error, setError] = useState<string>();
-
-		function submit() {
-			const message = validate?.(draft as string);
-			if (message) {
-				setError(message);
-				return;
-			}
-			onSave(draft as string);
-		}
-
-		function onKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
-			if (e.ctrlKey && e.key === "Enter") {
-				e.currentTarget.blur();
-				submit();
-			}
-		}
+		const {draft, error, onKeyDown, onChange, submit} = useEditor(value || "", onSave, validate, true, false);
 
 		return (
 			<div
@@ -49,7 +32,7 @@ export function TextareaEditor({
 					)}
 					value={draft}
 					onBlur={submit}
-					onChange={(e) => setDraft(e.target.value)}
+					onChange={onChange}
 					onKeyDown={onKeyDown}
 					{...rest}
 				/>

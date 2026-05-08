@@ -6,9 +6,10 @@ export const Model = z.object({
       /^[A-Za-z0-9]+( [A-Za-z0-9]+)*$/,
       { error: "Name must contain only letters, numbers, or spaces." }
     ),
+  handle: z.string(),
   email: z.email(),
   emailVerified: z.boolean(),
-  image: z.string().optional(),
+  image: z.string().optional().nullable(),
   createdAt: z.date(),
   updatedAt: z.date(),
 });
@@ -19,6 +20,7 @@ export const Create = Model.omit({
   image: true,
   createdAt: true,
   updatedAt: true,
+  handle: true,
 }).extend({
   password: z
     .string()
@@ -33,11 +35,11 @@ export const Create = Model.omit({
     ),
 });
 
-export const Full = Model.extend({
-  handle: z.string()
-})
+// export const Full = Model.extend({
+//   handle: z.string()
+// })
 
 
 export type Model = z.infer<typeof Model>;
 export type Create = z.infer<typeof Create>;
-export type Full = z.infer<typeof Full>;
+// export type Full = z.infer<typeof Full>;

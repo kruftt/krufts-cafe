@@ -1,18 +1,45 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-export function useEditor(ref: React.RefObject<HTMLElement | null>, initialValue: string, onSave: (v: string) => void) {
-	const [editor, setEditor] = useState(false);
+export function useEditor(
+	initialValue: string | number | readonly string[],
+	onSave: (v: string) => void,
+	validate?: (value: string) => string | undefined,
+	ctrl?: boolean,
+	clear?: boolean
+) {
 	const [draft, setDraft] = useState(initialValue);
+	const [error, setError] = useState("");
 	
-	// biome-ignore lint: false positive
-	useEffect(() => {
-		if (editor) ref.current?.focus();
-	}, [editor]);
-
 	function submit() {
-		onSave(draft);
-		setEditor(false);
+		const message = validate?.(draft as string);
+		if (message) {
+			setError(message);
+			return;
+		}
+		onSave(draft as string);
+		if (clear) setDraft("");
 	}
 
-	return { editor, setEditor, draft, setDraft, submit };
+	function onChange(
+		e:
+			| React.ChangeEvent<HTMLTextAreaElement>
+			| React.ChangeEvent<HTMLInputElement>,
+	) {
+		setDraft(e.currentTarget.value);
+		if (error) setError("");
+	}
+
+	function onKeyDown(
+		e:
+			| React.KeyboardEvent<HTMLTextAreaElement>
+			| React.KeyboardEvent<HTMLInputElement>,
+	) {
+		if (ctrl && !e.ctrlKey) return;
+		if (e.key === "Enter") {
+			submit();
+			e.currentTarget.blur();
+		}
+	}
+
+	return { draft, error, onKeyDown, onChange, submit };
 }

@@ -1,5 +1,6 @@
 import { auth } from "@lib/auth-client";
 import { cn } from "@lib/utils";
+import type { User } from "@schema";
 import { buttonVariants } from "@ui/button";
 import { BsCupHotFill } from "react-icons/bs";
 import { LoginPopover, UserMenu } from "../user";
@@ -23,7 +24,11 @@ export function AppBar() {
 				<BsCupHotFill className="w-6! h-6!" />
 			</a>
 			<h1 className="text-3xl font-bold text-white">Kruft's Cafe</h1>
-			{isLoggedIn ? <UserMenu name={session.user.name} /> : <LoginPopover />}
+			{isLoggedIn ? (
+				<UserMenu user={session.user as User.Model} />
+			) : (
+				<LoginPopover />
+			)}
 		</header>
 	);
 }

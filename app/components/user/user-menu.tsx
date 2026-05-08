@@ -1,4 +1,5 @@
 import { auth } from "@lib/auth-client";
+import type { User } from "@schema";
 import { Button } from "@ui/button";
 import {
 	DropdownMenu,
@@ -11,19 +12,20 @@ import {
 } from "@ui/dropdown-menu";
 import { useNavigate } from "react-router";
 
-export function UserMenu({ name }: { name: string }) {
+export function UserMenu({ user }: { user: User.Model }) {
 	const navigate = useNavigate();
 
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger render={<Button className="drop-shadow-md/30" />}>
-				{name}
+				{user.name}
 			</DropdownMenuTrigger>
 			<DropdownMenuContent>
 				<DropdownMenuGroup>
 					<DropdownMenuItem onClick={() => navigate('/my-recipes/')}>My Recipes</DropdownMenuItem>
 					<DropdownMenuItem>Favorites</DropdownMenuItem>
 					<DropdownMenuItem>Meal Plans</DropdownMenuItem>
+					<DropdownMenuItem onClick={() => navigate(`/profile/${user.handle}`)}>Profile</DropdownMenuItem>
 				</DropdownMenuGroup>
 				<DropdownMenuSeparator />
 				<DropdownMenuGroup>

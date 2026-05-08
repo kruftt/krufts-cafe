@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRequest } from "@hooks";
 import { auth } from "@lib/auth-client";
 import { User } from "@schema";
 import { Button } from "@ui/button";
@@ -22,16 +23,14 @@ import {
 import { Input } from "@ui/input";
 import { Separator } from "@ui/separator";
 import { Spinner } from "@ui/spinner";
-import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { PasswordInput } from "./password-input";
 
 // export default function CreationForm({ onOpen }: { onOpen: () => void }) {
 export function CreationForm() {
 	const [open, setOpen] = useState(false);
-	const [showPassword, setShowPassword] = useState(false);
-	const [requesting, setRequesting] = useState(false);
-	const [requestError, setRequestError] = useState("");
+	const request = useRequest();
 
 	const form = useForm<User.Create>({
 		resolver: zodResolver(User.Create),
@@ -44,16 +43,13 @@ export function CreationForm() {
 
 	async function onSubmit(data: User.Create) {
 		await auth.signUp.email(data, {
-			onRequest: (ctx) => {
-				setRequesting(true);
-			},
-			onSuccess: (ctx) => {
-				setRequesting(false);
+			onRequest: request.onRequest,
+			onResponse: request.onResponse,
+			onSuccess: () => {
 				setOpen(false);
 			},
 			onError: (ctx) => {
-				setRequestError(ctx.error.message);
-				setRequesting(false);
+				request.onError(ctx.error.message);
 			},
 		});
 	}
@@ -87,7 +83,7 @@ export function CreationForm() {
 										aria-invalid={fieldState.invalid}
 										placeholder="John Smith"
 										autoComplete="off"
-										disabled={requesting}
+										disabled={request.inProgress}
 									/>
 									{fieldState.invalid && (
 										<FieldError errors={[fieldState.error]} />
@@ -110,7 +106,7 @@ export function CreationForm() {
 										aria-invalid={fieldState.invalid}
 										placeholder="email@domain.com"
 										autoComplete="off"
-										disabled={requesting}
+										disabled={request.inProgress}
 									/>
 									{fieldState.invalid && (
 										<FieldError errors={[fieldState.error]} />
@@ -126,28 +122,14 @@ export function CreationForm() {
 									<FieldLabel htmlFor="form-create-profile-password">
 										Password
 									</FieldLabel>
-									<div className="relative">
-										<Input
-											{...field}
-											id="form-create-profile-password"
-											type={showPassword ? "text" : "password"}
-											aria-invalid={fieldState.invalid}
-											placeholder="xxxxxxxx"
-											autoComplete="off"
-											disabled={requesting}
-											className="pr-9"
-										/>
-										<button
-											type="button"
-											onClick={() => setShowPassword((v) => !v)}
-											aria-label={
-												showPassword ? "Hide password" : "Show password"
-											}
-											className="absolute inset-y-0 right-0 flex items-center px-2.5 text-muted-foreground hover:text-foreground"
-										>
-											{showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-										</button>
-									</div>
+									<PasswordInput
+										{...field}
+										id="form-create-profile-password"
+										aria-invalid={fieldState.invalid}
+										placeholder="xxxxxxxx"
+										autoComplete="off"
+										disabled={request.inProgress}
+									/>
 									{fieldState.invalid && (
 										<FieldError errors={[fieldState.error]} />
 									)}
@@ -160,7 +142,7 @@ export function CreationForm() {
 				<DialogFooter>
 					<div className="flex flex-col w-1/1 gap-4">
 						<Button type="submit" form="form-create-profile" className="w-1/1">
-							{requesting ? (
+							{request.inProgress ? (
 								<div className="flex items-center gap-2">
 									<Spinner />
 									Creating Account...
@@ -169,12 +151,12 @@ export function CreationForm() {
 								"Submit"
 							)}
 						</Button>
-						{requestError && (
+						{request.error && (
 							<div
 								role="alert"
 								className="text-base text-center font-normal text-destructive"
 							>
-								{requestError}
+								{request.error}
 							</div>
 						)}
 					</div>
