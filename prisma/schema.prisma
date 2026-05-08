@@ -21,11 +21,14 @@ model Recipe {
   name          String
   tags          String[]  @default([])
   slug          String?
+  search        String    @default("")
   description   String    @default("")
   intro         String    @default("")
   sections      Section[]
   userId        String
   user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pins          Pin[]
+  bookmarks     Bookmark[]
 
   @@map("recipe")
   @@unique([userId, slug])
@@ -70,6 +73,27 @@ model Ingredient {
   @@map("ingredient")
 }
 
+model Pin {
+  id            Int       @id @default(autoincrement())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipeId      Int
+  recipe        Recipe    @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  
+  @@map("pin")
+  @@unique([userId, recipeId])
+}
+
+model Bookmark {
+  id            Int       @id @default(autoincrement())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipeId      Int
+  recipe        Recipe    @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@map("bookmark")
+  @@unique([userId, recipeId])
+}
 
 // Better auth models:
 
@@ -85,6 +109,8 @@ model User {
   sessions      Session[]
   accounts      Account[]
   recipes       Recipe[]
+  pins          Pin[]
+  bookmarks     Bookmark[]
 
   @@unique([email])
   @@map("user")

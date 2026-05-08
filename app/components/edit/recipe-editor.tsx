@@ -62,6 +62,7 @@ export function RecipeEditor({ recipe }: { recipe: Recipe.Full }) {
 				<InputEditor
 					value={recipe.name}
 					className="recipe__title"
+					styles="rounded-2xl"
 					onSave={updateRecipe("name")}
 					validate={(v) => Recipe.Name.safeParse(v).error?.issues[0]?.message}
 					// aria-invalid

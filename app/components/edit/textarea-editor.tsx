@@ -5,12 +5,14 @@ interface Props extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
 	onSave: (v: string, options: ProcedureOptions) => void;
 	resize?: boolean;
 	validate?: (value: string) => string | undefined;
+	styles?: string;
 }
 
 export function TextareaEditor({
 	className,
 	onSave,
 	resize,
+	styles,
 	validate,
 	value: initialValue,
 	...rest
@@ -27,20 +29,21 @@ export function TextareaEditor({
 			className={cn(
 				"relative flex items-center",
 				resize ? "" : "grow",
-				// className,
+				className,
 			)}
 		>
 			<textarea
 				className={cn(
 					"block bg-transparent border-none outline-none p-0 m-0 font-inherit text-inherit field-sizing-content",
 					resize ? "field-sizing-content" : "w-1/1",
-					className,
+					styles,
 				)}
 				value={value}
 				disabled={busy}
 				onBlur={onBlur}
 				onChange={onChange}
 				onKeyDown={onKeyDown}
+				aria-invalid={!!error}
 				{...rest}
 			/>
 			{error && (

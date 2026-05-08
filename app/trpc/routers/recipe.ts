@@ -1,6 +1,6 @@
 import { prisma } from "@lib/prisma";
 import { Model, Recipe } from "@schema";
-import { newRecipeName } from "@services/recipe";
+import { newRecipeName, updateRecipeSearch } from "@services/recipe";
 import { TRPCError } from "@trpc/server";
 import { authedProcedure, router } from "../server";
 
@@ -50,7 +50,9 @@ export const recipeRouter = router({
 				data.slug = toSlug(input.name);
 			}
 
-			return prisma.recipe.update({ where: { id: input.id }, data });
+			const result = await prisma.recipe.update({ where: { id: input.id }, data });
+			if (input.name !== undefined || input.tags !== undefined) await updateRecipeSearch(input.id);
+			return result;
 		}),
 
 	delete: authedProcedure.input(Model.Id).mutation(async ({ input, ctx }) => {

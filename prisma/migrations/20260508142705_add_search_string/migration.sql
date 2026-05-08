@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "recipe" ADD COLUMN     "search" TEXT NOT NULL DEFAULT '',
+ALTER COLUMN "name" DROP DEFAULT;

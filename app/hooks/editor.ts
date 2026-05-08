@@ -28,7 +28,6 @@ export function useEditor(
 	function submit() {
 		if (!dirty) return;
 		setDirty(false);
-		console.log('submitted')
 		const message = validate?.(value as string);
 		if (message) {
 			setError(message);

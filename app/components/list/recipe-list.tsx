@@ -6,10 +6,9 @@ import { Button } from "@ui/button";
 import { ItemGroup } from "@ui/item";
 import { EditIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useRevalidator } from "react-router";
 import { RecipeRow } from "./recipe-row";
 
-// TODO: change to @tanstack/react-virtual
 export function RecipeList({
 	edit,
 	recipes,
@@ -18,23 +17,23 @@ export function RecipeList({
 	recipes: Recipe.WithHandle[];
 }) {
 	const navigate = useNavigate();
+	const revalidator = useRevalidator();
 	const trpc = useTRPC();
 	const deleteMutation = useMutation(trpc.recipe.delete.mutationOptions());
-
-	const [list, setList] = useState(recipes);
 
 	function deleteRecipe(recipe: Recipe.Model) {
 		deleteMutation.mutate(
 			{ id: recipe.id },
 			{
-				onSuccess: () => setList(list.filter((r) => r !== recipe)),
+				onSuccess: revalidator.revalidate,
+				// onSuccess: () => setList(list.filter((r) => r !== recipe)),
 			},
 		);
 	}
 
 	return (
 		<ItemGroup className="gap-1!">
-			{list.map((recipe) => (
+			{recipes.map((recipe) => (
 				<div key={recipe.id} className="flex justify-center items-center gap-2">
 					{edit && (
 						<Button onClick={() => navigate(`/edit/${recipe.id}`)}>

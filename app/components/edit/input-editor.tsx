@@ -7,6 +7,7 @@ interface Props extends React.ComponentProps<"input"> {
 	clear?: boolean;
 	reset?: boolean;
 	resize?: boolean;
+	styles?: string;
 }
 
 export function InputEditor({
@@ -15,6 +16,7 @@ export function InputEditor({
 	onSave,
 	validate,
 	value: initialValue,
+	styles,
 	reset,
 	resize,
 	...rest
@@ -31,14 +33,14 @@ export function InputEditor({
 			className={cn(
 				"relative flex items-center",
 				resize ? "" : "grow",
-				// className,
+				className,
 			)}
 		>
 			<input
 				className={cn(
 					"bg-transparent border-none outline-none p-0 m-0 font-inherit! text-inherit! aria-invalid:ring-3 aria-invalid:border-destructive aria-invalid:ring-destructive:20 dark:aria-invalid:ring-destructive/50 max-w-none",
 					resize ? "field-sizing-content" : "w-1/1",
-					className,
+					styles,
 				)}
 				aria-invalid={!!error}
 				value={value}

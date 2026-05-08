@@ -14,6 +14,14 @@ export const Model = z.object({
   updatedAt: z.date(),
 });
 
+export const Password = z.string().min(8).max(24).regex(
+		/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()_\-+=[\]\\|;:'"`,.<>/?]).*$/,
+		{
+			error:
+				"Password must contain an uppercase letter, a lowercase letter, a number, and a special character.",
+		},
+	);
+
 export const Create = Model.omit({ 
   id: true,
   emailVerified: true,
@@ -22,17 +30,7 @@ export const Create = Model.omit({
   updatedAt: true,
   handle: true,
 }).extend({
-  password: z
-    .string()
-    .min(8)
-    .max(24)
-    .regex(
-      /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()_\-+=[\]\\|;:'"`,.<>/?]).*$/,
-      {
-        error:
-          "Password must contain an uppercase letter, a lowercase letter, a number, and a special character.",
-      },
-    ),
+  password: Password
 });
 
 export const Partial = Model.partial({
@@ -64,4 +62,5 @@ export type Model = z.infer<typeof Model>;
 export type Create = z.infer<typeof Create>;
 export type Partial = z.infer<typeof Partial>;
 export type Names = z.infer<typeof Names>;
+export type Password = z.infer<typeof Password>;
 // export type Full = z.infer<typeof Full>;

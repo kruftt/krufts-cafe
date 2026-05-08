@@ -23,9 +23,9 @@ export function UserMenu({ user }: { user: User.Model }) {
 			<DropdownMenuContent>
 				<DropdownMenuGroup>
 					<DropdownMenuItem onClick={() => navigate('/my-recipes/')}>My Recipes</DropdownMenuItem>
-					<DropdownMenuItem>Favorites</DropdownMenuItem>
-					<DropdownMenuItem>Meal Plans</DropdownMenuItem>
-					<DropdownMenuItem onClick={() => navigate(`/profile/${user.handle}`)}>Profile</DropdownMenuItem>
+					<DropdownMenuItem>Bookmarks</DropdownMenuItem>
+					{/* <DropdownMenuItem>Meal Plans</DropdownMenuItem> */}
+					<DropdownMenuItem onClick={() => navigate(`/profile/`)}>Profile</DropdownMenuItem>
 				</DropdownMenuGroup>
 				<DropdownMenuSeparator />
 				<DropdownMenuGroup>
