@@ -1,4 +1,5 @@
 import { InputEditor } from "@components/edit/input-editor";
+import type { ProcedureOptions } from "@hooks";
 import { useTRPC } from "@lib/trpc";
 import type { Instruction } from "@schema";
 import { useMutation } from "@tanstack/react-query";
@@ -16,6 +17,16 @@ export function InstructionEditor({ instruction, onDelete, index }: Props) {
 	const trpc = useTRPC();
 	const updateMutation = useMutation(trpc.instruction.update.mutationOptions());
 
+	function onSave(description: string, options: ProcedureOptions) {
+		updateMutation.mutate(
+			{ ...instruction, description },
+			{
+				onError: (ctx) => options.onError(ctx.message),
+				onSuccess: options.onSuccess,
+			},
+		);
+	}
+
 	return (
 		<div className="flex items-start justify-start gap-1">
 			<Button
@@ -30,9 +41,7 @@ export function InstructionEditor({ instruction, onDelete, index }: Props) {
 				<TextareaEditor
 					value={instruction.description}
 					placeholder="Insert instruction here"
-					onSave={(description) =>
-						updateMutation.mutate({ ...instruction, description })
-					}
+					onSave={onSave}
 				/>
 			</div>
 		</div>

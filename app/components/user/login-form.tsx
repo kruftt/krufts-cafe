@@ -1,12 +1,10 @@
+import { SubmitButton } from "@components/app";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRequest } from "@hooks";
 import { auth } from "@lib/auth-client";
-import { Button } from "@ui/button";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@ui/field";
 import { Input } from "@ui/input";
-import { Spinner } from "@ui/spinner";
-import { Eye, EyeOff } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
 import { PasswordInput } from "./password-input";
@@ -94,24 +92,9 @@ export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
 				</FieldGroup>
 
 				<Field>
-					<Button type="submit" form="form-login" disabled={request.inProgress}>
-						{request.inProgress ? (
-							<div className="flex items-center gap-2">
-								<Spinner />
-								Signing in...
-							</div>
-						) : (
-							"Submit"
-						)}
-					</Button>
-					{request.error && (
-						<div
-							role="alert"
-							className="text-sm text-center font-normal text-destructive"
-						>
-							{request.error}
-						</div>
-					)}
+					<SubmitButton form="form-login" request={request}>
+						Login
+					</SubmitButton>
 				</Field>
 			</FieldGroup>
 		</form>

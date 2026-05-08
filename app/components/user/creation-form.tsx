@@ -1,3 +1,4 @@
+import { SubmitButton } from "@components/app";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRequest } from "@hooks";
 import { auth } from "@lib/auth-client";
@@ -22,7 +23,6 @@ import {
 } from "@ui/field";
 import { Input } from "@ui/input";
 import { Separator } from "@ui/separator";
-import { Spinner } from "@ui/spinner";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { PasswordInput } from "./password-input";
@@ -140,26 +140,13 @@ export function CreationForm() {
 				</form>
 				<Separator />
 				<DialogFooter>
-					<div className="flex flex-col w-1/1 gap-4">
-						<Button type="submit" form="form-create-profile" className="w-1/1">
-							{request.inProgress ? (
-								<div className="flex items-center gap-2">
-									<Spinner />
-									Creating Account...
-								</div>
-							) : (
-								"Submit"
-							)}
-						</Button>
-						{request.error && (
-							<div
-								role="alert"
-								className="text-base text-center font-normal text-destructive"
-							>
-								{request.error}
-							</div>
-						)}
-					</div>
+					<SubmitButton
+						className="w-1/1"
+						form="form-create-profile"
+						request={request}
+					>
+						Create Account
+					</SubmitButton>
 				</DialogFooter>
 			</DialogContent>
 		</Dialog>

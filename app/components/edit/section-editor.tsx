@@ -2,6 +2,7 @@ import { ContentPane } from "@components/app";
 import { DeletionDialog, InputEditor, TextareaEditor } from "@components/edit";
 import { IngredientEditor } from "@components/edit/ingredient-editor";
 import { InstructionEditor } from "@components/edit/instruction-editor";
+import type { ProcedureOptions } from "@hooks";
 import { useTRPC } from "@lib/trpc";
 import type { Section } from "@schema";
 import { useMutation } from "@tanstack/react-query";
@@ -28,8 +29,16 @@ export function SectionEditor({
 	const createInstructionMutation = useMutation(trpc.instruction.create.mutationOptions());
 	const deleteInstructionMutation = useMutation(trpc.instruction.delete.mutationOptions());
   
-	function updateSection(field: keyof Section.Model, value: string, onError?: () => void) {
-		updateSectionMutation.mutate({ id: section.id, [field]: value }, { onError });
+	function updateSection(field: keyof Section.Model) {
+		return (value: string, options: ProcedureOptions) => {
+			updateSectionMutation.mutate(
+				{ id: section.id, [field]: value },
+				{
+					onError: (ctx) => options.onError(ctx.message),
+					onSuccess: options.onSuccess,
+				},
+			);
+		}
 	}
 
 	function deleteIngredient(id: number) {
@@ -104,12 +113,12 @@ export function SectionEditor({
 				<InputEditor
 					value={section.name}
 					className="section__title"
-					onSave={(v) => updateSection("name", v)}
+					onSave={updateSection("name")}
 				/>
 
 				<TextareaEditor
 					className="section__description"
-					onSave={(v) => updateSection("description", v)}
+					onSave={updateSection("description")}
 					placeholder="Section description..."
 					value={section.description}
 				/>

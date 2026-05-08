@@ -35,7 +35,7 @@ export function RecipeList({
 	return (
 		<ItemGroup className="gap-1!">
 			{list.map((recipe) => (
-				<div key={recipe.id} className="flex items-center gap-2">
+				<div key={recipe.id} className="flex justify-center items-center gap-2">
 					{edit && (
 						<Button onClick={() => navigate(`/edit/${recipe.id}`)}>
 							<EditIcon />

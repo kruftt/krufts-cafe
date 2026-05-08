@@ -1,4 +1,5 @@
 import { InputEditor, TextareaEditor } from "@components/edit";
+import type { ProcedureOptions } from "@hooks";
 import { useTRPC } from "@lib/trpc";
 import type { Ingredient } from "@schema";
 import { useMutation } from "@tanstack/react-query";
@@ -16,11 +17,16 @@ export function IngredientEditor({
 	const trpc = useTRPC();
 	const updateMutation = useMutation(trpc.ingredient.update.mutationOptions());
 
-	function save(field: keyof Ingredient.Model, value: string) {
-    if (field === "amount")
-		  updateMutation.mutate({ id: ingredient.id, amount: parseFloat(value) });
-    else
-	  	updateMutation.mutate({ id: ingredient.id, [field]: value });
+	function updateIngredient(field: keyof Ingredient.Model) {
+		return (value: string, options: ProcedureOptions) => {
+			updateMutation.mutate(
+				{ id: ingredient.id, [field]: (field === "amount") ? parseInt(value, 10) : value },
+				{
+					onError: (ctx) => options.onError(ctx.message),
+					onSuccess: options.onSuccess,
+				},
+			);
+		}
 	}
 
 	return (
@@ -32,26 +38,26 @@ export function IngredientEditor({
 				<InputEditor
 					type="number"
 					value={String(ingredient.amount)}
-					onSave={(v) => save("amount", v)}
+					onSave={updateIngredient("amount")}
 					resize
 				/>
 				<InputEditor
 					value={ingredient.units}
-					onSave={(v) => save("units", v)}
+					onSave={updateIngredient("units")}
 					placeholder="units"
 					resize
 				/>
 				<InputEditor
 					value={ingredient.name}
-					onSave={(v) => save("name", v)}
+					onSave={updateIngredient("name")}
 					resize
 				/>
 				<TextareaEditor
 					value={ingredient.description}
 					className="ingredient__description"
 					placeholder="preparation"
-					onSave={(v) => save("description", v)}
-					resize
+					onSave={updateIngredient("description")}
+					// resize
 				/>
 			</div>
 		</div>

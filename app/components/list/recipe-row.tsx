@@ -16,7 +16,7 @@ export function RecipeRow({
 }) {
 	return (
 		<Item
-			className="py-1.5"
+			className="py-1.5 max-w-160"
 			variant="outline"
 			render={
 				<a href={`/recipes/${recipe.user.handle}/${recipe.slug}`}>

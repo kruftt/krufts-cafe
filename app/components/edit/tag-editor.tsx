@@ -1,55 +1,72 @@
 import { Button } from "@components/ui/button";
+import type { ProcedureOptions } from "@hooks";
 import { Badge } from "@ui/badge";
 import { XIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { InputEditor } from "./input-editor";
 
-interface Props extends React.ComponentProps<'div'> {
+interface Props extends React.ComponentProps<"div"> {
 	tags: string[];
-	onSave: (v: string[]) => void;
+	onSave: (v: string[], options: ProcedureOptions) => void;
 }
 
 export function TagEditor({ onSave, tags: _tags }: Props) {
-  const inputRef = useRef<HTMLInputElement>(null);
+	const inputRef = useRef<HTMLInputElement>(null);
 	const [tags, setTags] = useState(_tags);
+	const [error, setError] = useState("");
 
-	function createTag(tag: string) {
-		if (tag === "" || tags.includes(tag)) return;
-		setTags([...tags, tag]);
-		onSave(tags);
-	}
+	// onSave(value, setError)
 
-	function editTag(tag: string, index: number) {
-		if (tag === "") return;
-		setTags(tags.map((t, i) => (i === index ? tag : t)));
-		onSave(tags);
+	function createTag(tag: string, options: ProcedureOptions) {
+		if (tag === "") {
+			options.onError("Please enter a tag.");
+			return;
+		}
+		
+		if (tags.includes(tag)) {
+			options.onError("Tag already exists.");
+			return;
+		}
+
+		const next = [...tags, tag];
+		setTags(next);
+		onSave(next, {
+			onSuccess: options.onSuccess,
+			onError: options.onError,
+		});
 	}
 
 	function removeTag(index: number) {
-		setTags(tags.filter((_, i) => i !== index));
-		onSave(tags);
+		const next = tags.filter((_, i) => i !== index);
+		setTags(next);
+		onSave(next, {
+			onError(message) {
+				setError(message);
+			},
+			onSuccess() {},
+		});
 	}
 
 	return (
 		<div>
 			<div className="recipe__tags">
 				{tags.map((tag, i) => (
-					<Badge key={tag}>
+					<Badge key={tag} className="overflow-visible">
 						<Button
 							data-icon="inline-start"
 							variant="ghost"
-							className="rounded p-0"
+							className="rounded-l-4xl p-0 h-6 w-6 -ml-2 -mr-0.5"
 							onClick={() => removeTag(i)}
 						>
 							<XIcon className="" color="red" />
 						</Button>
-						<InputEditor onSave={(v) => editTag(v, i)} value={tag} resize />
+						{tag}
 					</Badge>
 				))}
 			</div>
 			<InputEditor
 				ref={inputRef}
-				className="text-center -mt-1.5"
+				className="text-center -mt-1.5 w-60 m-auto rounded-xl"
 				onSave={createTag}
 				placeholder="Add new tag..."
 				clear

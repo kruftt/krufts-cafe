@@ -35,6 +35,26 @@ export const Create = Model.omit({
     ),
 });
 
+export const Partial = Model.partial({
+  id: true,
+  name: true,
+  handle: true,
+  email: true,
+  emailVerified: true,
+  image: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const Names = Model.omit({
+  id: true,
+  email: true,
+  emailVerified: true,
+  image: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 // export const Full = Model.extend({
 //   handle: z.string()
 // })
@@ -42,4 +62,6 @@ export const Create = Model.omit({
 
 export type Model = z.infer<typeof Model>;
 export type Create = z.infer<typeof Create>;
+export type Partial = z.infer<typeof Partial>;
+export type Names = z.infer<typeof Names>;
 // export type Full = z.infer<typeof Full>;

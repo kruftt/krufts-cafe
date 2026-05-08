@@ -1,23 +1,56 @@
 import { useState } from "react";
 
+export interface ProcedureOptions {
+	onError: (value: string) => void;
+	onSuccess: () => void;
+}
+
+export interface EditorOptions {
+	clear?: boolean;
+	ctrl?: boolean;
+	reset?: boolean;
+}
+
+type InputTypes = string | number | readonly string[];
+
 export function useEditor(
-	initialValue: string | number | readonly string[],
-	onSave: (v: string) => void,
+	initialValue: InputTypes,
+	onSave: (v: string, options: ProcedureOptions) => void,
 	validate?: (value: string) => string | undefined,
-	ctrl?: boolean,
-	clear?: boolean
+	options: EditorOptions = {}
 ) {
-	const [draft, setDraft] = useState(initialValue);
+	const [value, setValue] = useState(initialValue);
+	const [dirty, setDirty] = useState(false);
+	const [busy, setBusy] = useState(false);
 	const [error, setError] = useState("");
+	const { clear, ctrl, reset } = options;
 	
 	function submit() {
-		const message = validate?.(draft as string);
+		if (!dirty) return;
+		setDirty(false);
+		console.log('submitted')
+		const message = validate?.(value as string);
 		if (message) {
 			setError(message);
+			if (reset) setValue(initialValue);
+			if (clear) setValue("");
 			return;
 		}
-		onSave(draft as string);
-		if (clear) setDraft("");
+
+		setBusy(true);
+
+		onSave(value as string, {
+			onError(message) {
+				setError(message);
+				setBusy(false);
+				if (reset) setValue(initialValue);
+				if (clear) setValue("");
+			},
+			onSuccess() {
+				setBusy(false);
+				if (clear) setValue("");
+			}
+		});
 	}
 
 	function onChange(
@@ -25,7 +58,8 @@ export function useEditor(
 			| React.ChangeEvent<HTMLTextAreaElement>
 			| React.ChangeEvent<HTMLInputElement>,
 	) {
-		setDraft(e.currentTarget.value);
+		setValue(e.currentTarget.value);
+		setDirty(true);
 		if (error) setError("");
 	}
 
@@ -37,9 +71,13 @@ export function useEditor(
 		if (ctrl && !e.ctrlKey) return;
 		if (e.key === "Enter") {
 			submit();
-			e.currentTarget.blur();
 		}
 	}
 
-	return { draft, error, onKeyDown, onChange, submit };
+	function onBlur() {
+		if (dirty) submit();
+		else setError("");
+	}
+
+	return { value, busy, error, onKeyDown, onChange, onBlur, submit };
 }
