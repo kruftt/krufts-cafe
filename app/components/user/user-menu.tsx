@@ -1,3 +1,4 @@
+import { usePins } from "@hooks/pins";
 import { auth } from "@lib/auth-client";
 import type { User } from "@schema";
 import { Button } from "@ui/button";
@@ -10,10 +11,12 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@ui/dropdown-menu";
-import { useNavigate } from "react-router";
+import { useNavigate, useRevalidator } from "react-router";
 
 export function UserMenu({ user }: { user: User.Model }) {
 	const navigate = useNavigate();
+	const revalidator = useRevalidator();
+	const { clearPins } = usePins();
 
 	return (
 		<DropdownMenu>
@@ -22,17 +25,30 @@ export function UserMenu({ user }: { user: User.Model }) {
 			</DropdownMenuTrigger>
 			<DropdownMenuContent>
 				<DropdownMenuGroup>
-					<DropdownMenuItem onClick={() => navigate('/my-recipes/')}>My Recipes</DropdownMenuItem>
-					<DropdownMenuItem>Bookmarks</DropdownMenuItem>
+					<DropdownMenuItem onClick={() => navigate("/my-recipes/")}>
+						My Recipes
+					</DropdownMenuItem>
+					<DropdownMenuItem onClick={() => navigate("/bookmarks/")}>
+						Bookmarks
+					</DropdownMenuItem>
 					{/* <DropdownMenuItem>Meal Plans</DropdownMenuItem> */}
-					<DropdownMenuItem onClick={() => navigate(`/profile/`)}>Profile</DropdownMenuItem>
+					<DropdownMenuItem onClick={() => navigate(`/profile/`)}>
+						Profile
+					</DropdownMenuItem>
 				</DropdownMenuGroup>
 				<DropdownMenuSeparator />
 				<DropdownMenuGroup>
 					<DropdownMenuItem
 						variant="destructive"
 						onClick={() => {
-							auth.signOut();
+							auth.signOut({
+								fetchOptions: {
+									onSuccess: () => {
+										clearPins();
+										revalidator.revalidate();
+									},
+								},
+							});
 							navigate("/");
 						}}
 					>

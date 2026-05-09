@@ -1,7 +1,10 @@
 import { themeAtom } from "@atoms/theme";
-import { AppBar } from "@components/app";
+import { bookmarksAtom, pinnedRecipesAtom, pinsAtom } from "@atoms/user";
+import { AppBar, PinnedRecipes } from "@components/app";
+import { auth } from "@lib/auth-server";
+import { prisma } from "@lib/prisma";
 import { Button } from "@ui/button";
-import { useAtom } from "jotai";
+import { createStore, Provider, useAtom } from "jotai";
 import { BsMoonStarsFill, BsSunFill } from "react-icons/bs";
 import { Outlet, Scripts } from "react-router";
 import "./globals.css";
@@ -9,8 +12,9 @@ import { TRPCProvider } from "@lib/trpc";
 import { cn } from "@lib/utils";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { IconContext } from "react-icons";
+import type { Route } from "./+types/root";
 import type { TRPCRouter } from "./trpc/router";
 
 function makeQueryClient() {
@@ -33,6 +37,37 @@ function getQueryClient() {
 	}
 }
 
+export async function loader({ request }: Route.LoaderArgs) {
+	const session = await auth.api.getSession({ headers: request.headers });
+	if (!session) return { pins: [], bookmarks: [], pinnedRecipes: [] };
+
+	const [pins, bookmarks] = await Promise.all([
+		prisma.pin.findMany({
+			where: { userId: session.user.id },
+			include: {
+				recipe: {
+					select: {
+						id: true,
+						name: true,
+						slug: true,
+						user: { select: { handle: true } },
+					},
+				},
+			},
+		}),
+		prisma.bookmark.findMany({
+			where: { userId: session.user.id },
+			select: { recipeId: true },
+		}),
+	]);
+
+	return {
+		pins: pins.map((p) => p.recipeId),
+		pinnedRecipes: pins.map((p) => p.recipe),
+		bookmarks: bookmarks.map((b) => b.recipeId),
+	};
+}
+
 export function Layout({ children }: React.PropsWithChildren) {
 	return (
 		<html lang="en">
@@ -45,7 +80,16 @@ export function Layout({ children }: React.PropsWithChildren) {
 	);
 }
 
-export default function App() {
+export default function App({ loaderData }: Route.ComponentProps) {
+	const { pins, bookmarks, pinnedRecipes } = loaderData;
+	
+	const store = useMemo(() => {
+		const s = createStore();
+		s.set(pinsAtom, new Set<number>(pins));
+		s.set(bookmarksAtom, new Set<number>(bookmarks));
+		s.set(pinnedRecipesAtom, pinnedRecipes);
+		return s;
+	}, [pins, bookmarks, pinnedRecipes]);
 	const [theme, setTheme] = useAtom(themeAtom);
 	const queryClient = getQueryClient();
 	const [trpcClient] = useState(() =>
@@ -60,29 +104,34 @@ export default function App() {
 	);
 
 	return (
-		<QueryClientProvider client={queryClient}>
-			<TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
-				<IconContext.Provider value={{ color: `${theme ? "black" : "white"}` }}>
-					<body
-						className={cn(
-							theme ? "dark" : "",
-							"bg-cafe-blue-3 text-black",
-							"dark:bg-cafe-blue-3-dark dark:text-white",
-						)}
+		<Provider store={store}>
+			<QueryClientProvider client={queryClient}>
+				<TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
+					<IconContext.Provider
+						value={{ color: `${theme ? "black" : "white"}` }}
 					>
-						<AppBar />
-						<Outlet />
-						<Button
-							className="fixed bottom-4 left-4 rounded-full"
-							onClick={() => setTheme(!theme)}
+						<body
+							className={cn(
+								theme ? "dark" : "",
+								"bg-cafe-blue-3 text-black",
+								"dark:bg-cafe-blue-3-dark dark:text-white",
+							)}
 						>
-							{theme ? <BsSunFill /> : <BsMoonStarsFill />}
-						</Button>
-						<Scripts />
-					</body>
-				</IconContext.Provider>
-			</TRPCProvider>
-		</QueryClientProvider>
+							<AppBar />
+							<PinnedRecipes />
+							<Outlet />
+							<Button
+								className="fixed bottom-4 left-4 rounded-full"
+								onClick={() => setTheme(!theme)}
+							>
+								{theme ? <BsSunFill /> : <BsMoonStarsFill />}
+							</Button>
+							<Scripts />
+						</body>
+					</IconContext.Provider>
+				</TRPCProvider>
+			</QueryClientProvider>
+		</Provider>
 	);
 }
 

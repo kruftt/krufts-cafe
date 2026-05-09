@@ -144,6 +144,12 @@
 		text-align: unset;
 	}
 
+	input:-webkit-autofill {
+		-webkit-box-shadow: 0 0 0px 1000px transparent inset;
+		-webkit-text-fill-color: white;
+		transition: background-color 5000s ease-in-out 0s;
+	}
+
 	button:not(:disabled),
 	[role="button"]:not(:disabled) {
 		cursor: pointer;
@@ -157,8 +163,16 @@
 
 
 @layer components {
+	.userpage__header {
+		@apply text-3xl font-bold mt-10;
+	}
+
+	.recipe__list {
+		@apply max-w-210! m-auto;
+	}
+
 	.recipe__title {
-		@apply my-6! text-center font-bold text-4xl!;
+		@apply mt-12 mb-6! text-center font-bold text-4xl!;
 	}
 
 	.recipe__description {

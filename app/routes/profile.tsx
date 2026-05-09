@@ -16,8 +16,8 @@ export default function ProfilePage({ loaderData }: Route.ComponentProps) {
 
 	return (
 		<ContentContainer>
-			<ContentHeader>
-				<h2 className="text-3xl font-bold">User Profile</h2>
+			<ContentHeader className="userpage__header">
+				<h2>User Profile</h2>
 			</ContentHeader>
 			<ContentPane className="max-w-120 m-auto">
 				<ProfileForm user={user as User.Model} />

@@ -1,4 +1,4 @@
-import { ContentContainer, ContentHeader } from "@components/app";
+import { ContentContainer, ContentHeader, ContentPane } from "@components/app";
 import { CreateRecipeButton, RecipeList } from "@components/list";
 import { Input } from "@components/ui/input";
 import { prisma } from "@lib/prisma";
@@ -11,12 +11,15 @@ export async function loader({ request }: Route.LoaderArgs) {
 		include: { user: { select: { handle: true } } },
 	});
 
-	return { recipes };
+	const url = new URL(request.url);
+	const urlQuery = url.searchParams.get('q') ?? "";
+
+	return { recipes, urlQuery };
 }
 
 export default function Home({ loaderData }: Route.ComponentProps) {
-	const { recipes } = loaderData;
-	const [query, setQuery] = useState("");
+	const { recipes, urlQuery } = loaderData;
+	const [query, setQuery] = useState(urlQuery);
 
 	const fuse = useMemo(
 		() =>
@@ -43,7 +46,9 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 					placeholder="Recipes, tags, ingredients..."
 				/>
 			</ContentHeader>
-			<RecipeList recipes={results} />
+			<ContentPane className="recipe__list">
+				<RecipeList recipes={results} />
+			</ContentPane>
 		</ContentContainer>
 	);
 }

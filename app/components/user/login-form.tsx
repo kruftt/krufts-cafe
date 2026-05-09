@@ -1,11 +1,13 @@
 import { SubmitButton } from "@components/app";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRequest } from "@hooks";
+import { usePins } from "@hooks/pins";
 import { auth } from "@lib/auth-client";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@ui/field";
 import { Input } from "@ui/input";
 import { useEffect, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useRevalidator } from "react-router";
 import * as z from "zod";
 import { PasswordInput } from "./password-input";
 
@@ -19,6 +21,8 @@ type LoginSchema = z.infer<typeof loginSchema>;
 export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
 	const emailRef = useRef<HTMLInputElement>(null);
 	const request = useRequest();
+	const revalidator = useRevalidator();
+	const { mergePins } = usePins();
 
 	useEffect(() => {
 		emailRef.current?.focus();
@@ -37,7 +41,11 @@ export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
 			onRequest: request.onRequest,
 			onResponse: request.onResponse,
 			onError: (ctx) => request.onError(ctx.error.message),
-			onSuccess,
+			onSuccess: () => {
+				mergePins();
+				onSuccess?.();
+				revalidator.revalidate();
+			},
 		});
 	}
 

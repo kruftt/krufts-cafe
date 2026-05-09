@@ -1,15 +1,11 @@
 import { cn } from "@lib/utils";
 
-export function ContentContainer({ children }: React.ComponentProps<'div'>) {
-  return (
-    <div className="m-auto max-w-296 px-4">
-      { children }
-    </div>
-  )
+export function ContentContainer({ children, className }: React.ComponentProps<'div'>) {
+  return <div className={`m-auto max-w-296 px-4 ${className}`}>{children}</div>;
 }
 
-export function ContentHeader({ children }: React.ComponentProps<'div'>) {
-	return <div className="mt-6 mb-8 text-center">{children}</div>;
+export function ContentHeader({ children, className }: React.ComponentProps<'div'>) {
+	return <div className={`mt-6 mb-8 text-center ${className}`}>{children}</div>;
 }
 
 export function ContentPane({ children, className }: React.ComponentProps<'div'>) {
