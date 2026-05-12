@@ -24,3 +24,9 @@ export function cn(...inputs: ClassValue[]) {
 
 //   return output.join(' ');
 // }
+
+export function formatDuration(minutes: number) {
+	return (minutes > 60)
+		? `${Math.floor(minutes / 60)} hr ${minutes % 60} min`
+		: `${minutes} min`
+}

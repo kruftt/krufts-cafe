@@ -10,11 +10,13 @@ import {
 import { useBookmarks } from "@hooks/bookmark";
 import { usePins } from "@hooks/pins";
 import { useTRPC } from "@lib/trpc";
+import { formatDuration } from "@lib/utils";
 import type { Recipe } from "@schema";
 import { useMutation } from "@tanstack/react-query";
-import { Item, ItemContent, ItemDescription, ItemTitle } from "@ui/item";
+import { Item, ItemContent, ItemDescription, ItemMedia, ItemTitle } from "@ui/item";
 import {
 	BookmarkIcon,
+	ClockIcon,
 	EditIcon,
 	MenuIcon,
 	PinIcon,
@@ -29,7 +31,7 @@ export function RecipeRow({
 }: {
 	edit: boolean;
 	isLoggedIn: boolean;
-	recipe: Recipe.WithHandle;
+	recipe: Recipe.WithUser;
 }) {
 	const navigate = useNavigate();
 	const revalidator = useRevalidator();
@@ -110,8 +112,15 @@ export function RecipeRow({
 					<a href={`/recipes/${recipe.user.handle}/${recipe.slug}`}>
 						<ItemContent>
 							<ItemTitle>{recipe.name}</ItemTitle>
-							<ItemDescription>{recipe.description}</ItemDescription>
+							<ItemDescription>
+								<span className="mr-2">By {recipe.user.name}</span>-
+								<span className="ml-2">{recipe.description}</span>
+							</ItemDescription>
 						</ItemContent>
+						<ItemMedia variant="icon">
+							<ClockIcon />
+							{formatDuration(recipe.duration)}
+						</ItemMedia>
 					</a>
 				}
 				size="xs"

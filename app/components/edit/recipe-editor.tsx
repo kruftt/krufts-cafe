@@ -5,6 +5,7 @@ import { useTRPC } from "@lib/trpc";
 import { Recipe, type Section } from "@schema";
 import { useMutation } from "@tanstack/react-query";
 import { Button } from "@ui/button";
+import { ClockIcon } from "lucide-react";
 import { useState } from "react";
 import { SectionEditor } from "./section-editor";
 
@@ -25,11 +26,14 @@ export function RecipeEditor({ recipe }: { recipe: Recipe.Full }) {
 	function updateRecipe(field: keyof Recipe.Model) {
 		return (value: string | string[], options: ProcedureOptions) =>
 			updateRecipeMutation.mutate(
-				{ id: recipe.id, [field]: value },
+				{
+					id: recipe.id,
+					[field]: field === "duration" ? parseInt(value as string, 10) : value,
+				},
 				{
 					onError: (ctx) => options.onError(ctx.message),
 					onSuccess: options.onSuccess,
-				}
+				},
 			);
 	}
 
@@ -67,6 +71,9 @@ export function RecipeEditor({ recipe }: { recipe: Recipe.Full }) {
 					validate={(v) => Recipe.Name.safeParse(v).error?.issues[0]?.message}
 					// aria-invalid
 				/>
+				<div>
+					By {recipe.user.name}
+				</div>
 
 				<InputEditor
 					className="recipe__description"
@@ -74,6 +81,17 @@ export function RecipeEditor({ recipe }: { recipe: Recipe.Full }) {
 					placeholder="Recipe description..."
 					value={recipe.description}
 				/>
+
+				<div className="flex gap-1 justify-center">
+					<ClockIcon />
+					<InputEditor
+						className="recipe__duration"
+						onSave={updateRecipe("duration")}
+						value={recipe.duration}
+						resize
+					/>
+					min
+				</div>
 
 				<TagEditor tags={recipe.tags} onSave={updateRecipe("tags")} />
 			</ContentHeader>

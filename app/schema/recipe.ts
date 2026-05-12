@@ -12,6 +12,7 @@ export const Model = z.object({
 	name: Name,
 	tags: z.array(z.string()),
 	slug: z.string().nullable(),
+	duration: z.int(),
 	description: z.string(),
 	intro: z.string(),
 	userId: z.string(),
@@ -21,22 +22,27 @@ export const Partial = Model.partial({
 	name: true,
 	tags: true,
 	slug: true,
+	duration: true,
 	description: true,
 	intro: true,
 	userId: true,
 })
 
-export const WithHandle = Model.extend({
+export const WithUser = Model.extend({
 	user: z.object({
-		handle: z.string()
+		handle: z.string(),
+		name: z.string(),
 	})
 })
 
 export const Full = Model.extend({
+	user: z.object({
+		name: z.string()
+	}),
 	sections: z.array(Section.Full),
 });
 
 export type Model = z.infer<typeof Model>;
 export type Partial = z.infer<typeof Partial>;
-export type WithHandle = z.infer<typeof WithHandle>;
+export type WithUser = z.infer<typeof WithUser>;
 export type Full = z.infer<typeof Full>;

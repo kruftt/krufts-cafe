@@ -10,7 +10,10 @@ export async function loader({ request }: Route.LoaderArgs) {
 
 	const recipes = await prisma.recipe.findMany({
 		where: { userId: session.user.id },
-		include: { user: { select: { handle: true } } }
+		include: { user: { select: {
+			handle: true,
+			name: true,
+		 } } }
 	});
 
 	return { recipes };

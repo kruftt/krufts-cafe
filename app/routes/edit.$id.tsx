@@ -12,6 +12,11 @@ export async function loader({ request, params }: Route.LoaderArgs) {
 	const recipe = await prisma.recipe.findUnique({
 		where: { id },
 		include: {
+			user: {
+				select: {
+					name: true,
+				}
+			},
 			sections: {
 				orderBy: { index: "asc" },
 				include: {

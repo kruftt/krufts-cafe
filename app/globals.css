@@ -175,6 +175,10 @@
 		@apply mt-12 mb-6! text-center font-bold text-4xl!;
 	}
 
+	.recipe__duration {
+		@apply text-base;
+	}
+
 	.recipe__description {
 		@apply text-base! whitespace-pre-wrap text-center font-normal my-4!;
 	}

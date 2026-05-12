@@ -22,6 +22,7 @@ model Recipe {
   tags          String[]  @default([])
   slug          String?
   search        String    @default("")
+  duration      Int       @default(30)
   description   String    @default("")
   intro         String    @default("")
   sections      Section[]
