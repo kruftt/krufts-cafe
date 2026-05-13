@@ -7,10 +7,10 @@ interface Props extends React.ComponentProps<"button"> {
   request: { inProgress: boolean, error: string }
 }
 
-export function SubmitButton({ children, className, request }: Props) {
+export function SubmitButton({ children, className, form, request }: Props) {
 	return (
 		<div className={cn("flex flex-col gap-4", className)}>
-			<Button type="submit" className="w-1/1" disabled={request.inProgress}>
+			<Button type="submit" form={form} className="w-1/1" disabled={request.inProgress}>
         <div className="flex items-center gap-2">
           {request.inProgress && <Spinner />}
 					{ children }
