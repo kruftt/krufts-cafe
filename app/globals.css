@@ -12,6 +12,7 @@
 	--color-cafe-blue-1: oklch(0.72 0.18 223);
 	--color-cafe-blue-2: oklch(0.61 0.14 223);
 	--color-cafe-blue-3: oklch(0.95 0.02 223);
+	--shadow-inner-lg: inset 1px 1px 4px 1px var(--input-shadow);
 }
 
 @theme inline {
@@ -58,15 +59,15 @@
 }
 
 :root {
-	--background: oklch(1 0 0);
+	--background: oklch(.965 0 0);
 	--foreground: oklch(0.145 0 0);
 	--card: oklch(1 0 0);
 	--card-foreground: oklch(0.145 0 0);
 	--popover: oklch(1 0 0);
 	--popover-foreground: oklch(0.145 0 0);
-	--primary: oklch(0.205 0 0);
-	--primary-foreground: oklch(0.985 0 0);
-	--secondary: oklch(0.97 0 0);
+	--primary: oklch(0.35 0 0);
+	--primary-foreground: oklch(0.95 0 0);
+	--secondary: oklch(0.96 0.0 223);
 	--secondary-foreground: oklch(0.205 0 0);
 	--muted: oklch(0.97 0 0);
 	--muted-foreground: oklch(0.556 0 0);
@@ -90,19 +91,30 @@
 	--sidebar-accent-foreground: oklch(0.205 0 0);
 	--sidebar-border: oklch(0.922 0 0);
 	--sidebar-ring: oklch(0.708 0 0);
+
+	--calm-100: oklch(0.96 0.03 223);
+	--calm-200: oklch(0.91 0.06 223);
+	--calm-300: oklch(0.84 0.12 223);
+	--calm-400: oklch(0.77 0.17 223);
+	--calm-500: oklch(0.69 0.17 223);
+	--calm-600: oklch(0.6 0.15 223);
+	--calm-700: oklch(0.51 0.13 223);
+	--calm-800: oklch(0.4 0.1 223);
+	--calm-900: oklch(0.29 0.07 223);
+
+	--input-shadow: rgb(0 0 0 / 0.09);
 }
 
 .dark {
-	--background: oklch(0.145 0 0);
-	--foreground: oklch(0.985 0 0);
-	--card: oklch(0.205 0 0);
-	--card-foreground: oklch(0.985 0 0);
+	--background: oklch(0.165 0 223);
+	--foreground: oklch(0.95 0 223);
+	--card: oklch(0.21 0 223);
+	--card-foreground: oklch(0.96 0 0);
 	--popover: oklch(0.205 0 0);
 	--popover-foreground: oklch(0.985 0 0);
-	/* --primary: oklch(0.66 0.18 223); */
-	--primary: oklch(0.922 0 0);
-	--primary-foreground: oklch(0.205 0 0);
-	--secondary: oklch(0.269 0 0);
+	--primary: oklch(0.35 0 223);
+	--primary-foreground: oklch(0.98 0 0);
+	--secondary: oklch(0.265 0.04 223);
 	--secondary-foreground: oklch(0.985 0 0);
 	--muted: oklch(0.269 0 0);
 	--muted-foreground: oklch(0.708 0 0);
@@ -125,6 +137,8 @@
 	--sidebar-accent-foreground: oklch(0.985 0 0);
 	--sidebar-border: oklch(1 0 0 / 10%);
 	--sidebar-ring: oklch(0.556 0 0);
+
+	--input-shadow: rgb(0 0 0 / 0.6);
 }
 
 @layer base {
@@ -226,4 +240,5 @@
 	.ingredient__description {
 		@apply grow font-light;
 	}
+
 }

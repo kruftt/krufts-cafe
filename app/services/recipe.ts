@@ -48,3 +48,83 @@ export async function updateRecipeSearch(recipeId: number) {
 		data: { search },
 	});
 }
+
+
+interface IdSlugLocator {
+	userId_slug: {
+		userId: string;
+		slug: string;
+	}
+}
+
+interface RecipeIdLocator {
+	id: number;
+}
+
+
+export async function findRecipe(where: IdSlugLocator | RecipeIdLocator) {
+	return prisma.recipe.findUnique({
+		where,
+		include: {
+			user: {
+				select: {
+					name: true,
+					handle: true,
+				},
+			},
+			sections: {
+				orderBy: { index: "asc" },
+				include: {
+					ingredients: { orderBy: { index: "asc" } },
+					instructions: { orderBy: { index: "asc" } },
+				},
+			},
+		},
+	});
+}
+
+
+interface UserIdLocator {
+	userId: string;
+}
+
+
+export async function findRecipes(where?: UserIdLocator) {
+	return prisma.recipe.findMany({
+		where,
+		include: {
+			user: {
+				select: {
+					handle: true,
+					name: true,
+				},
+			},
+		},
+	});
+}
+
+
+export async function findBookmarkedRecipes(where?: UserIdLocator) {
+	return await prisma.bookmark.findMany({
+		where,
+		include: {
+			recipe: {
+				select: {
+					id: true,
+					name: true,
+					tags: true,
+					duration: true,
+					slug: true,
+					search: true,
+					description: true,
+					intro: true,
+					userId: true,
+					user: { select: {
+						handle: true,
+						name: true,
+					} },
+				},
+			},
+		},
+	});
+}

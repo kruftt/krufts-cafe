@@ -61,10 +61,14 @@ export function CreationForm() {
 				setOpen(isOpen);
 			}}
 		>
-			<DialogTrigger render={<Button variant="link">Create Account</Button>} />
+			<DialogTrigger render={
+				<Button className="text-popover-foreground" variant="link">Create Account</Button>
+			} />
 			<DialogContent>
 				<DialogHeader className="text-center">
-					<DialogTitle>Create New Account</DialogTitle>
+					<DialogTitle>
+						Create New Account
+					</DialogTitle>
 				</DialogHeader>
 				<form id="form-create-profile" onSubmit={form.handleSubmit(onSubmit)}>
 					<FieldGroup>

@@ -10,7 +10,7 @@ export function ContentHeader({ children, className }: React.ComponentProps<'div
 
 export function ContentPane({ children, className }: React.ComponentProps<'div'>) {
   return (
-    <div className={cn("w-1/1 border rounded-2xl mt-6 p-6", className)}>
+    <div className={cn("w-1/1 border border-primary rounded-2xl mt-6 p-6 bg-card text-card-foreground shadow-lg shadow-black/15 dark:shadow-black/30", className)}>
       { children }
     </div>
   )

@@ -25,20 +25,20 @@ export function UserMenu({ user }: { user: User.Model }) {
 			</DropdownMenuTrigger>
 			<DropdownMenuContent>
 				<DropdownMenuGroup>
-					<DropdownMenuItem onClick={() => navigate("/my-recipes/")}>
-						My Recipes
+					<DropdownMenuItem>
+						<a href="/my-recipes/">My Recipes</a>
 					</DropdownMenuItem>
-					<DropdownMenuItem onClick={() => navigate("/bookmarks/")}>
-						Bookmarks
+					<DropdownMenuItem>
+						<a href="/bookmarks/">Bookmarks</a>
 					</DropdownMenuItem>
-					{/* <DropdownMenuItem>Meal Plans</DropdownMenuItem> */}
-					<DropdownMenuItem onClick={() => navigate(`/profile/`)}>
-						Profile
+					<DropdownMenuItem>
+						<a href="/profile/">Profile</a>
 					</DropdownMenuItem>
 				</DropdownMenuGroup>
 				<DropdownMenuSeparator />
 				<DropdownMenuGroup>
 					<DropdownMenuItem
+						className="cursor-pointer"
 						variant="destructive"
 						onClick={() => {
 							auth.signOut({

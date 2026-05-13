@@ -34,7 +34,7 @@ export function AppBar() {
 					<input
 						name="q"
 						type="text"
-						placeholder="Search recipes..."
+						placeholder="Search all recipes.."
 						className="flex-1 bg-transparent outline-none text-white placeholder:text-white/50 text-sm"
 					/>
 					<button type="submit" className="text-white/70 hover:text-white">

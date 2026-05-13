@@ -1,21 +1,12 @@
 import { ContentContainer, ContentHeader, ContentPane } from "@components/app";
 import { CreateRecipeButton, RecipeList } from "@components/list";
 import { requireAuth } from "@lib/auth-loader";
-import { prisma } from "@lib/prisma";
+import { findRecipes } from "@services/recipe";
 import type { Route } from "./+types/my-recipes";
 
 export async function loader({ request }: Route.LoaderArgs) {
 	const session = await requireAuth(request);
-	// (await session).user.name
-
-	const recipes = await prisma.recipe.findMany({
-		where: { userId: session.user.id },
-		include: { user: { select: {
-			handle: true,
-			name: true,
-		 } } }
-	});
-
+	const recipes = await findRecipes({ userId: session.user.id });
 	return { recipes };
 }
 

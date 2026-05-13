@@ -26,7 +26,9 @@ export function cn(...inputs: ClassValue[]) {
 // }
 
 export function formatDuration(minutes: number) {
-	return (minutes > 60)
-		? `${Math.floor(minutes / 60)} hr ${minutes % 60} min`
-		: `${minutes} min`
+	const hours = Math.floor(minutes / 60);
+	const remainder = minutes % 60;
+	return hours
+		? `${hours} hr${hours > 1 ? 's' : ''} ${remainder > 0 ? `${remainder} min` : ""}`
+		: `${minutes} min`;
 }

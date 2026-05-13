@@ -1,39 +1,26 @@
 import { ContentContainer, ContentHeader, ContentPane } from "@components/app";
 import { Badge } from "@components/ui/badge";
 import { IngredientSummary, IngredientView } from "@components/view";
-import { prisma } from "@lib/prisma";
+import { useBookmarks } from "@hooks/bookmark";
+import { usePins } from "@hooks/pins";
+import { auth } from "@lib/auth-client";
 import { formatDuration } from "@lib/utils";
-import { ClockIcon } from "lucide-react";
+import { findRecipe } from "@services/recipe";
+import { getUser } from "@services/user";
+import { Button } from "@ui/button";
+import { BookmarkIcon, ClockIcon, PinIcon } from "lucide-react";
 import { redirect } from "react-router";
 import type { Route } from "./+types/recipes.$handle.$slug";
 
-export async function loader({ request, params }: Route.LoaderArgs) {
-	const user = await prisma.user.findUnique({
-		where: { handle: params.handle },
-	});
-
+export async function loader({ params }: Route.LoaderArgs) {
+	const user = await getUser(params.handle);
 	if (!user) {
 		throw redirect("/");
 	}
 
-	const recipe = await prisma.recipe.findUnique({
-		where: { userId_slug: { userId: user.id, slug: params.slug } },
-		include: {
-			user: {
-				select: {
-					name: true,
-				},
-			},
-			sections: {
-				orderBy: { index: "asc" },
-				include: {
-					instructions: { orderBy: { index: "asc" } },
-					ingredients: { orderBy: { index: "asc" } },
-				},
-			},
-		},
+	const recipe = await findRecipe({
+		userId_slug: { userId: user.id, slug: params.slug },
 	});
-
 	if (!recipe) {
 		throw redirect("/");
 	}
@@ -43,6 +30,12 @@ export async function loader({ request, params }: Route.LoaderArgs) {
 
 export default function RecipePage({ loaderData }: Route.ComponentProps) {
 	const { recipe } = loaderData;
+	const { data: session } = auth.useSession();
+	const { isPinned, togglePin } = usePins();
+	const { isBookmarked, toggleBookmark } = useBookmarks();
+	const loggedIn = !!session;
+	const pinned = isPinned(recipe.id);
+	const bookmarked = isBookmarked(recipe.id);
 
 	return (
 		<ContentContainer>
@@ -50,14 +43,24 @@ export default function RecipePage({ loaderData }: Route.ComponentProps) {
 				<h2 className="recipe__title">{recipe.name}</h2>
 				<div>By {recipe.user.name}</div>
 				<p className="recipe__description">{recipe.description}</p>
-				<div className="flex gap-1 justify-center">
-					<ClockIcon />
-					{formatDuration(recipe.duration)}
-				</div>
 				<div className="recipe__tags">
-					{recipe.tags.map((tag, i) => (
+					{recipe.tags.map((tag) => (
 						<Badge key={tag}>{tag}</Badge>
 					))}
+				</div>
+				<div className="flex gap-1 justify-center items-center">
+					<ClockIcon size={18} />
+					{formatDuration(recipe.duration)}
+				</div>
+				<div className="flex justify-center items-center">
+					<Button variant="ghost" onClick={() => togglePin(recipe)}>
+						<PinIcon fill={pinned ? "currentColor" : "none"} />
+					</Button>
+					{loggedIn && (
+						<Button variant="ghost" onClick={() => toggleBookmark(recipe.id)}>
+							<BookmarkIcon fill={bookmarked ? "currentColor" : "none"} />
+						</Button>
+					)}
 				</div>
 			</ContentHeader>
 			{recipe.intro && <ContentPane>{recipe.intro}</ContentPane>}

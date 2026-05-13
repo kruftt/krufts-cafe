@@ -16,3 +16,34 @@ export async function generateHandle(name: string) {
   
   return `${base}-${Math.max(...indices) + 1}`
 }
+
+
+export async function getUser(handle: string) {
+  return prisma.user.findUnique({
+    where: { handle },
+  });
+}
+
+
+export async function getPins(userId: string) {
+  return prisma.pin.findMany({
+    where: { userId },
+    include: {
+      recipe: {
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          user: { select: { handle: true } },
+        },
+      },
+    },
+  });
+}
+
+export async function getBookmarks(userId: string) {
+  return prisma.bookmark.findMany({
+    where: { userId },
+    select: { recipeId: true },
+  });
+}
