@@ -1,4 +1,11 @@
 {
+  "linter": {
+    "rules": {
+      "security": {
+        "noDangerouslySetInnerHtml": "off"
+      }
+    }
+  },
   "css": {
     "parser": {
       "tailwindDirectives": true

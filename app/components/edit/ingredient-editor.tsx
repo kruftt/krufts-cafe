@@ -39,6 +39,11 @@ export function IngredientEditor({
 					type="number"
 					value={String(ingredient.amount)}
 					onSave={updateIngredient("amount")}
+					onInput={(e) => {
+						// console.log(e.target.value);
+						const val = parseFloat(e.currentTarget.value);
+						e.currentTarget.value = Number.isNaN(val) ? "0" : val.toString();
+					}}
 					resize
 				/>
 				<InputEditor
@@ -50,12 +55,13 @@ export function IngredientEditor({
 				<InputEditor
 					value={ingredient.name}
 					onSave={updateIngredient("name")}
+					placeholder="ingredient"
 					resize
 				/>
 				<TextareaEditor
 					value={ingredient.description}
 					className="ingredient__description"
-					placeholder="preparation"
+					placeholder="(preparation)"
 					onSave={updateIngredient("description")}
 					// resize
 				/>

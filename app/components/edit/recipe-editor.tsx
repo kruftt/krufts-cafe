@@ -71,9 +71,7 @@ export function RecipeEditor({ recipe }: { recipe: Recipe.Full }) {
 					validate={(v) => Recipe.Name.safeParse(v).error?.issues[0]?.message}
 					// aria-invalid
 				/>
-				<div>
-					By {recipe.user.name}
-				</div>
+				<div className="recipe__author">By {recipe.user.name}</div>
 
 				<InputEditor
 					className="recipe__description"
@@ -98,6 +96,7 @@ export function RecipeEditor({ recipe }: { recipe: Recipe.Full }) {
 
 			<ContentPane>
 				<TextareaEditor
+					className="recipe__intro"
 					onSave={updateRecipe("intro")}
 					placeholder="Recipe Introduction..."
 					value={recipe.intro}

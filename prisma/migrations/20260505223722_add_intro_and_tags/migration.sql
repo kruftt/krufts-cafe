@@ -1,5 +1,0 @@
--- AlterTable
-ALTER TABLE "recipe" ADD COLUMN     "intro" TEXT NOT NULL DEFAULT '',
-ADD COLUMN     "tags" TEXT[] DEFAULT ARRAY[]::TEXT[],
-ALTER COLUMN "name" SET DEFAULT '',
-ALTER COLUMN "description" SET DEFAULT '';

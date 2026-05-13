@@ -16,7 +16,7 @@ export function AppBar() {
 	return (
 		<header
 			className={cn(
-				"w-1/1 h-16 flex justify-between items-center p-4 text-white drop-shadow-md/30",
+				"relative z-10 w-1/1 h-16 flex justify-between items-center p-4 text-white shadow-[0_0_3px_3px_rgba(0,0,0,0.2)]",
 				"bg-cafe-blue-1",
 				"dark:bg-cafe-blue-1-d",
 			)}
@@ -30,7 +30,11 @@ export function AppBar() {
 			{isHome ? (
 				<h1 className="text-3xl font-bold text-white">Kruft's Cafe</h1>
 			) : (
-				<form method="get" action="/" className="flex items-center w-64 rounded-full bg-black/75 border border-white/20 px-3 py-1 gap-2">
+				<form
+					method="get"
+					action="/"
+					className="flex items-center w-64 rounded-full bg-black/75 border border-white/20 px-3 py-1 gap-2"
+				>
 					<input
 						name="q"
 						type="text"

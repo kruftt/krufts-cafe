@@ -2,8 +2,12 @@
 CREATE TABLE "recipe" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
-    "slug" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
+    "tags" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "slug" TEXT,
+    "search" TEXT NOT NULL DEFAULT '',
+    "duration" INTEGER NOT NULL DEFAULT 30,
+    "description" TEXT NOT NULL DEFAULT '',
+    "intro" TEXT NOT NULL DEFAULT '',
     "userId" TEXT NOT NULL,
 
     CONSTRAINT "recipe_pkey" PRIMARY KEY ("id")
@@ -44,6 +48,24 @@ CREATE TABLE "ingredient" (
     "sectionId" INTEGER NOT NULL,
 
     CONSTRAINT "ingredient_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "pin" (
+    "id" SERIAL NOT NULL,
+    "userId" TEXT NOT NULL,
+    "recipeId" INTEGER NOT NULL,
+
+    CONSTRAINT "pin_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "bookmark" (
+    "id" SERIAL NOT NULL,
+    "userId" TEXT NOT NULL,
+    "recipeId" INTEGER NOT NULL,
+
+    CONSTRAINT "bookmark_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -109,6 +131,12 @@ CREATE TABLE "verification" (
 CREATE UNIQUE INDEX "recipe_userId_slug_key" ON "recipe"("userId", "slug");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "pin_userId_recipeId_key" ON "pin"("userId", "recipeId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "bookmark_userId_recipeId_key" ON "bookmark"("userId", "recipeId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "user_handle_key" ON "user"("handle");
 
 -- CreateIndex
@@ -137,6 +165,18 @@ ALTER TABLE "instruction" ADD CONSTRAINT "instruction_sectionId_fkey" FOREIGN KE
 
 -- AddForeignKey
 ALTER TABLE "ingredient" ADD CONSTRAINT "ingredient_sectionId_fkey" FOREIGN KEY ("sectionId") REFERENCES "section"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "pin" ADD CONSTRAINT "pin_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "pin" ADD CONSTRAINT "pin_recipeId_fkey" FOREIGN KEY ("recipeId") REFERENCES "recipe"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "bookmark" ADD CONSTRAINT "bookmark_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "bookmark" ADD CONSTRAINT "bookmark_recipeId_fkey" FOREIGN KEY ("recipeId") REFERENCES "recipe"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "session" ADD CONSTRAINT "session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;

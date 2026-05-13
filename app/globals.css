@@ -4,6 +4,7 @@
 @import "@fontsource-variable/inter";
 
 @custom-variant dark (&:where(.dark, .dark *));
+@custom-variant light (&:where(.light, .light *));
 
 @theme {
 	--color-cafe-blue-1-dark: oklch(0.55 0.15 223);
@@ -102,11 +103,11 @@
 	--calm-800: oklch(0.4 0.1 223);
 	--calm-900: oklch(0.29 0.07 223);
 
-	--input-shadow: rgb(0 0 0 / 0.09);
+	--input-shadow: rgb(0 0 0 / 0.12);
 }
 
 .dark {
-	--background: oklch(0.165 0 223);
+	--background: oklch(0.178 0 223);
 	--foreground: oklch(0.95 0 223);
 	--card: oklch(0.21 0 223);
 	--card-foreground: oklch(0.96 0 0);
@@ -158,10 +159,13 @@
 		text-align: unset;
 	}
 
-	input:-webkit-autofill {
-		-webkit-box-shadow: 0 0 0px 1000px transparent inset;
-		-webkit-text-fill-color: white;
-		transition: background-color 5000s ease-in-out 0s;
+	input:-webkit-autofill,
+	input:-webkit-autofill:hover,
+	input:-webkit-autofill:focus {
+		/* biome-ignore lint: override */
+		-webkit-box-shadow: 0 0 0px 1000px var(--background) inset !important;
+		-webkit-text-fill-color: var(--foreground);
+		/* transition: background-color 5000s ease-in-out 0s; */
 	}
 
 	button:not(:disabled),
@@ -186,7 +190,11 @@
 	}
 
 	.recipe__title {
-		@apply mt-12 mb-6! text-center font-bold text-4xl!;
+		@apply mt-12 mb-1 text-center font-bold text-4xl;
+	}
+
+	.recipe__author {
+		@apply mb-6;
 	}
 
 	.recipe__duration {
@@ -194,11 +202,15 @@
 	}
 
 	.recipe__description {
-		@apply text-base! whitespace-pre-wrap text-center font-normal my-4!;
+		@apply text-base! whitespace-pre-wrap text-center font-normal my-3;
 	}
 
 	.recipe__tags {
 		@apply flex flex-wrap justify-center gap-1 max-w-150 mx-auto my-4;
+	}
+
+	.recipe__intro {
+		@apply whitespace-pre-wrap;
 	}
 
 	.section__header {
@@ -214,7 +226,7 @@
 	}
 
 	.section__body {
-		@apply mt-6 flex flex-wrap gap-y-4 gap-x-2;
+		@apply mt-6 flex flex-wrap gap-y-2 gap-x-4;
 	}
 
 	.ingredients {
@@ -225,8 +237,12 @@
 		@apply grow-2 basis-120 mb-2;
 	}
 
+	.subsection {
+		@apply p-4 border light:border-black/30 rounded-xl shadow-[1px_1px_1px_1px_rgba(0,0,0,0.05)] dark:shadow-[1px_2px_1px_2px_rgba(0,0,0,0.2)];
+	}
+
 	.subsection__title {
-		@apply text-center text-xl font-semibold;
+		@apply text-center text-xl font-semibold mb-2;
 	}
 
 	.instruction {

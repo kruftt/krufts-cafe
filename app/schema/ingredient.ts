@@ -5,7 +5,7 @@ export const Model = z.object({
   userId: z.string(),
   amount: z.number(),
   units: z.string(),
-  name: z.string().min(1),
+  name: z.string(),
   description: z.string(),
   index: z.int(),
   sectionId: z.int(),

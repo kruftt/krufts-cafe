@@ -5,7 +5,7 @@ export function IngredientView({ ingredient }: { ingredient: Ingredient.Model })
 		<div className="ingredient">
 			<span>{ingredient.amount}</span>
 			<span>{ingredient.units}</span>
-			<span>{ingredient.name}</span>
+			<span>{`${ingredient.name}${ingredient.description ? ',' : ''}`}</span>
 			<span>{ingredient.description}</span>
 		</div>
 	);

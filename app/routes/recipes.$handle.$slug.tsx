@@ -41,7 +41,7 @@ export default function RecipePage({ loaderData }: Route.ComponentProps) {
 		<ContentContainer>
 			<ContentHeader>
 				<h2 className="recipe__title">{recipe.name}</h2>
-				<div>By {recipe.user.name}</div>
+				<div className="recipe__author">By {recipe.user.name}</div>
 				<p className="recipe__description">{recipe.description}</p>
 				<div className="recipe__tags">
 					{recipe.tags.map((tag) => (
@@ -63,10 +63,12 @@ export default function RecipePage({ loaderData }: Route.ComponentProps) {
 					)}
 				</div>
 			</ContentHeader>
-			{recipe.intro && <ContentPane>{recipe.intro}</ContentPane>}
-			{recipe.sections.length > 1 && (
+			{(recipe.intro || recipe.sections.length) && (
 				<ContentPane>
-					<IngredientSummary sections={recipe.sections} />
+					<div className="recipe__intro">{recipe.intro}</div>
+					{recipe.sections.length > 1 && (
+						<IngredientSummary sections={recipe.sections} />
+					)}
 				</ContentPane>
 			)}
 			{recipe.sections.map((section) => (
@@ -76,7 +78,7 @@ export default function RecipePage({ loaderData }: Route.ComponentProps) {
 						<p className="section__description">{section.description}</p>
 					</div>
 					<div className="section__body">
-						<div className="ingredients">
+						<div className="ingredients subsection">
 							<h4 className="subsection__title">Ingredients</h4>
 							<div>
 								{section.ingredients.map((ingredient) => (
@@ -84,7 +86,7 @@ export default function RecipePage({ loaderData }: Route.ComponentProps) {
 								))}
 							</div>
 						</div>
-						<div className="instructions">
+						<div className="instructions subsection">
 							<h4 className="subsection__title">Instructions</h4>
 							<div>
 								{section.instructions.map((instruction, i) => (

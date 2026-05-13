@@ -5,13 +5,13 @@ import { auth } from "@lib/auth-server";
 import { Button } from "@ui/button";
 import { createStore, Provider, useAtom } from "jotai";
 import { BsMoonStarsFill, BsSunFill } from "react-icons/bs";
-import { Outlet, Scripts } from "react-router";
+import { Links, Outlet, Scripts } from "react-router";
 import "./globals.css";
 import { TRPCProvider } from "@lib/trpc";
 import { getBookmarks, getPins } from "@services/user";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { IconContext } from "react-icons";
 import type { Route } from "./+types/root";
 import type { TRPCRouter } from "./trpc/router";
@@ -56,6 +56,8 @@ export function Layout({ children }: React.PropsWithChildren) {
 			<head>
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
 				<link rel="icon" href="data:image/x-icon;base64,AA" />
+				<Links />
+				<script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('theme');var dark=t!==null?JSON.parse(t):true;document.documentElement.classList.add(dark?'dark':'light');}catch(e){}})();` }} />
 			</head>
 			{children}
 		</html>
@@ -73,6 +75,10 @@ export default function App({ loaderData }: Route.ComponentProps) {
 		return s;
 	}, [pins, bookmarks, pinnedRecipes]);
 	const [theme, setTheme] = useAtom(themeAtom);
+	useEffect(() => {
+		document.documentElement.classList.toggle('dark', theme);
+		document.documentElement.classList.toggle('light', !theme);
+	}, [theme]);
 	const queryClient = getQueryClient();
 	const [trpcClient] = useState(() =>
 		createTRPCClient<TRPCRouter>({
@@ -90,7 +96,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
 			<QueryClientProvider client={queryClient}>
 				<TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
 					<IconContext.Provider value={{ color: `${theme ? "#DDD" : "#DDD"}` }}>
-						<body className={theme ? "dark" : ""}>
+						<body className="pb-10">
 							<AppBar />
 							<PinnedRecipes />
 							<Outlet />

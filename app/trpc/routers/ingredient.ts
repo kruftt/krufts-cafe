@@ -6,9 +6,9 @@ import { authedProcedure, router } from "../server";
 
 export const ingredientRouter = router({
 	create: authedProcedure.input(Ingredient.Create).mutation(async ({ input, ctx }) => {
-		const section = await prisma.section.findUniqueOrThrow({ where: { id: input.sectionId }, select: { recipeId: true } });
+		// const section = await prisma.section.findUniqueOrThrow({ where: { id: input.sectionId }, select: { recipeId: true } });
 		const ingredient = await prisma.ingredient.create({ data: { ...input, userId: ctx.session.user.id } });
-		await updateRecipeSearch(section.recipeId);
+		// await updateRecipeSearch(section.recipeId);
 		return ingredient;
 	}),
 

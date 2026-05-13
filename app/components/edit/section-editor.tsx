@@ -57,7 +57,7 @@ export function SectionEditor({
 		const last = ingredients[ingredients.length - 1];
 		const index = last ? last.index + 1 : 0;
 		
-		const newIngredient = { amount: 0, units: "", name: "new ingredient", description: "", index, sectionId: section.id };
+		const newIngredient = { amount: 0, units: "", name: "", description: "", index, sectionId: section.id };
 		createIngredientMutation.mutate(newIngredient, {
 			onSuccess: (created) => setIngredients([...ingredients, created]),
 		});
@@ -125,7 +125,7 @@ export function SectionEditor({
 			</div>
 
 			<div className="section__body">
-				<div className="ingredients">
+				<div className="ingredients subsection">
 					<h3 className="subsection__title">Ingredients</h3>
 					<div ref={ingredientsRef}>
 						{ingredients.map((ingredient) => (
@@ -141,7 +141,7 @@ export function SectionEditor({
 					</div>
 				</div>
 
-				<div className="instructions">
+				<div className="instructions subsection">
 					<h3 className="subsection__title">Instructions</h3>
 					<div ref={instructionsRef}>
 						{instructions.map((instruction, i) => (

@@ -66,7 +66,7 @@ export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
 									type="email"
 									aria-invalid={fieldState.invalid}
 									placeholder="email@domain.com"
-									autoComplete="off"
+									autoComplete="email"
 									disabled={request.inProgress}
 								/>
 								{fieldState.invalid && (
@@ -86,7 +86,7 @@ export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
 									id="form-login-password"
 									aria-invalid={fieldState.invalid}
 									placeholder="xxxxxxxx"
-									autoComplete="off"
+									autoComplete="current-password"
 									disabled={request.inProgress}
 								/>
 								{fieldState.invalid && (
