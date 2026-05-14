@@ -9,6 +9,7 @@ export interface EditorOptions {
 	clear?: boolean;
 	ctrl?: boolean;
 	reset?: boolean;
+	type?: string;
 }
 
 type InputTypes = string | number | readonly string[];
@@ -23,7 +24,7 @@ export function useEditor(
 	const [dirty, setDirty] = useState(false);
 	const [busy, setBusy] = useState(false);
 	const [error, setError] = useState("");
-	const { clear, ctrl, reset } = options;
+	const { clear, ctrl, reset, type } = options;
 	
 	function submit() {
 		if (!dirty) return;
@@ -34,6 +35,15 @@ export function useEditor(
 			if (reset) setValue(initialValue);
 			if (clear) setValue("");
 			return;
+		}
+
+		if (type === "number") {
+			const v = parseFloat(value as string);
+			if (Number.isNaN(v)) {
+				setValue(initialValue);
+			} else {
+				setValue(v.toString())
+			}
 		}
 
 		setBusy(true);

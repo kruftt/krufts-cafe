@@ -80,7 +80,7 @@ export function SectionEditor({
 	// biome-ignore lint: length is the proper dependency
 		useEffect(() => {
 			instructionsRef.current
-				?.querySelector<HTMLInputElement>(":scope div:last-child input")
+				?.querySelector<HTMLInputElement>(":scope > div:last-child textarea")
 				?.focus();
 		}, [instructions.length]);
 

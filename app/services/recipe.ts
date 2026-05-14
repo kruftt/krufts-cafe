@@ -88,8 +88,11 @@ interface UserIdLocator {
 	userId: string;
 }
 
+interface PublishedLocator {
+	published: boolean;
+}
 
-export async function findRecipes(where?: UserIdLocator) {
+export async function findRecipes(where?: UserIdLocator | PublishedLocator) {
 	return prisma.recipe.findMany({
 		where,
 		include: {

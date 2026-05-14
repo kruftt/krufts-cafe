@@ -19,13 +19,14 @@ export function InputEditor({
 	styles,
 	reset,
 	resize,
+	type,
 	...rest
 }: Props) {
 	const { value, busy, error, onKeyDown, onChange, onBlur } = useEditor(
 		initialValue || "",
 		onSave,
 		validate,
-		{ clear, reset }
+		{ clear, reset, type }
 	);
 
 	return (

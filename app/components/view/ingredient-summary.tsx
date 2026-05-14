@@ -4,29 +4,29 @@ import { IngredientView } from "./ingredient-view";
 
 interface Props {
 	sections: Section.Full[];
+	scale: number;
 }
 
-export function IngredientSummary({ sections }: Props) {
+export function IngredientSummary({ sections, scale }: Props) {
 	return (
-		<div>
-			<h3 className="mt-8 mb-4 text-2xl text-center font-bold">Ingredients</h3>
-			<div className="flex flex-wrap justify-center gap-4">
-				{sections.map((section) => (
-					<div
-						key={section.id}
-						className={cn(
-							"grow min-w-40 max-w-90 subsection",
-						)}
-					>
-						<h3 className="subsection__title">{section.name}</h3>
-						<div>
-							{section.ingredients.map((ingredient) => (
-								<IngredientView key={ingredient.id} ingredient={ingredient} />
-							))}
-						</div>
+		<div className="columns-sm gap-4 mt-4">
+			{sections.map((section) => (
+				<div
+					key={section.id}
+					className={cn("subsection mb-4 break-inside-avoid")}
+				>
+					<h3 className="subsection__title">{section.name}</h3>
+					<div>
+						{section.ingredients.map((ingredient) => (
+							<IngredientView
+								key={ingredient.id}
+								ingredient={ingredient}
+								scale={scale}
+							/>
+						))}
 					</div>
-				))}
-			</div>
+				</div>
+			))}
 		</div>
 	);
 }

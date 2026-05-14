@@ -210,7 +210,7 @@
 	}
 
 	.recipe__intro {
-		@apply whitespace-pre-wrap;
+		@apply whitespace-pre-wrap mb-8;
 	}
 
 	.section__header {

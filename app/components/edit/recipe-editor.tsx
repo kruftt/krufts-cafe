@@ -5,13 +5,14 @@ import { useTRPC } from "@lib/trpc";
 import { Recipe, type Section } from "@schema";
 import { useMutation } from "@tanstack/react-query";
 import { Button } from "@ui/button";
-import { ClockIcon } from "lucide-react";
+import { CheckSquareIcon, ClockIcon, SquareIcon } from "lucide-react";
 import { useState } from "react";
 import { SectionEditor } from "./section-editor";
 
 export function RecipeEditor({ recipe }: { recipe: Recipe.Full }) {
 	const [sections, setSections] = useState(recipe.sections);
 	const trpc = useTRPC();
+	const [published, setPublished] = useState(recipe.published);
 
 	const updateRecipeMutation = useMutation({
 		...trpc.recipe.update.mutationOptions(),
@@ -35,6 +36,14 @@ export function RecipeEditor({ recipe }: { recipe: Recipe.Full }) {
 					onSuccess: options.onSuccess,
 				},
 			);
+	}
+
+	function togglePublish() {
+		const val = !published;
+		updateRecipeMutation.mutate(
+			{ id: recipe.id, published: val }
+		)
+		setPublished(val);
 	}
 
 	function createSection() {
@@ -72,6 +81,25 @@ export function RecipeEditor({ recipe }: { recipe: Recipe.Full }) {
 					// aria-invalid
 				/>
 				<div className="recipe__author">By {recipe.user.name}</div>
+
+				<Button
+					aria-label="Toggle published"
+					size="sm"
+					variant="outline"
+					onClick={togglePublish}
+				>
+					{ published ? (
+						<>
+							<CheckSquareIcon />
+							Published
+						</>
+					) : (
+						<>
+							<SquareIcon />
+							Unpublished
+						</>
+					)}
+				</Button>
 
 				<InputEditor
 					className="recipe__description"

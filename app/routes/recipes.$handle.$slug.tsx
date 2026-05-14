@@ -1,5 +1,6 @@
 import { ContentContainer, ContentHeader, ContentPane } from "@components/app";
 import { Badge } from "@components/ui/badge";
+import { Input } from "@components/ui/input";
 import { IngredientSummary, IngredientView } from "@components/view";
 import { useBookmarks } from "@hooks/bookmark";
 import { usePins } from "@hooks/pins";
@@ -9,6 +10,7 @@ import { findRecipe } from "@services/recipe";
 import { getUser } from "@services/user";
 import { Button } from "@ui/button";
 import { BookmarkIcon, ClockIcon, PinIcon } from "lucide-react";
+import { useState } from "react";
 import { redirect } from "react-router";
 import type { Route } from "./+types/recipes.$handle.$slug";
 
@@ -36,6 +38,7 @@ export default function RecipePage({ loaderData }: Route.ComponentProps) {
 	const loggedIn = !!session;
 	const pinned = isPinned(recipe.id);
 	const bookmarked = isBookmarked(recipe.id);
+	const [scale, setScale] = useState(1);
 
 	return (
 		<ContentContainer>
@@ -63,14 +66,29 @@ export default function RecipePage({ loaderData }: Route.ComponentProps) {
 					)}
 				</div>
 			</ContentHeader>
-			{(recipe.intro || recipe.sections.length) && (
-				<ContentPane>
-					<div className="recipe__intro">{recipe.intro}</div>
-					{recipe.sections.length > 1 && (
-						<IngredientSummary sections={recipe.sections} />
-					)}
-				</ContentPane>
-			)}
+			{/* {(recipe.intro || recipe.sections.length) && ( */}
+			<ContentPane>
+				{recipe.intro && <div className="recipe__intro">{recipe.intro}</div>}
+				{recipe.sections.length > 1 && (
+					<h3 className="mb-4 text-2xl text-center font-bold">Ingredients</h3>
+				)}
+				<div className="flex flex-col justify-center items-center text-base">
+					<div className="mr-4">Scale: {scale.toFixed(2)}</div>
+					<Input
+						className="max-w-40 px-0 accent-gray-700"
+						type="range"
+						min={0.25}
+						max={4.0}
+						step={0.25}
+						defaultValue={1}
+						onChange={(e) => setScale(parseFloat(e.currentTarget.value))}
+					/>
+				</div>
+				{recipe.sections.length > 1 && (
+					<IngredientSummary sections={recipe.sections} scale={scale} />
+				)}
+			</ContentPane>
+			{/* )} */}
 			{recipe.sections.map((section) => (
 				<ContentPane key={section.id}>
 					<div className="section__header">
@@ -82,7 +100,11 @@ export default function RecipePage({ loaderData }: Route.ComponentProps) {
 							<h4 className="subsection__title">Ingredients</h4>
 							<div>
 								{section.ingredients.map((ingredient) => (
-									<IngredientView key={ingredient.id} ingredient={ingredient} />
+									<IngredientView
+										key={ingredient.id}
+										ingredient={ingredient}
+										scale={scale}
+									/>
 								))}
 							</div>
 						</div>

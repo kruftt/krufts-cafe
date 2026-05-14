@@ -4,7 +4,9 @@ import { findRecipes } from "@services/recipe";
 import type { Route } from "./+types/_index";
 
 export async function loader({ request }: Route.LoaderArgs) {
-	const recipes = await findRecipes();
+	const recipes = await findRecipes({
+		published: true
+	});
 	const url = new URL(request.url);
 	const urlQuery = url.searchParams.get("q") ?? "";
 	return { recipes, urlQuery };

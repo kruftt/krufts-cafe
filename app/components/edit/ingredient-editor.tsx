@@ -18,9 +18,13 @@ export function IngredientEditor({
 	const updateMutation = useMutation(trpc.ingredient.update.mutationOptions());
 
 	function updateIngredient(field: keyof Ingredient.Model) {
-		return (value: string, options: ProcedureOptions) => {
+		return (value: string | number, options: ProcedureOptions) => {
+			if (field === "amount") {
+				const v = parseFloat(value as string);
+				value = Number.isNaN(v) ? 0 : v;
+			}
 			updateMutation.mutate(
-				{ id: ingredient.id, [field]: (field === "amount") ? parseInt(value, 10) : value },
+				{ id: ingredient.id, [field]: value },
 				{
 					onError: (ctx) => options.onError(ctx.message),
 					onSuccess: options.onSuccess,
@@ -39,11 +43,6 @@ export function IngredientEditor({
 					type="number"
 					value={String(ingredient.amount)}
 					onSave={updateIngredient("amount")}
-					onInput={(e) => {
-						// console.log(e.target.value);
-						const val = parseFloat(e.currentTarget.value);
-						e.currentTarget.value = Number.isNaN(val) ? "0" : val.toString();
-					}}
 					resize
 				/>
 				<InputEditor
