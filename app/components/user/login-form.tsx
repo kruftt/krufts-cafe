@@ -41,8 +41,8 @@ export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
 			onRequest: request.onRequest,
 			onResponse: request.onResponse,
 			onError: (ctx) => request.onError(ctx.error.message),
-			onSuccess: () => {
-				mergePins();
+			onSuccess: async () => {
+				await mergePins();
 				onSuccess?.();
 				revalidator.revalidate();
 			},

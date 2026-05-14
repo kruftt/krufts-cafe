@@ -6,9 +6,7 @@ import { User } from "@schema";
 import { Button } from "@ui/button";
 import {
 	Dialog,
-	DialogClose,
 	DialogContent,
-	DialogDescription,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
@@ -16,7 +14,6 @@ import {
 } from "@ui/dialog";
 import {
 	Field,
-	FieldDescription,
 	FieldError,
 	FieldGroup,
 	FieldLabel,
@@ -27,7 +24,6 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { PasswordInput } from "./password-input";
 
-// export default function CreationForm({ onOpen }: { onOpen: () => void }) {
 export function CreationForm() {
 	const [open, setOpen] = useState(false);
 	const request = useRequest();

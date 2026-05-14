@@ -85,7 +85,6 @@ export default function App({ loaderData }: Route.ComponentProps) {
 			links: [
 				httpBatchLink({
 					url: "/api/trpc",
-					// url: "http://localhost:5173",
 				}),
 			],
 		}),

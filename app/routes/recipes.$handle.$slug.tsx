@@ -66,7 +66,7 @@ export default function RecipePage({ loaderData }: Route.ComponentProps) {
 					)}
 				</div>
 			</ContentHeader>
-			{/* {(recipe.intro || recipe.sections.length) && ( */}
+			
 			<ContentPane>
 				{recipe.intro && <div className="recipe__intro">{recipe.intro}</div>}
 				{recipe.sections.length > 1 && (
@@ -88,7 +88,7 @@ export default function RecipePage({ loaderData }: Route.ComponentProps) {
 					<IngredientSummary sections={recipe.sections} scale={scale} />
 				)}
 			</ContentPane>
-			{/* )} */}
+			
 			{recipe.sections.map((section) => (
 				<ContentPane key={section.id}>
 					<div className="section__header">

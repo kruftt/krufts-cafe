@@ -1,12 +1,10 @@
 import { SubmitButton } from "@components/app";
 import {
 	Field,
-	FieldDescription,
 	FieldError,
 	FieldGroup,
 	FieldLabel,
 } from "@components/ui/field";
-import { Input } from "@components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRequest } from "@hooks";
 import auth from "@lib/auth-client";
@@ -24,7 +22,7 @@ const Schema = z.object({
 type Schema = z.infer<typeof Schema>;
 
 
-export function PasswordForm({ user }: { user: User.Model }) {
+export function PasswordForm() {
 	const request = useRequest();
 
 	const form = useForm<Schema>({

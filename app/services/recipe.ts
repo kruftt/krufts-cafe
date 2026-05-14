@@ -116,6 +116,7 @@ export async function findBookmarkedRecipes(where?: UserIdLocator) {
 					id: true,
 					name: true,
 					tags: true,
+					published: true,
 					duration: true,
 					slug: true,
 					search: true,

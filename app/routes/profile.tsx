@@ -23,7 +23,7 @@ export default function ProfilePage({ loaderData }: Route.ComponentProps) {
 				<ProfileForm user={user as User.Model} />
 			</ContentPane>
 			<ContentPane className="max-w-120 mx-auto mt-6">
-				<PasswordForm user={user as User.Model} />
+				<PasswordForm />
 			</ContentPane>
 		</ContentContainer>
 	);
