@@ -36,6 +36,6 @@ export const auth = betterAuth({
 	},
 
 	trustedOrigins: [
-		...(process.env.APP_URL ? [process.env.APP_URL] : []),
+		...(process.env.APP_URL ? process.env.APP_URL.split(',') : []),
 	],
 });

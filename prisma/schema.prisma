@@ -17,62 +17,69 @@ datasource db {
 // Models
 
 model Recipe {
-  id            Int       @id @default(autoincrement())
-  name          String
-  tags          String[]  @default([])
-  slug          String?
-  published     Boolean   @default(false)
-  search        String    @default("")
-  duration      Int       @default(30)
-  description   String    @default("")
-  intro         String    @default("")
-  sections      Section[]
-  userId        String
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  pins          Pin[]
-  bookmarks     Bookmark[]
+  id                  Int           @id @default(autoincrement())
+  name                String    
+  slug                String?   
+  userId              String    
+  user                User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tags                String[]      @default([])
+  search              String        @default("")
+  published           Boolean       @default(false)
+  prepTime            Int           @default(15)
+  cookTime            Int           @default(15)
+  intro               String        @default("")
+  ingredientGroups    IngredientGroup[]   
+  steps               Step[]
+  pins                Pin[]
+  bookmarks           Bookmark[]
 
   @@map("recipe")
   @@unique([userId, slug])
 }
 
-model Section {
-  id            Int           @id @default(autoincrement())
-  userId        String
-  name          String
-  description   String
+model IngredientGroup {
+  id            Int             @id @default(autoincrement())
+  name          String          @default("")
   index         Int
   recipeId      Int
-  recipe        Recipe        @relation(fields: [recipeId], references: [id], onDelete: Cascade)
-  instructions  Instruction[]
+  recipe        Recipe    @relation(fields: [recipeId], references: [id], onDelete: Cascade)
   ingredients   Ingredient[]
 
-  @@map("section")
-}
-
-model Instruction {
-  id            Int       @id @default(autoincrement())
-  userId        String
-  description   String
-  index         Int
-  sectionId     Int
-  section       Section   @relation(fields: [sectionId], references: [id], onDelete: Cascade)
-
-  @@map("instruction")
+  @@map("ingredient_group")
 }
 
 model Ingredient {
-  id            Int       @id @default(autoincrement())
-  userId        String
-  amount        Float
-  units         String
-  name          String
-  description   String
+  id            Int               @id @default(autoincrement())
+  amount        Float             @default(0)
+  units         String            @default("")
+  name          String            @default("")
   index         Int
-  sectionId     Int
-  section       Section   @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  groupId       Int
+  group         IngredientGroup   @relation(fields: [groupId], references: [id], onDelete: Cascade)
 
   @@map("ingredient")
+}
+
+model Step {
+  id            Int               @id @default(autoincrement())
+  name          String            @default("")
+  intro         String            @default("")
+  index         Int
+  recipeId      Int
+  recipe        Recipe            @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  instructions  Instruction[]
+
+  @@map("step")
+}
+
+model Instruction {
+  id            Int           @id @default(autoincrement())
+  text          String        @default("")
+  index         Int
+  stepId        Int
+  step          Step          @relation(fields: [stepId], references: [id], onDelete: Cascade)
+
+  @@map("instruction")
 }
 
 model Pin {

@@ -18,7 +18,7 @@
 
 @theme inline {
 	--font-heading: var(--font-sans);
-	--font-sans: 'Inter Variable', sans-serif;
+	--font-sans: "Inter Variable", sans-serif;
 	--color-sidebar-ring: var(--sidebar-ring);
 	--color-sidebar-border: var(--sidebar-border);
 	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -60,19 +60,21 @@
 }
 
 :root {
-	--background: oklch(.965 0 0);
+	--background: oklch(0.965 0 0);
 	--foreground: oklch(0.145 0 0);
 	--card: oklch(1 0 0);
 	--card-foreground: oklch(0.145 0 0);
 	--popover: oklch(1 0 0);
 	--popover-foreground: oklch(0.145 0 0);
-	--primary: oklch(0.35 0 0);
+	--primary: oklch(0.32 0 0);
 	--primary-foreground: oklch(0.95 0 0);
-	--secondary: oklch(0.96 0.0 223);
-	--secondary-foreground: oklch(0.205 0 0);
+	--secondary: oklch(0.35 0.01 223);
+	--secondary-foreground: oklch(0.95 0 0);
+	/* --secondary: oklch(0.96 0 223);
+	--secondary-foreground: oklch(0.205 0 0); */
 	--muted: oklch(0.97 0 0);
 	--muted-foreground: oklch(0.556 0 0);
-	--accent: oklch(0.97 0 0);
+	--accent: oklch(0.94 0 0);
 	--accent-foreground: oklch(0.205 0 0);
 	--destructive: oklch(0.577 0.245 27.325);
 	--border: oklch(0.922 0 0);
@@ -113,9 +115,9 @@
 	--card-foreground: oklch(0.96 0 0);
 	--popover: oklch(0.205 0 0);
 	--popover-foreground: oklch(0.985 0 0);
-	--primary: oklch(0.35 0 223);
+	--primary: oklch(0.32 0 223);
 	--primary-foreground: oklch(0.98 0 0);
-	--secondary: oklch(0.265 0.04 223);
+	--secondary: oklch(0.35 0.01 223);
 	--secondary-foreground: oklch(0.985 0 0);
 	--muted: oklch(0.269 0 0);
 	--muted-foreground: oklch(0.708 0 0);
@@ -143,8 +145,8 @@
 }
 
 @layer base {
-  * {
-			@apply border-border outline-ring/50;
+	* {
+		@apply border-border outline-ring/50;
 	}
 
 	body {
@@ -179,40 +181,99 @@
 	}
 }
 
-
 @layer components {
+	.content_container {
+		@apply m-auto max-w-200 px-4 pb-80;
+	}
+
+	.header__section {
+		@apply text-center mb-10;
+	}
+
+	.header__title {
+		@apply my-8;
+	}
+
+	.header__item {
+		@apply my-4;
+	}
+
+	.panel__section {
+		@apply w-1/1 flex flex-col gap-6 border border-primary rounded-2xl mt-6 p-8 bg-card text-card-foreground shadow-lg shadow-black/15 dark:shadow-black/30;
+	}
+
+	.panel__title {
+		@apply flex items-center gap-3 text-xl font-bold;
+	}
+
+	.panel__index {
+		@apply text-xl rounded-lg bg-accent px-4 py-2;
+	}
+
+	.panel__item {
+		/* @apply ; */
+	}
+}
+
+
+
+@layer utilities {
 	.userpage__header {
 		@apply text-3xl font-bold mt-10;
 	}
 
 	.recipe__list {
-		@apply max-w-210! m-auto;
+		/* @apply max-w-210! m-auto; */
 	}
 
 	.recipe__title {
-		@apply mt-12 mb-1 text-center font-bold text-4xl;
+		@apply font-bold text-4xl;
 	}
 
 	.recipe__author {
-		@apply mb-6;
-	}
-
-	.recipe__duration {
-		@apply text-base;
-	}
-
-	.recipe__description {
-		@apply text-base! whitespace-pre-wrap text-center font-normal my-3;
+		@apply font-light text-lg;
 	}
 
 	.recipe__tags {
-		@apply flex flex-wrap justify-center gap-1 max-w-150 mx-auto my-4;
+		@apply flex flex-wrap justify-center gap-2 max-w-150 mx-auto;
+	}
+
+	.tag {
+		@apply overflow-visible p-3 text-sm border-secondary/50 light:bg-primary/10 dark:bg-primary/40 text-card-foreground/85;
+	}
+
+	.recipe__duration {
+		@apply flex flex-wrap items-stretch gap-6 justify-center mt-6;
+	}
+
+	.recipe__duration_title {
+		@apply font-light text-sm mb-0;
+	}
+
+	.recipe__duration_entry {
+		@apply flex gap-1 justify-center font-bold text-lg;
 	}
 
 	.recipe__intro {
-		@apply whitespace-pre-wrap mb-8;
+		@apply whitespace-pre-wrap;
 	}
 
+	.ingredient_groups {
+		@apply columns-xs gap-8;
+	}
+
+	.ingredient_group {
+		@apply break-inside-avoid mb-6;
+	}
+
+	.ingredient_group__name {
+		@apply border-b grow pb-1 mb-2 font-bold;
+	}
+
+	.ingredient__amount {
+		@apply font-bold;
+	}
+/* 
 	.section__header {
 		@apply mb-8;
 	}
@@ -227,34 +288,50 @@
 
 	.section__body {
 		@apply mt-6 flex flex-wrap gap-y-2 gap-x-4;
-	}
+	} */
 
 	.ingredients {
-		@apply grow basis-80 mb-2;
+		@apply grow basis-80;
 	}
 
 	.instructions {
 		@apply grow-2 basis-120 mb-2;
 	}
 
-	.subsection {
+	.step__intro {
+		@apply whitespace-pre-wrap;
+	}
+
+
+	/* .subsection {
 		@apply p-4 border light:border-black/30 rounded-xl shadow-[1px_1px_1px_1px_rgba(0,0,0,0.05)] dark:shadow-[1px_2px_1px_2px_rgba(0,0,0,0.2)];
 	}
 
 	.subsection__title {
 		@apply text-center text-xl font-semibold mb-2;
-	}
+	} */
 
 	.instruction {
-		@apply grow flex items-start gap-2 text-sm text-left font-light py-1;
+		@apply grow flex items-start gap-2 text-left py-1;
 	}
 
 	.ingredient {
-		@apply grow flex flex-wrap justify-start items-start py-1 gap-x-1 gap-y-0 max-w-150 text-sm; 
+		@apply grow flex flex-wrap justify-start items-start py-1 gap-x-1 gap-y-0 max-w-150 text-base;
 	}
-
+/* 
 	.ingredient__description {
 		@apply grow font-light;
+	} */
+
+	.input {
+		@apply bg-transparent border-none outline-none p-0 m-0 text-inherit! aria-invalid:ring-3 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/50 max-w-none;
 	}
 
+	.input__error {
+		@apply absolute top-full left-0 right-0 m-auto mt-3 text-sm text-destructive bg-popover border border-destructive rounded-lg px-3 py-2 z-100 ring-2 ring-destructive w-fit;
+	}
+
+	.textarea {
+		@apply block bg-transparent border-none outline-none p-0 m-0 text-inherit! field-sizing-content;
+	}
 }

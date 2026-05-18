@@ -1,11 +1,10 @@
+import { buttonVariants } from "@components/ui/button";
 import { auth } from "@lib/auth-client";
 import { cn } from "@lib/utils";
-import type { User } from "@schema";
-import { buttonVariants } from "@ui/button";
 import { SearchIcon } from "lucide-react";
 import { BsCupHotFill } from "react-icons/bs";
 import { useLocation } from "react-router";
-import { LoginPopover, UserMenu } from "../user";
+import { LoginPopover, UserMenu } from "./menu";
 
 export function AppBar() {
 	const { data: session, isPending } = auth.useSession();
@@ -46,11 +45,7 @@ export function AppBar() {
 					</button>
 				</form>
 			)}
-			{isLoggedIn ? (
-				<UserMenu user={session.user as User.Model} />
-			) : (
-				<LoginPopover />
-			)}
+			{isLoggedIn ? <UserMenu user={session.user} /> : <LoginPopover />}
 		</header>
 	);
 }

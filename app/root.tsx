@@ -1,8 +1,8 @@
 import { themeAtom } from "@atoms/theme";
 import { bookmarksAtom, pinnedRecipesAtom, pinsAtom } from "@atoms/user";
-import { AppBar, PinnedRecipes } from "@components/app";
+import { AppBar, PinBar } from "@components/app";
+import { Button } from "@components/ui/button";
 import { auth } from "@lib/auth-server";
-import { Button } from "@ui/button";
 import { createStore, Provider, useAtom } from "jotai";
 import { BsMoonStarsFill, BsSunFill } from "react-icons/bs";
 import { Links, Outlet, Scripts } from "react-router";
@@ -57,7 +57,11 @@ export function Layout({ children }: React.PropsWithChildren) {
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
 				<link rel="icon" href="data:image/x-icon;base64,AA" />
 				<Links />
-				<script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('theme');var dark=t!==null?JSON.parse(t):true;document.documentElement.classList.add(dark?'dark':'light');}catch(e){}})();` }} />
+				<script
+					dangerouslySetInnerHTML={{
+						__html: `(function(){try{var t=localStorage.getItem('theme');var dark=t!==null?JSON.parse(t):true;document.documentElement.classList.add(dark?'dark':'light');}catch(e){}})();`,
+					}}
+				/>
 			</head>
 			{children}
 		</html>
@@ -76,8 +80,8 @@ export default function App({ loaderData }: Route.ComponentProps) {
 	}, [pins, bookmarks, pinnedRecipes]);
 	const [theme, setTheme] = useAtom(themeAtom);
 	useEffect(() => {
-		document.documentElement.classList.toggle('dark', theme);
-		document.documentElement.classList.toggle('light', !theme);
+		document.documentElement.classList.toggle("dark", theme);
+		document.documentElement.classList.toggle("light", !theme);
 	}, [theme]);
 	const queryClient = getQueryClient();
 	const [trpcClient] = useState(() =>
@@ -97,7 +101,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
 					<IconContext.Provider value={{ color: `${theme ? "#DDD" : "#DDD"}` }}>
 						<body className="pb-10">
 							<AppBar />
-							<PinnedRecipes />
+							<PinBar />
 							<Outlet />
 							<Button
 								className="fixed bottom-4 left-4 rounded-full"

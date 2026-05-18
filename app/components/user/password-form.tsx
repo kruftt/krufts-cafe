@@ -1,4 +1,4 @@
-import { SubmitButton } from "@components/app";
+import { PasswordInput, SubmitButton } from "@components/controls";
 import {
 	Field,
 	FieldError,
@@ -7,20 +7,17 @@ import {
 } from "@components/ui/field";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRequest } from "@hooks";
-import auth from "@lib/auth-client";
+import { auth } from "@lib/auth-client";
 import { User } from "@schema";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
-import { PasswordInput } from "./password-input";
-
 
 const Schema = z.object({
-  currentPassword: User.Password,
-  newPassword: User.Password,
-})
+	currentPassword: User.Password,
+	newPassword: User.Password,
+});
 
 type Schema = z.infer<typeof Schema>;
-
 
 export function PasswordForm() {
 	const request = useRequest();
@@ -34,11 +31,14 @@ export function PasswordForm() {
 	});
 
 	async function submit(data: Schema) {
-		await auth.changePassword({ ...data, revokeOtherSessions: true }, {
-			onRequest: request.onRequest,
-			onResponse: request.onResponse,
-			onError: (ctx) => request.onError(ctx.error.message),
-		});
+		await auth.changePassword(
+			{ ...data, revokeOtherSessions: true },
+			{
+				onRequest: request.onRequest,
+				onResponse: request.onResponse,
+				onError: (ctx) => request.onError(ctx.error.message),
+			},
+		);
 	}
 
 	return (
@@ -85,7 +85,6 @@ export function PasswordForm() {
 						</Field>
 					)}
 				/>
-				
 			</FieldGroup>
 			<SubmitButton
 				className="mt-6"

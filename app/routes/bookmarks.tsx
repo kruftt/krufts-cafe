@@ -1,5 +1,5 @@
-import { ContentContainer, ContentHeader, ContentPane } from "@components/app";
-import { RecipeList } from "@components/list";
+import { Container, Header, Panel } from "@components/app";
+import { RecipeList } from "@components/recipe/list";
 import { requireAuth } from "@lib/auth-loader";
 import { findBookmarkedRecipes } from "@services/recipe";
 import type { Route } from "./+types/bookmarks";
@@ -14,13 +14,15 @@ export default function BookmarksPage({ loaderData }: Route.ComponentProps) {
 	const { recipes } = loaderData;
 
 	return (
-		<ContentContainer>
-			<ContentHeader className="userpage__header">
-				<h2>Bookmarks</h2>
-			</ContentHeader>
-			<ContentPane className="recipe__list">
+		<Container>
+			<Header.Section className="userpage__header">
+				<Header.Title>
+					<h2>Bookmarks</h2>
+				</Header.Title>
+			</Header.Section>
+			<Panel.Section className="recipe__list">
 				<RecipeList recipes={recipes} />
-			</ContentPane>
-		</ContentContainer>
+			</Panel.Section>
+		</Container>
 	);
 }

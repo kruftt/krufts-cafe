@@ -27,7 +27,7 @@ export async function updateRecipeSearch(recipeId: number) {
 		select: {
 			name: true,
 			tags: true,
-			sections: {
+			ingredientGroups: {
 				select: {
 					ingredients: { select: { name: true } },
 				},
@@ -35,7 +35,7 @@ export async function updateRecipeSearch(recipeId: number) {
 		},
 	});
 
-	const ingredientNames = recipe.sections
+	const ingredientNames = recipe.ingredientGroups
 		.flatMap((s) => s.ingredients)
 		.map((i) => i.name);
 
@@ -49,18 +49,16 @@ export async function updateRecipeSearch(recipeId: number) {
 	});
 }
 
-
 interface IdSlugLocator {
 	userId_slug: {
 		userId: string;
 		slug: string;
-	}
+	};
 }
 
 interface RecipeIdLocator {
 	id: number;
 }
-
 
 export async function findRecipe(where: IdSlugLocator | RecipeIdLocator) {
 	return prisma.recipe.findUnique({
@@ -72,10 +70,15 @@ export async function findRecipe(where: IdSlugLocator | RecipeIdLocator) {
 					handle: true,
 				},
 			},
-			sections: {
+			ingredientGroups: {
 				orderBy: { index: "asc" },
 				include: {
 					ingredients: { orderBy: { index: "asc" } },
+				},
+			},
+			steps: {
+				orderBy: { index: "asc" },
+				include: {
 					instructions: { orderBy: { index: "asc" } },
 				},
 			},
@@ -83,6 +86,11 @@ export async function findRecipe(where: IdSlugLocator | RecipeIdLocator) {
 	});
 }
 
+export type RecipeData = NonNullable<Awaited<ReturnType<typeof findRecipe>>>;
+export type StepData = RecipeData['steps'][number];
+export type InstructionData = StepData['instructions'][number];
+export type IngredientGroupData = RecipeData['ingredientGroups'][number];
+export type IngredientData = IngredientGroupData['ingredients'][number];
 
 interface UserIdLocator {
 	userId: string;
@@ -106,29 +114,25 @@ export async function findRecipes(where?: UserIdLocator | PublishedLocator) {
 	});
 }
 
+export type RecipeRows = Awaited<ReturnType<typeof findRecipes>>;
+export type RecipeRowData = RecipeRows[number];
 
 export async function findBookmarkedRecipes(where?: UserIdLocator) {
 	return await prisma.bookmark.findMany({
 		where,
 		include: {
 			recipe: {
-				select: {
-					id: true,
-					name: true,
-					tags: true,
-					published: true,
-					duration: true,
-					slug: true,
-					search: true,
-					description: true,
-					intro: true,
-					userId: true,
-					user: { select: {
-						handle: true,
-						name: true,
-					} },
+				include: {
+					user: {
+						select: {
+							handle: true,
+							name: true,
+						},
+					},
 				},
 			},
 		},
 	});
 }
+
+export type FoundBookmarkedRecipes = Awaited<ReturnType<typeof findBookmarkedRecipes>>;

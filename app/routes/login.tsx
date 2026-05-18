@@ -1,4 +1,4 @@
-import { LoginForm } from "@components/user";
+import { LoginForm } from "@components/app";
 import { auth } from "@lib/auth-server";
 import { redirect, useLoaderData, useNavigate } from "react-router";
 import type { Route } from "./+types/login";

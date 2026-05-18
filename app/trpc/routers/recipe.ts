@@ -2,6 +2,7 @@ import { prisma } from "@lib/prisma";
 import { Model, Recipe } from "@schema";
 import { newRecipeName, updateRecipeSearch } from "@services/recipe";
 import { TRPCError } from "@trpc/server";
+import * as z from "zod";
 import { authedProcedure, router } from "../server";
 
 function toSlug(name: string) {
@@ -16,7 +17,6 @@ function toSlug(name: string) {
 export const recipeRouter = router({
 	create: authedProcedure.mutation(async ({ ctx }) => {
 		const name = await newRecipeName(ctx.session.user.id);
-
 		return prisma.recipe.create({
 			data: {
 				name,
@@ -27,7 +27,11 @@ export const recipeRouter = router({
 	}),
 
 	update: authedProcedure
-		.input(Recipe.Partial)
+		.input(
+			Recipe.Update.extend({
+				id: z.number(),
+			}),
+		)
 		.mutation(async ({ input, ctx }) => {
 			const recipe = await prisma.recipe.findUnique({
 				where: { id: input.id },
@@ -37,8 +41,7 @@ export const recipeRouter = router({
 				throw new TRPCError({ code: "FORBIDDEN" });
 
 			// if renaming, validate format, generate new slug, attempt to update
-			const data = {...input};
-
+			let slug: string = '';
 			if (input.name) {
 				const parse = Recipe.Name.safeParse(input.name);
 				if (parse.error) {
@@ -47,11 +50,15 @@ export const recipeRouter = router({
 						message: parse.error.issues[0]?.message,
 					});
 				}
-				data.slug = toSlug(input.name);
+				slug = toSlug(input.name);
 			}
 
-			const result = await prisma.recipe.update({ where: { id: input.id }, data });
-			if (input.name !== undefined || input.tags !== undefined) await updateRecipeSearch(input.id);
+			const result = await prisma.recipe.update({
+				where: { id: input.id },
+				data:  slug ? { ...input, slug } : input,
+			});
+			if (input.name !== undefined || input.tags !== undefined)
+				await updateRecipeSearch(input.id);
 			return result;
 		}),
 

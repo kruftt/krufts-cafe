@@ -1,7 +1,6 @@
-import { ContentContainer, ContentHeader, ContentPane } from "@components/app";
+import { Container, Header, Panel } from "@components/app";
 import { PasswordForm, ProfileForm } from "@components/user";
 import { requireAuth } from "@lib/auth-loader";
-import type { User } from "@schema";
 import { redirect } from "react-router";
 import type { Route } from "./+types/profile";
 
@@ -15,16 +14,18 @@ export default function ProfilePage({ loaderData }: Route.ComponentProps) {
 	const { user } = loaderData;
 
 	return (
-		<ContentContainer>
-			<ContentHeader className="userpage__header">
-				<h2>User Profile</h2>
-			</ContentHeader>
-			<ContentPane className="max-w-120 m-auto">
-				<ProfileForm user={user as User.Model} />
-			</ContentPane>
-			<ContentPane className="max-w-120 mx-auto mt-6">
+		<Container>
+			<Header.Section className="userpage__header">
+				<Header.Title>
+					<h2>User Profile</h2>
+				</Header.Title>
+			</Header.Section>
+			<Panel.Section className="max-w-120 m-auto">
+				<ProfileForm user={user} />
+			</Panel.Section>
+			<Panel.Section className="max-w-120 mx-auto mt-6">
 				<PasswordForm />
-			</ContentPane>
-		</ContentContainer>
+			</Panel.Section>
+		</Container>
 	);
 }

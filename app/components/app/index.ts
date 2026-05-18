@@ -1,4 +1,4 @@
 export * from "./app-bar";
-export * from "./content";
-export * from "./pinned-recipes";
-export * from "./submit-button";
+export * from "./layout";
+export * from "./menu";
+export * from "./pin-bar";

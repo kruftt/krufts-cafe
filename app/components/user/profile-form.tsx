@@ -1,37 +1,34 @@
-import { SubmitButton } from "@components/app";
+import { SubmitButton } from "@components/controls";
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@components/ui/field";
 import { Input } from "@components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRequest } from "@hooks";
-import auth from "@lib/auth-client";
+import { auth, type SessionUser } from "@lib/auth-client";
 import { User } from "@schema";
 import { Controller, useForm } from "react-hook-form";
 
-export function ProfileForm({ user }: { user: User.Model}) {
-  const request = useRequest();
+export function ProfileForm({ user }: { user: SessionUser }) {
+		const request = useRequest();
 
-  const form = useForm<User.Names>({
-    resolver: zodResolver(User.Names),
-    defaultValues: {
-      name: user.name,
-      // biome-ignore lint: guaranteed by db hook
-      handle: user.handle!,
-    },
-  });
+		const form = useForm<User.Names>({
+			resolver: zodResolver(User.Names),
+			defaultValues: {
+				name: user.name,
+				// biome-ignore lint: guaranteed by db hook
+				handle: user.handle!,
+			},
+		});
 
-  async function submit(data: User.Names) {
-    await auth.updateUser(data, {
-      onRequest: request.onRequest,
-      onResponse: request.onResponse,
-      onError: (ctx) => request.onError(ctx.error.message),
-    });
-  }
+		async function submit(data: User.Names) {
+			await auth.updateUser(data, {
+				onRequest: request.onRequest,
+				onResponse: request.onResponse,
+				onError: (ctx) => request.onError(ctx.error.message),
+			});
+		}
 
-  return (
-			<form
-				id="form-profile-names"
-				onSubmit={form.handleSubmit(submit)}
-			>
+		return (
+			<form id="form-profile-names" onSubmit={form.handleSubmit(submit)}>
 				<FieldGroup>
 					<Controller
 						name="name"
@@ -95,4 +92,4 @@ export function ProfileForm({ user }: { user: User.Model}) {
 				</SubmitButton>
 			</form>
 		);
-}
+	}

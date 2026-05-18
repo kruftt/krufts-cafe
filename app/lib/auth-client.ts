@@ -8,4 +8,4 @@ export const auth = createAuthClient({
 	plugins: [inferAdditionalFields<typeof authServer>()],
 });
 
-export default auth;
+export type SessionUser = typeof auth.$Infer.Session.user;

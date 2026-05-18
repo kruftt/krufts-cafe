@@ -1,16 +1,6 @@
-import { ContentContainer, ContentHeader, ContentPane } from "@components/app";
-import { Badge } from "@components/ui/badge";
-import { Input } from "@components/ui/input";
-import { IngredientSummary, IngredientView } from "@components/view";
-import { useBookmarks } from "@hooks/bookmark";
-import { usePins } from "@hooks/pins";
-import { auth } from "@lib/auth-client";
-import { formatDuration } from "@lib/utils";
+import { Recipe } from "@components/recipe/view";
 import { findRecipe } from "@services/recipe";
 import { getUser } from "@services/user";
-import { Button } from "@ui/button";
-import { BookmarkIcon, ClockIcon, PinIcon } from "lucide-react";
-import { useState } from "react";
 import { redirect } from "react-router";
 import type { Route } from "./+types/recipes.$handle.$slug";
 
@@ -23,6 +13,7 @@ export async function loader({ params }: Route.LoaderArgs) {
 	const recipe = await findRecipe({
 		userId_slug: { userId: user.id, slug: params.slug },
 	});
+
 	if (!recipe) {
 		throw redirect("/");
 	}
@@ -32,96 +23,6 @@ export async function loader({ params }: Route.LoaderArgs) {
 
 export default function RecipePage({ loaderData }: Route.ComponentProps) {
 	const { recipe } = loaderData;
-	const { data: session } = auth.useSession();
-	const { isPinned, togglePin } = usePins();
-	const { isBookmarked, toggleBookmark } = useBookmarks();
-	const loggedIn = !!session;
-	const pinned = isPinned(recipe.id);
-	const bookmarked = isBookmarked(recipe.id);
-	const [scale, setScale] = useState(1);
 
-	return (
-		<ContentContainer>
-			<ContentHeader>
-				<h2 className="recipe__title">{recipe.name}</h2>
-				<div className="recipe__author">By {recipe.user.name}</div>
-				<p className="recipe__description">{recipe.description}</p>
-				<div className="recipe__tags">
-					{recipe.tags.map((tag) => (
-						<Badge key={tag}>{tag}</Badge>
-					))}
-				</div>
-				<div className="flex gap-1 justify-center items-center">
-					<ClockIcon size={18} />
-					{formatDuration(recipe.duration)}
-				</div>
-				<div className="flex justify-center items-center">
-					<Button variant="ghost" onClick={() => togglePin(recipe)}>
-						<PinIcon fill={pinned ? "currentColor" : "none"} />
-					</Button>
-					{loggedIn && (
-						<Button variant="ghost" onClick={() => toggleBookmark(recipe.id)}>
-							<BookmarkIcon fill={bookmarked ? "currentColor" : "none"} />
-						</Button>
-					)}
-				</div>
-			</ContentHeader>
-			
-			<ContentPane>
-				{recipe.intro && <div className="recipe__intro">{recipe.intro}</div>}
-				{recipe.sections.length > 1 && (
-					<h3 className="mb-4 text-2xl text-center font-bold">Ingredients</h3>
-				)}
-				<div className="flex flex-col justify-center items-center text-base">
-					<div className="mr-4">Scale: {scale.toFixed(2)}</div>
-					<Input
-						className="max-w-40 px-0 accent-gray-700"
-						type="range"
-						min={0.25}
-						max={4.0}
-						step={0.25}
-						defaultValue={1}
-						onChange={(e) => setScale(parseFloat(e.currentTarget.value))}
-					/>
-				</div>
-				{recipe.sections.length > 1 && (
-					<IngredientSummary sections={recipe.sections} scale={scale} />
-				)}
-			</ContentPane>
-			
-			{recipe.sections.map((section) => (
-				<ContentPane key={section.id}>
-					<div className="section__header">
-						<h3 className="section__title">{section.name}</h3>
-						<p className="section__description">{section.description}</p>
-					</div>
-					<div className="section__body">
-						<div className="ingredients subsection">
-							<h4 className="subsection__title">Ingredients</h4>
-							<div>
-								{section.ingredients.map((ingredient) => (
-									<IngredientView
-										key={ingredient.id}
-										ingredient={ingredient}
-										scale={scale}
-									/>
-								))}
-							</div>
-						</div>
-						<div className="instructions subsection">
-							<h4 className="subsection__title">Instructions</h4>
-							<div>
-								{section.instructions.map((instruction, i) => (
-									<div key={instruction.id} className="instruction">
-										<span>{i}.</span>
-										<span>{instruction.description}</span>
-									</div>
-								))}
-							</div>
-						</div>
-					</div>
-				</ContentPane>
-			))}
-		</ContentContainer>
-	);
+	return <Recipe recipe={recipe} />;
 }

@@ -1,5 +1,5 @@
-import { ContentContainer, ContentHeader, ContentPane } from "@components/app";
-import { CreateRecipeButton, RecipeList } from "@components/list";
+import { Container, Header, Panel } from "@components/app";
+import { RecipeList } from "@components/recipe/list";
 import { requireAuth } from "@lib/auth-loader";
 import { findRecipes } from "@services/recipe";
 import type { Route } from "./+types/my-recipes";
@@ -12,14 +12,15 @@ export async function loader({ request }: Route.LoaderArgs) {
 
 export default function MyRecipes({ loaderData }: Route.ComponentProps) {
 	return (
-		<ContentContainer>
-			<ContentHeader className="userpage__header">
-				<h2 className="mb-6">My Recipes</h2>
-				<CreateRecipeButton />
-			</ContentHeader>
-			<ContentPane className="recipe__list">
+		<Container>
+			<Header.Section className="userpage__header">
+				<Header.Title>
+					<h2 className="mb-6">My Recipes</h2>
+				</Header.Title>
+			</Header.Section>
+			<Panel.Section className="recipe__list">
 				<RecipeList edit recipes={loaderData.recipes} />
-			</ContentPane>
-		</ContentContainer>
+			</Panel.Section>
+		</Container>
 	);
 }
