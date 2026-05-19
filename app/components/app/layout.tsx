@@ -10,7 +10,7 @@ export const Header = {
   },
 
   Title: ({ children, className }: React.ComponentProps<'h1'>) => {
-    return <h1 className={cn('header__title', className)}>{children}</h1>;
+    return <div className={cn('header__title', className)}>{children}</div>;
   },
 
   Item: ({ children, className }: React.ComponentProps<'div'>) => {
