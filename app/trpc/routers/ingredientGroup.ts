@@ -18,7 +18,7 @@ export const ingredientGroupRouter = router({
       
 			return prisma.ingredientGroup.create({
 				data: input,
-				include: { ingredients: true },
+				select: { id: true },
 			});
 		}),
 

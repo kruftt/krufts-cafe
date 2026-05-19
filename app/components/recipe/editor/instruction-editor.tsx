@@ -1,13 +1,13 @@
 import { TextareaEditor } from "@components/controls";
 import { Button } from "@components/ui/button";
 import { RecipeIdContext, useRecipeCache } from "@hooks";
-import type { InstructionData } from "@services/recipe";
+import type { CachedInstructionData } from "@hooks/recipe-cache";
 import { XIcon } from "lucide-react";
 import { useContext } from "react";
 
 interface Props extends React.ComponentProps<"div"> {
 	index: number;
-	instruction: InstructionData;
+	instruction: CachedInstructionData;
 }
 
 export function InstructionEditor({ index, instruction }: Props) {
@@ -20,7 +20,7 @@ export function InstructionEditor({ index, instruction }: Props) {
 			<Button
 				variant="ghost"
 				className="w-8 h-8 relative -top-0.5"
-				onClick={() => removeInstruction.mutate({ id: instruction.id })}
+				onClick={() => instruction.id && removeInstruction.mutate({ id: instruction.id })}
 			>
 				<XIcon className="h-4 w-4" color="red" />
 			</Button>

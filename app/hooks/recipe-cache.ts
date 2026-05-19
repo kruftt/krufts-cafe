@@ -18,6 +18,23 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createContext } from "react";
 import type { ProcedureOptions } from "./editor";
 
+type WithClientKey<T> = Omit<T, "id"> & { id?: number; clientKey?: string }
+
+export type CachedIngredientData = WithClientKey<IngredientData>
+export type CachedInstructionData = WithClientKey<InstructionData>
+
+export type CachedIngredientGroupData = WithClientKey<
+	Omit<IngredientGroupData, "ingredients"> & { ingredients: CachedIngredientData[] }
+>
+export type CachedStepData = WithClientKey<
+	Omit<StepData, "instructions"> & { instructions: CachedInstructionData[] }
+>
+
+export type CachedRecipeData = Omit<RecipeData, "ingredientGroups" | "steps"> & {
+	ingredientGroups: CachedIngredientGroupData[]
+	steps: CachedStepData[]
+}
+
 export const RecipeIdContext = createContext<number>(0);
 
 export function recipeQueryKey(recipeId: number) {
@@ -30,8 +47,8 @@ export function useRecipeCache(recipeId: number) {
 	const queryClient = useQueryClient();
 	const queryKey = recipeQueryKey(recipeId);
 
-	function updateCache(updater: (old: RecipeData) => RecipeData) {
-		queryClient.setQueryData<RecipeData>(queryKey, (old) => {
+	function updateCache(updater: (old: CachedRecipeData) => CachedRecipeData) {
+		queryClient.setQueryData<CachedRecipeData>(queryKey, (old) => {
 			if (!old) return old;
 			return updater(old);
 		});
@@ -39,10 +56,10 @@ export function useRecipeCache(recipeId: number) {
 
 	async function cancelAndSnapshot() {
 		await queryClient.cancelQueries({ queryKey });
-		return queryClient.getQueryData<RecipeData>(queryKey);
+		return queryClient.getQueryData<CachedRecipeData>(queryKey);
 	}
 
-	function restore(previous: RecipeData | undefined) {
+	function restore(previous: CachedRecipeData | undefined) {
 		queryClient.setQueryData(queryKey, previous);
 	}
 
@@ -57,7 +74,6 @@ export function useRecipeCache(recipeId: number) {
 	function updateRecipeField(id: number, field: keyof Recipe.Update) {
 		return (value: string, options: ProcedureOptions) => {
 			const v = field.includes("Time") ? parseInt(value, 10) : value;
-
 			const result = Recipe.Update.shape[field].safeParse(v);
 			if (result.success) {
 				updateRecipe.mutate({ id, [field]: v }, options);
@@ -68,17 +84,31 @@ export function useRecipeCache(recipeId: number) {
 	}
 
 	// Ingredient Groups
-	const addIngredientGroup = useMutation({
-		...trpc.ingredientGroup.create.mutationOptions(),
-		onSuccess: (group) => {
+	const addIngredientGroup = useMutation<
+		{ id: number },
+		Error,
+		IngredientGroup.Create,
+		{ previous: CachedRecipeData | undefined; clientKey: string }
+	>({
+		mutationFn: (vars) => trpcClient.ingredientGroup.create.mutate(vars),
+		onMutate: async (vars) => {
+			const previous = await cancelAndSnapshot();
+			const clientKey = crypto.randomUUID();
 			updateCache((old) => ({
 				...old,
-				ingredientGroups: [
-					...old.ingredientGroups,
-					{ ...group, ingredients: [] },
-				],
+				ingredientGroups: [...old.ingredientGroups, { ...vars, name: "", clientKey, ingredients: [] }],
+			}));
+			return { previous, clientKey };
+		},
+		onSuccess: ({ id }, _vars, ctx) => {
+			updateCache((old) => ({
+				...old,
+				ingredientGroups: old.ingredientGroups.map((g) =>
+					g.clientKey === ctx?.clientKey ? { ...g, id } : g,
+				),
 			}));
 		},
+		onError: (_err, _vars, ctx) => restore(ctx?.previous),
 	});
 
 	const updateIngredientGroup = useMutation({
@@ -97,7 +127,7 @@ export function useRecipeCache(recipeId: number) {
 		Omit<IngredientGroupData, "ingredients">,
 		Error,
 		Model.Id,
-		{ previous: RecipeData | undefined }
+		{ previous: CachedRecipeData | undefined }
 	>({
 		mutationFn: (vars) => trpcClient.ingredientGroup.delete.mutate(vars),
 		onMutate: async ({ id }) => {
@@ -111,11 +141,9 @@ export function useRecipeCache(recipeId: number) {
 		onError: (_err, _vars, ctx) => restore(ctx?.previous),
 	});
 
-	function updateIngredientGroupField(
-		id: number,
-		field: keyof IngredientGroup.Update,
-	) {
+	function updateIngredientGroupField(id: number | undefined, field: keyof IngredientGroup.Update) {
 		return (value: string, options: ProcedureOptions) => {
+			if (!id) return options.onError({ message: "Waiting for server..." });
 			const result = IngredientGroup.Update.shape[field].safeParse(value);
 			if (result.success) {
 				updateIngredientGroup.mutate({ id, [field]: value }, options);
@@ -126,18 +154,38 @@ export function useRecipeCache(recipeId: number) {
 	}
 
 	// Ingredients
-	const addIngredient = useMutation({
-		...trpc.ingredient.create.mutationOptions(),
-		onSuccess: (ingredient) => {
+	const addIngredient = useMutation<
+		{ id: number },
+		Error,
+		Ingredient.Create,
+		{ previous: CachedRecipeData | undefined; clientKey: string }
+	>({
+		mutationFn: (vars) => trpcClient.ingredient.create.mutate(vars),
+		onMutate: async (vars) => {
+			const previous = await cancelAndSnapshot();
+			const clientKey = crypto.randomUUID();
 			updateCache((old) => ({
 				...old,
 				ingredientGroups: old.ingredientGroups.map((g) =>
-					g.id === ingredient.groupId
-						? { ...g, ingredients: [...g.ingredients, ingredient] }
+					g.id === vars.groupId
+						? { ...g, ingredients: [...g.ingredients, { ...vars, amount: 0, units: "", name: "", clientKey }] }
 						: g,
 				),
 			}));
+			return { previous, clientKey };
 		},
+		onSuccess: ({ id }, _vars, ctx) => {
+			updateCache((old) => ({
+				...old,
+				ingredientGroups: old.ingredientGroups.map((g) => ({
+					...g,
+					ingredients: g.ingredients.map((i) =>
+						i.clientKey === ctx?.clientKey ? { ...i, id } : i,
+					),
+				})),
+			}));
+		},
+		onError: (_err, _vars, ctx) => restore(ctx?.previous),
 	});
 
 	const updateIngredient = useMutation({
@@ -159,7 +207,7 @@ export function useRecipeCache(recipeId: number) {
 		IngredientData,
 		Error,
 		Model.Id,
-		{ previous: RecipeData | undefined }
+		{ previous: CachedRecipeData | undefined }
 	>({
 		mutationFn: (vars) => trpcClient.ingredient.delete.mutate(vars),
 		onMutate: async ({ id }) => {
@@ -176,10 +224,10 @@ export function useRecipeCache(recipeId: number) {
 		onError: (_err, _vars, ctx) => restore(ctx?.previous),
 	});
 
-	function updateIngredientField(id: number, field: keyof Ingredient.Update) {
+	function updateIngredientField(id: number | undefined, field: keyof Ingredient.Update) {
 		return (value: string, options: ProcedureOptions) => {
+			if (!id) return options.onError({ message: "Waiting for server..." });
 			const v = field === "amount" ? parseFloat(value) : value;
-
 			const result = Ingredient.Update.shape[field].safeParse(v);
 			if (result.success) {
 				updateIngredient.mutate({ id, [field]: v }, options);
@@ -190,14 +238,31 @@ export function useRecipeCache(recipeId: number) {
 	}
 
 	// Steps
-	const addStep = useMutation({
-		...trpc.step.create.mutationOptions(),
-		onSuccess: (step) => {
+	const addStep = useMutation<
+		{ id: number },
+		Error,
+		Step.Create,
+		{ previous: CachedRecipeData | undefined; clientKey: string }
+	>({
+		mutationFn: (vars) => trpcClient.step.create.mutate(vars),
+		onMutate: async (vars) => {
+			const previous = await cancelAndSnapshot();
+			const clientKey = crypto.randomUUID();
 			updateCache((old) => ({
 				...old,
-				steps: [...old.steps, { ...step, instructions: [] }],
+				steps: [...old.steps, { ...vars, name: "", intro: "", clientKey, instructions: [] }],
+			}));
+			return { previous, clientKey };
+		},
+		onSuccess: ({ id }, _vars, ctx) => {
+			updateCache((old) => ({
+				...old,
+				steps: old.steps.map((s) =>
+					s.clientKey === ctx?.clientKey ? { ...s, id } : s,
+				),
 			}));
 		},
+		onError: (_err, _vars, ctx) => restore(ctx?.previous),
 	});
 
 	const updateStep = useMutation({
@@ -216,7 +281,7 @@ export function useRecipeCache(recipeId: number) {
 		Omit<StepData, "instructions">,
 		Error,
 		Model.Id,
-		{ previous: RecipeData | undefined }
+		{ previous: CachedRecipeData | undefined }
 	>({
 		mutationFn: (vars) => trpcClient.step.delete.mutate(vars),
 		onMutate: async ({ id }) => {
@@ -230,8 +295,9 @@ export function useRecipeCache(recipeId: number) {
 		onError: (_err, _vars, ctx) => restore(ctx?.previous),
 	});
 
-	function updateStepField(id: number, field: keyof Step.Update) {
+	function updateStepField(id: number | undefined, field: keyof Step.Update) {
 		return (value: string, options: ProcedureOptions) => {
+			if (!id) return options.onError({ message: "Waiting for server..." });
 			const result = Step.Update.shape[field].safeParse(value);
 			if (result.success) {
 				updateStep.mutate({ id, [field]: value }, options);
@@ -242,18 +308,38 @@ export function useRecipeCache(recipeId: number) {
 	}
 
 	// Instructions
-	const addInstruction = useMutation({
-		...trpc.instruction.create.mutationOptions(),
-		onSuccess: (instruction) => {
+	const addInstruction = useMutation<
+		{ id: number },
+		Error,
+		Instruction.Create,
+		{ previous: CachedRecipeData | undefined; clientKey: string }
+	>({
+		mutationFn: (vars) => trpcClient.instruction.create.mutate(vars),
+		onMutate: async (vars) => {
+			const previous = await cancelAndSnapshot();
+			const clientKey = crypto.randomUUID();
 			updateCache((old) => ({
 				...old,
 				steps: old.steps.map((s) =>
-					s.id === instruction.stepId
-						? { ...s, instructions: [...s.instructions, instruction] }
+					s.id === vars.stepId
+						? { ...s, instructions: [...s.instructions, { ...vars, text: "", clientKey }] }
 						: s,
 				),
 			}));
+			return { previous, clientKey };
 		},
+		onSuccess: ({ id }, _vars, ctx) => {
+			updateCache((old) => ({
+				...old,
+				steps: old.steps.map((s) => ({
+					...s,
+					instructions: s.instructions.map((i) =>
+						i.clientKey === ctx?.clientKey ? { ...i, id } : i,
+					),
+				})),
+			}));
+		},
+		onError: (_err, _vars, ctx) => restore(ctx?.previous),
 	});
 
 	const updateInstruction = useMutation({
@@ -275,7 +361,7 @@ export function useRecipeCache(recipeId: number) {
 		InstructionData,
 		Error,
 		Model.Id,
-		{ previous: RecipeData | undefined }
+		{ previous: CachedRecipeData | undefined }
 	>({
 		mutationFn: (vars) => trpcClient.instruction.delete.mutate(vars),
 		onMutate: async ({ id }) => {
@@ -292,8 +378,9 @@ export function useRecipeCache(recipeId: number) {
 		onError: (_err, _vars, ctx) => restore(ctx?.previous),
 	});
 
-	function updateInstructionField(id: number, field: keyof Instruction.Update) {
+	function updateInstructionField(id: number | undefined, field: keyof Instruction.Update) {
 		return (value: string, options: ProcedureOptions) => {
+			if (!id) return options.onError({ message: "Waiting for server..." });
 			const result = Instruction.Update.shape[field].safeParse(value);
 			if (result.success) {
 				updateInstruction.mutate({ id, [field]: value }, options);
@@ -307,19 +394,15 @@ export function useRecipeCache(recipeId: number) {
 		updateRecipe,
 		updateRecipeField,
 		addIngredientGroup,
-		// updateIngredientGroup,
 		updateIngredientGroupField,
 		removeIngredientGroup,
 		addIngredient,
-		// updateIngredient,
 		updateIngredientField,
 		removeIngredient,
 		addStep,
-		// updateStep,
 		updateStepField,
 		removeStep,
 		addInstruction,
-		// updateInstruction,
 		updateInstructionField,
 		removeInstruction,
 	};

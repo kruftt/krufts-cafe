@@ -17,14 +17,7 @@ export const stepRouter = router({
 			if (recipe.userId !== ctx.session.user.id)
 				throw new TRPCError({ code: "FORBIDDEN" });
 
-			const step = await prisma.step.create({
-				data: input,
-				include: {
-					instructions: true,
-				},
-			});
-
-			return step;
+			return prisma.step.create({ data: input, select: { id: true } });
 		}),
 
 	update: authedProcedure

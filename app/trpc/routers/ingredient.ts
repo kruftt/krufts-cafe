@@ -32,7 +32,7 @@ export const ingredientRouter = router({
 			if (group.recipe.userId !== ctx.session.user.id)
 				throw new TRPCError({ code: "FORBIDDEN" });
 
-			return prisma.ingredient.create({ data: input });
+			return prisma.ingredient.create({ data: input, select: { id: true } });
 		}),
 
 	update: authedProcedure

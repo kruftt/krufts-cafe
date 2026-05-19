@@ -1,14 +1,14 @@
 import { InputEditor } from "@components/controls";
 import { Button } from "@components/ui/button";
 import { RecipeIdContext, useRecipeCache } from "@hooks";
-import type { IngredientData } from "@services/recipe";
+import type { CachedIngredientData } from "@hooks/recipe-cache";
 import { XIcon } from "lucide-react";
 import { useContext } from "react";
 
 export function IngredientEditor({
 	ingredient,
 }: {
-	ingredient: IngredientData;
+	ingredient: CachedIngredientData;
 }) {
 	const { updateIngredientField, removeIngredient } = useRecipeCache(
 		useContext(RecipeIdContext),
@@ -19,7 +19,7 @@ export function IngredientEditor({
 			<Button
 				variant="ghost"
 				className="h-8 w-8 mr-1"
-				onClick={() => removeIngredient.mutate({ id: ingredient.id })}
+				onClick={() => ingredient.id && removeIngredient.mutate({ id: ingredient.id })}
 			>
 				<XIcon className="h-4 w-4" color="red" />
 			</Button>

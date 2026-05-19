@@ -1,15 +1,15 @@
 import { DeletionDialog, InputEditor } from "@components/controls";
 import { Button } from "@components/ui/button";
 import { RecipeIdContext } from "@hooks";
+import type { CachedIngredientGroupData } from "@hooks/recipe-cache";
 import { useRecipeCache } from "@hooks/recipe-cache";
 import { getNextIndex } from "@lib/utils";
-import type { IngredientGroupData } from "@services/recipe";
 import { PlusIcon, XIcon } from "lucide-react";
 import { useContext, useRef } from "react";
 import { IngredientEditor } from "./ingredient-editor";
 
 interface Props {
-	group: IngredientGroupData;
+	group: CachedIngredientGroupData;
 }
 
 export function IngredientGroupEditor({ group }: Props) {
@@ -20,26 +20,22 @@ export function IngredientGroupEditor({ group }: Props) {
 	const onSaveName = updateIngredientGroupField(group.id, "name");
 
 	function deleteGroup() {
-		removeIngredientGroup.mutate({ id: group.id });
+		if (group.id) removeIngredientGroup.mutate({ id: group.id });
 	}
 
 	function createIngredient() {
+		if (!group.id) return;
 		addIngredient.mutate({
 			groupId: group.id,
 			index: getNextIndex(group.ingredients),
-		}, {
-			onSuccess() {
-				setTimeout(() => {
-					const el = groupRef.current;
-					if (!el) return;
-					const amounts = el.querySelectorAll<HTMLInputElement>(":scope .ingredient__amount > input");
-					const last = amounts.item(amounts.length - 1);
-					if (last) {
-						last.select();
-					}
-				}, 0);
-			}
 		});
+		requestAnimationFrame(() => requestAnimationFrame(() => {
+			const el = groupRef.current;
+			if (!el) return;
+			const amounts = el.querySelectorAll<HTMLInputElement>(":scope .ingredient__amount > input");
+			const last = amounts.item(amounts.length - 1);
+			if (last) last.select();
+		}));
 	}
 
 	return (
@@ -64,7 +60,10 @@ export function IngredientGroupEditor({ group }: Props) {
 			</div>
 
 			{group.ingredients.map((ingredient) => (
-				<IngredientEditor key={ingredient.id} ingredient={ingredient} />
+				<IngredientEditor
+					key={ingredient.clientKey ?? ingredient.id}
+					ingredient={ingredient}
+				/>
 			))}
 
 			<Button

@@ -2,14 +2,14 @@ import { Container, Header, Panel } from "@components/app";
 import { InputEditor, TextareaEditor } from "@components/controls";
 import { Button, buttonVariants } from "@components/ui/button";
 import { useRecipeCache } from "@hooks";
+import type { CachedRecipeData } from "@hooks/recipe-cache";
 import { getNextIndex } from "@lib/utils";
-import type { RecipeData } from "@services/recipe";
 import { CheckSquareIcon, LinkIcon, SquareIcon } from "lucide-react";
 import { IngredientGroupEditor } from "./ingredient-group-editor";
 import { StepEditor } from "./step-editor";
 import { TagsEditor } from "./tags-editor";
 
-export function RecipeEditor({ recipe }: { recipe: RecipeData }) {
+export function RecipeEditor({ recipe }: { recipe: CachedRecipeData }) {
 	const { updateRecipe, updateRecipeField, addIngredientGroup, addStep } =
 		useRecipeCache(recipe.id);
 
@@ -17,33 +17,21 @@ export function RecipeEditor({ recipe }: { recipe: RecipeData }) {
 		addIngredientGroup.mutate({
 			recipeId: recipe.id,
 			index: getNextIndex(recipe.ingredientGroups),
-		}, {
-			onSuccess() {
-				setTimeout(() => {
-					const groups =
-						document.querySelectorAll<HTMLInputElement>(
-							".ingredient_group input",
-						);
-					const last = groups.item(groups.length - 1);
-					if (last) last.focus();
-				}, 0);
-			}
 		});
+		requestAnimationFrame(() => requestAnimationFrame(() => {
+			const groups = document.querySelectorAll<HTMLInputElement>(".ingredient_group input");
+			const last = groups.item(groups.length - 1);
+			if (last) last.focus();
+		}));
 	}
 
 	function createStep() {
-		addStep.mutate({
-			recipeId: recipe.id,
-			index: getNextIndex(recipe.steps)
-		}, {
-			onSuccess() {
-				setTimeout(() => {
-					const stepTitles = document.querySelectorAll<HTMLInputElement>(".panel__title input");
-					const last = stepTitles.item(stepTitles.length - 1);
-					if (last) last.focus()
-				}, 0);
-			},
-		});
+		addStep.mutate({ recipeId: recipe.id, index: getNextIndex(recipe.steps) });
+		requestAnimationFrame(() => requestAnimationFrame(() => {
+			const stepTitles = document.querySelectorAll<HTMLInputElement>(".panel__title input");
+			const last = stepTitles.item(stepTitles.length - 1);
+			if (last) last.focus();
+		}));
 	}
 
 	return (
@@ -74,9 +62,10 @@ export function RecipeEditor({ recipe }: { recipe: RecipeData }) {
 								</>
 							)}
 						</Button>
-						<a 
+						<a
 							href={`/recipes/${recipe.user.handle}/${recipe.slug}`}
-							className={`${buttonVariants({ variant: 'outline', size: 'sm'})}`}>
+							className={`${buttonVariants({ variant: "outline", size: "sm" })}`}
+						>
 							<LinkIcon />
 							Live
 						</a>
@@ -142,9 +131,16 @@ export function RecipeEditor({ recipe }: { recipe: RecipeData }) {
 			</Panel.Section>
 
 			<Panel.Section>
+				<Panel.Title className="text-2xl justify-center">
+					Ingredients
+				</Panel.Title>
+
 				<Panel.Item className="ingredient_groups">
 					{recipe.ingredientGroups.map((group) => (
-						<IngredientGroupEditor key={group.id} group={group} />
+						<IngredientGroupEditor
+							key={group.clientKey ?? group.id}
+							group={group}
+						/>
 					))}
 				</Panel.Item>
 
@@ -154,7 +150,7 @@ export function RecipeEditor({ recipe }: { recipe: RecipeData }) {
 			</Panel.Section>
 
 			{recipe.steps.map((step, i) => (
-				<StepEditor key={step.id} index={i + 1} step={step} />
+				<StepEditor key={step.clientKey ?? step.id} index={i + 1} step={step} />
 			))}
 
 			<div className="w-1/1 mt-6 text-center">

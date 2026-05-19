@@ -5,16 +5,16 @@ import {
 	TextareaEditor,
 } from "@components/controls";
 import { Button } from "@components/ui/button";
+import type { CachedStepData } from "@hooks/recipe-cache";
 import { RecipeIdContext, useRecipeCache } from "@hooks/recipe-cache";
 import { getNextIndex } from "@lib/utils";
-import type { StepData } from "@services/recipe";
 import { PlusIcon, XIcon } from "lucide-react";
 import { useContext, useRef } from "react";
 import { InstructionEditor } from "./instruction-editor";
 
 interface Props {
 	index: number;
-	step: StepData;
+	step: CachedStepData;
 }
 
 export function StepEditor({ step, index }: Props) {
@@ -24,25 +24,22 @@ export function StepEditor({ step, index }: Props) {
 	);
 
 	function deleteStep() {
-		removeStep.mutate({ id: step.id });
+		if (step.id) removeStep.mutate({ id: step.id });
 	}
 
 	function createInstruction() {
+		if (!step.id) return;
 		addInstruction.mutate({
 			stepId: step.id,
 			index: getNextIndex(step.instructions),
-		// });
-		}, {
-			onSuccess() {
-				setTimeout(() => {
-					const el = instructionsRef.current;
-					if (!el) return;
-					const textareas = el.querySelectorAll<HTMLTextAreaElement>(":scope textarea");
-					const last = textareas.item(textareas.length - 1);
-					if (last) last.focus();
-				}, 0);
-			}
 		});
+		requestAnimationFrame(() => requestAnimationFrame(() => {
+			const el = instructionsRef.current;
+			if (!el) return;
+			const textareas = el.querySelectorAll<HTMLTextAreaElement>(":scope textarea");
+			const last = textareas.item(textareas.length - 1);
+			if (last) last.focus();
+		}));
 	}
 
 	return (
@@ -59,9 +56,7 @@ export function StepEditor({ step, index }: Props) {
 			</DeletionDialog>
 
 			<Panel.Title>
-				<span className="panel__index">
-					{index}.
-				</span>
+				<span className="panel__index">{index}.</span>
 				<InputEditor
 					className="grow"
 					placeholder="Step Name"
@@ -82,15 +77,21 @@ export function StepEditor({ step, index }: Props) {
 			<Panel.Item ref={instructionsRef}>
 				{step.instructions.map((instruction, i) => (
 					<InstructionEditor
-						key={instruction.id}
+						key={instruction.clientKey ?? instruction.id}
 						index={i + 1}
 						instruction={instruction}
 					/>
 				))}
 
-				<Button variant="ghost" className="justify-start mt-1 px-2 min-w-80" onClick={createInstruction}>
+				<Button
+					variant="ghost"
+					className="justify-start mt-1 px-2 min-w-80"
+					onClick={createInstruction}
+				>
 					<PlusIcon />
-					<span className="font-light text-muted-foreground ml-2">Add Instruction</span>
+					<span className="font-light text-muted-foreground ml-2">
+						Add Instruction
+					</span>
 				</Button>
 			</Panel.Item>
 		</Panel.Section>
