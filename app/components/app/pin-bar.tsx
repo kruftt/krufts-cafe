@@ -3,6 +3,7 @@ import { buttonVariants } from "@components/ui/button";
 import { usePins } from "@hooks/pins";
 import { useAtomValue } from "jotai";
 import { PinIcon, XIcon } from "lucide-react";
+import { Link } from "react-router";
 
 export function PinBar() {
 	const pinnedRecipes = useAtomValue(pinnedRecipesAtom);
@@ -27,9 +28,9 @@ export function PinBar() {
 							>
 								<XIcon size={12} />
 							</button>
-							<a href={`/recipes/${recipe.user.handle}/${recipe.slug}`}>
+							<Link to={`/recipes/${recipe.user.handle}/${recipe.slug}`}>
 								{recipe.name}
-							</a>
+							</Link>
 						</div>
 					))}
 				</div>

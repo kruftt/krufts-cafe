@@ -9,7 +9,7 @@ import {
 } from "@components/ui/dropdown-menu";
 import { usePins } from "@hooks/pins";
 import { auth, type SessionUser } from "@lib/auth-client";
-import { useNavigate, useRevalidator } from "react-router";
+import { Link, useNavigate, useRevalidator } from "react-router";
 
 export function UserMenu({ user }: { user: SessionUser }) {
 	const navigate = useNavigate();
@@ -24,13 +24,13 @@ export function UserMenu({ user }: { user: SessionUser }) {
 			<DropdownMenuContent>
 				<DropdownMenuGroup>
 					<DropdownMenuItem>
-						<a className="w-1/1" href="/my-recipes/">My Recipes</a>
+						<Link className="w-1/1" to="/my-recipes/">My Recipes</Link>
 					</DropdownMenuItem>
 					<DropdownMenuItem>
-						<a className="w-1/1" href="/bookmarks/">Bookmarks</a>
+						<Link className="w-1/1" to="/bookmarks/">Bookmarks</Link>
 					</DropdownMenuItem>
 					<DropdownMenuItem>
-						<a className="w-1/1" href="/profile/">Profile</a>
+						<Link className="w-1/1" to="/profile/">Profile</Link>
 					</DropdownMenuItem>
 				</DropdownMenuGroup>
 				<DropdownMenuSeparator />

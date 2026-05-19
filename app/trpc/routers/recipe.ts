@@ -1,6 +1,6 @@
 import { prisma } from "@lib/prisma";
 import { Model, Recipe } from "@schema";
-import { newRecipeName, updateRecipeSearch } from "@services/recipe";
+import { findRecipe, newRecipeName, updateRecipeSearch } from "@services/recipe";
 import { TRPCError } from "@trpc/server";
 import * as z from "zod";
 import { authedProcedure, router } from "../server";
@@ -15,6 +15,13 @@ function toSlug(name: string) {
 }
 
 export const recipeRouter = router({
+	find: authedProcedure.input(z.object({ id: z.number() })).query(async ({ input, ctx }) => {
+		const recipe = await findRecipe({ id: input.id });
+		if (!recipe) throw new TRPCError({ code: "NOT_FOUND" });
+		if (recipe.userId !== ctx.session.user.id) throw new TRPCError({ code: "FORBIDDEN" });
+		return recipe;
+	}),
+
 	create: authedProcedure.mutation(async ({ ctx }) => {
 		const name = await newRecipeName(ctx.session.user.id);
 		return prisma.recipe.create({

@@ -12,7 +12,8 @@ export const Update = z.object({
 	name: Name.optional(),
 	tags: z.array(z.string()).optional(),
 	published: z.boolean().optional(),
-	prepTime: z.int().optional(),
-	cookTime: z.int().optional(),
+	prepTime: z.int().min(0).optional(),
+	cookTime: z.int().min(0).optional(),
+	serves: z.int().min(0).optional(),
 	intro: z.string().optional(),
 });

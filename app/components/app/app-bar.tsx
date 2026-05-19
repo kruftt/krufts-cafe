@@ -3,7 +3,7 @@ import { auth } from "@lib/auth-client";
 import { cn } from "@lib/utils";
 import { SearchIcon } from "lucide-react";
 import { BsCupHotFill } from "react-icons/bs";
-import { useLocation } from "react-router";
+import { Link, useLocation } from "react-router";
 import { LoginPopover, UserMenu } from "./menu";
 
 export function AppBar() {
@@ -20,12 +20,12 @@ export function AppBar() {
 				"dark:bg-cafe-blue-1-d",
 			)}
 		>
-			<a
-				href="/"
+			<Link
+				to="/"
 				className={`${buttonVariants()} h-11 rounded-2xl! drop-shadow-md/30`}
 			>
 				<BsCupHotFill className="w-6! h-6!" />
-			</a>
+			</Link>
 			{isHome ? (
 				<h1 className="text-3xl font-bold text-white">Kruft's Cafe</h1>
 			) : (

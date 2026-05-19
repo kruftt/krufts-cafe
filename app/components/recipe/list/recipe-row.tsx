@@ -28,7 +28,7 @@ import {
 	PinIcon,
 	Trash2Icon,
 } from "lucide-react";
-import { useNavigate, useRevalidator } from "react-router";
+import { Link, useNavigate, useRevalidator } from "react-router";
 
 export function RecipeRow({
 	edit,
@@ -115,7 +115,7 @@ export function RecipeRow({
 				className="py-1.5"
 				variant="default"
 				render={
-					<a href={`/recipes/${recipe.user.handle}/${recipe.slug}`}>
+					<Link to={`/recipes/${recipe.user.handle}/${recipe.slug}`}>
 						<ItemContent>
 							<ItemTitle>{recipe.name}</ItemTitle>
 							<ItemDescription>By {recipe.user.name}</ItemDescription>
@@ -124,7 +124,7 @@ export function RecipeRow({
 							<ClockIcon />
 							{formatDuration(recipe.prepTime + recipe.cookTime)}
 						</ItemMedia>
-					</a>
+					</Link>
 				}
 				size="xs"
 			/>

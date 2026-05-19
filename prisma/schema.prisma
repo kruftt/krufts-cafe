@@ -27,6 +27,7 @@ model Recipe {
   published           Boolean       @default(false)
   prepTime            Int           @default(15)
   cookTime            Int           @default(15)
+  serves              Int           @default(4)
   intro               String        @default("")
   ingredientGroups    IngredientGroup[]   
   steps               Step[]

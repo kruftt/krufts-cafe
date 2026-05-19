@@ -73,7 +73,10 @@ export function useRecipeCache(recipeId: number) {
 
 	function updateRecipeField(id: number, field: keyof Recipe.Update) {
 		return (value: string, options: ProcedureOptions) => {
-			const v = field.includes("Time") ? parseInt(value, 10) : value;
+			const v = (field.includes("Time") || field === "serves")
+					? parseInt(value, 10)
+					: value;
+
 			const result = Recipe.Update.shape[field].safeParse(v);
 			if (result.success) {
 				updateRecipe.mutate({ id, [field]: v }, options);

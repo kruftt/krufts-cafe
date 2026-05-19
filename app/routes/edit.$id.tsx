@@ -1,6 +1,7 @@
 import { RecipeEditor } from "@components/recipe/editor";
 import { RecipeIdContext, recipeQueryKey } from "@hooks/recipe-cache";
 import { requireAuth } from "@lib/auth-loader";
+import { useTRPCClient } from "@lib/trpc";
 import { findRecipe, type RecipeData } from "@services/recipe";
 import { useQuery } from "@tanstack/react-query";
 import { redirect } from "react-router";
@@ -20,17 +21,17 @@ export async function loader({ request, params }: Route.LoaderArgs) {
 
 export default function EditPage({ loaderData }: Route.ComponentProps) {
 	const { initialData } = loaderData;
+	const trpcClient = useTRPCClient();
 
-	const { data: recipe } = useQuery<RecipeData>({
+	const { data: recipe, dataUpdatedAt } = useQuery<RecipeData>({
 		queryKey: recipeQueryKey(initialData.id),
-		queryFn: () => initialData,
-		initialData,
-		// staleTime: Infinity,
+		queryFn: () => trpcClient.recipe.find.query({ id: initialData.id }),
+		initialData
 	});
 
 	return (
 		<RecipeIdContext.Provider value={recipe.id}>
-			<RecipeEditor recipe={recipe} />
+			<RecipeEditor key={dataUpdatedAt} recipe={recipe} />
 		</RecipeIdContext.Provider>
 	);
 }

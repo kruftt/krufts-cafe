@@ -5,6 +5,7 @@ import { useRecipeCache } from "@hooks";
 import type { CachedRecipeData } from "@hooks/recipe-cache";
 import { getNextIndex } from "@lib/utils";
 import { CheckSquareIcon, LinkIcon, SquareIcon } from "lucide-react";
+import { Link } from "react-router";
 import { IngredientGroupEditor } from "./ingredient-group-editor";
 import { StepEditor } from "./step-editor";
 import { TagsEditor } from "./tags-editor";
@@ -18,20 +19,28 @@ export function RecipeEditor({ recipe }: { recipe: CachedRecipeData }) {
 			recipeId: recipe.id,
 			index: getNextIndex(recipe.ingredientGroups),
 		});
-		requestAnimationFrame(() => requestAnimationFrame(() => {
-			const groups = document.querySelectorAll<HTMLInputElement>(".ingredient_group input");
-			const last = groups.item(groups.length - 1);
-			if (last) last.focus();
-		}));
+		requestAnimationFrame(() =>
+			requestAnimationFrame(() => {
+				const groups = document.querySelectorAll<HTMLInputElement>(
+					".ingredient_group input",
+				);
+				const last = groups.item(groups.length - 1);
+				if (last) last.focus();
+			}),
+		);
 	}
 
 	function createStep() {
 		addStep.mutate({ recipeId: recipe.id, index: getNextIndex(recipe.steps) });
-		requestAnimationFrame(() => requestAnimationFrame(() => {
-			const stepTitles = document.querySelectorAll<HTMLInputElement>(".panel__title input");
-			const last = stepTitles.item(stepTitles.length - 1);
-			if (last) last.focus();
-		}));
+		requestAnimationFrame(() =>
+			requestAnimationFrame(() => {
+				const stepTitles = document.querySelectorAll<HTMLInputElement>(
+					".panel__title input",
+				);
+				const last = stepTitles.item(stepTitles.length - 1);
+				if (last) last.focus();
+			}),
+		);
 	}
 
 	return (
@@ -62,13 +71,13 @@ export function RecipeEditor({ recipe }: { recipe: CachedRecipeData }) {
 								</>
 							)}
 						</Button>
-						<a
-							href={`/recipes/${recipe.user.handle}/${recipe.slug}`}
+						<Link
+							to={`/recipes/${recipe.user.handle}/${recipe.slug}`}
 							className={`${buttonVariants({ variant: "outline", size: "sm" })}`}
 						>
 							<LinkIcon />
 							Live
-						</a>
+						</Link>
 					</div>
 				</Header.Item>
 
@@ -116,6 +125,16 @@ export function RecipeEditor({ recipe }: { recipe: CachedRecipeData }) {
 							{`${recipe.prepTime + recipe.cookTime} min`}
 						</div>
 					</div>
+				</Header.Item>
+
+				<Header.Item className="recipe__serves">
+					Serves
+					<InputEditor
+						className="font-bold ml-1"
+						onSave={updateRecipeField(recipe.id, "serves")}
+						value={recipe.serves}
+						resize
+					/>
 				</Header.Item>
 			</Header.Section>
 

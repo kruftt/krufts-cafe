@@ -36,19 +36,6 @@ export function Recipe({ recipe }: Props) {
 					<Header.Title>
 						<h2 className="recipe__title">{recipe.name}</h2>
 						<div className="recipe__author">By {recipe.user.name}</div>
-					</Header.Title>
-
-					<Header.Item>
-						<div className="recipe__tags">
-							{recipe.tags.map((tag) => (
-								<Badge key={tag} variant="default" className="tag">
-									{tag}
-								</Badge>
-							))}
-						</div>
-					</Header.Item>
-
-					<Header.Item>
 						<Button variant="ghost" onClick={() => togglePin(recipe)}>
 							<PinIcon fill={pinned ? "currentColor" : "none"} />
 						</Button>
@@ -60,7 +47,19 @@ export function Recipe({ recipe }: Props) {
 								<BookmarkIcon fill={bookmarked ? "currentColor" : "none"} />
 							</Button>
 						)}
-					</Header.Item>
+					</Header.Title>
+
+					{recipe.tags.length > 0 && (
+						<Header.Item>
+							<div className="recipe__tags">
+								{recipe.tags.map((tag) => (
+									<Badge key={tag} variant="default" className="tag">
+										{tag}
+									</Badge>
+								))}
+							</div>
+						</Header.Item>
+					)}
 
 					<Header.Item className="recipe__duration">
 						<div>
@@ -83,6 +82,11 @@ export function Recipe({ recipe }: Props) {
 								{`${recipe.prepTime + recipe.cookTime} min`}
 							</div>
 						</div>
+					</Header.Item>
+
+					<Header.Item className="recipe__serves">
+						Serves
+						<span className="font-bold ml-1">{recipe.serves}</span>
 					</Header.Item>
 				</Header.Section>
 

@@ -64,7 +64,7 @@ export function TagsEditor({ tags }: Props) {
 					<Button
 						data-icon="inline-start"
 						variant="ghost"
-						className="rounded-l-4xl p-0 h-7 w-7 -ml-2 -mr-0.5 hover:bg-black/15 hover:border-r hover:border-r-secondary/50"
+						className="rounded-l-4xl p-0 h-7 w-7 -ml-2 hover:bg-black/15 hover:border-r hover:border-r-secondary/50"
 						onClick={() => removeTag(i)}
 					>
 						<XIcon className="" color="red" />
