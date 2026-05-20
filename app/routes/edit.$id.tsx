@@ -19,19 +19,23 @@ export async function loader({ request, params }: Route.LoaderArgs) {
 	return { initialData };
 }
 
+export function shouldRevalidate() {
+	return false;
+}
+
 export default function EditPage({ loaderData }: Route.ComponentProps) {
 	const { initialData } = loaderData;
 	const trpcClient = useTRPCClient();
 
-	const { data: recipe, dataUpdatedAt } = useQuery<RecipeData>({
+	const { data: recipe } = useQuery<RecipeData>({
 		queryKey: recipeQueryKey(initialData.id),
 		queryFn: () => trpcClient.recipe.find.query({ id: initialData.id }),
-		initialData
+		initialData,
 	});
 
 	return (
 		<RecipeIdContext.Provider value={recipe.id}>
-			<RecipeEditor key={dataUpdatedAt} recipe={recipe} />
+			<RecipeEditor recipe={recipe} />
 		</RecipeIdContext.Provider>
 	);
 }

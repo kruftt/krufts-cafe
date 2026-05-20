@@ -18,9 +18,15 @@ export function useEditor (
 		options: EditorOptions = {},
 	) {
 		const [value, setValue] = useState(initialValue);
+		const [prevInitialValue, setPrevInitialValue] = useState(initialValue);
 		const [dirty, setDirty] = useState(false);
 		const [busy, setBusy] = useState(false);
 		const [error, setError] = useState("");
+
+		if (prevInitialValue !== initialValue && !dirty && !busy) {
+			setPrevInitialValue(initialValue);
+			setValue(initialValue);
+		}
 		const { clear, ctrl, reset, type } = options;
 
 		function submit() {
