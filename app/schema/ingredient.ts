@@ -8,8 +8,9 @@ export const Create = z.object({
 
 export type Update = z.infer<typeof Update>;
 export const Update = z.object({
-  amount: z.number().optional(),
-  units: z.string().optional(),
-  name: z.string().optional(),
+	amount: z.number().optional(),
+	units: z.string().optional(),
+	name: z.string().optional(),
+	preparation: z.string().optional(),
 });
 

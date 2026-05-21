@@ -11,9 +11,17 @@ export function IngredientGroup({ group, scale }: Props) {
 			<h3 className="ingredient_group__name">{group.name}</h3>
 			{group.ingredients.map((ingredient) => (
 				<div key={ingredient.id} className="ingredient">
-					<span className="ingredient__amount">{Math.round(1000 * scale * ingredient.amount) / 1000}</span>
-					<span>{ingredient.units}</span>
-					<span>{ingredient.name}</span>
+					<span className="ingredient__amount">
+						{Math.round(1000 * scale * ingredient.amount) / 1000}
+					</span>
+					<div className="flex flex-wrap gap-x-1">
+						<span>
+							{ingredient.units} {ingredient.name}
+						</span>
+						<span className="ingredient__preparation">
+							{ingredient.preparation}
+						</span>
+					</div>
 				</div>
 			))}
 		</div>

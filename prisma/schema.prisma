@@ -54,6 +54,7 @@ model Ingredient {
   amount        Float             @default(0)
   units         String            @default("")
   name          String            @default("")
+  preparation   String            @default("")
   index         Int
   groupId       Int
   group         IngredientGroup   @relation(fields: [groupId], references: [id], onDelete: Cascade)

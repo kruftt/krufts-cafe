@@ -24,14 +24,14 @@ export function StepBar({ steps }: Props) {
 			ref={bar}
 			className="mb-4 pt-1.5 pb-1 bg-background flex gap-1 justify-center sticky top-0 border-b border-primary/70 light:shadow-[0_0_3px_3px_rgba(0,0,0,0.2)] dark:shadow-[0_0_3px_3px_rgba(0,0,0,0.5)]"
 		>
-			<Button className="border-secondary/40 min-w-13" variant="outline" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+			<Button className="border-secondary/40 min-w-10" variant="outline" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
 				<ArrowUpIcon />
 			</Button>
-			<Button className="border-secondary/40 min-w-13" variant="outline" onClick={() => scrollTo("ingredients")}>
+			<Button className="border-secondary/40 min-w-10" variant="outline" onClick={() => scrollTo("ingredients")}>
 				<ForkKnifeIcon />
 			</Button>
 			{steps.map((step, i) => (
-				<Button className="border-secondary/40 min-w-13" variant="outline" key={step.id} onClick={() => scrollTo(`step_${i + 1}`)}>
+				<Button className="border-secondary/40 min-w-10" variant="outline" key={step.id} onClick={() => scrollTo(`step_${i + 1}`)}>
 					{i + 1}
 				</Button>
 			))}

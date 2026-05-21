@@ -19,7 +19,7 @@ export function PinBar() {
 					{pinnedRecipes.map((recipe) => (
 						<div
 							key={recipe.id}
-							className={`${buttonVariants({ variant: "secondary", size: "sm" })} flex items-center gap-1 pl-1`}
+							className={`${buttonVariants({ variant: "secondary", size: "sm" })} flex items-center gap-1 pl-1 max-w-40`}
 						>
 							<button
 								type="button"
@@ -28,7 +28,7 @@ export function PinBar() {
 							>
 								<XIcon size={12} />
 							</button>
-							<Link to={`/recipes/${recipe.user.handle}/${recipe.slug}`}>
+							<Link className="overflow-hidden" to={`/recipes/${recipe.user.handle}/${recipe.slug}`}>
 								{recipe.name}
 							</Link>
 						</div>

@@ -171,7 +171,7 @@ export function useRecipeCache(recipeId: number) {
 				...old,
 				ingredientGroups: old.ingredientGroups.map((g) =>
 					g.id === vars.groupId
-						? { ...g, ingredients: [...g.ingredients, { ...vars, amount: 0, units: "", name: "", clientKey }] }
+						? { ...g, ingredients: [...g.ingredients, { ...vars, amount: 0, units: "", name: "", preparation: "", clientKey }] }
 						: g,
 				),
 			}));

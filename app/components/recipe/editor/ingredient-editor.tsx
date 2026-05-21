@@ -1,4 +1,4 @@
-import { InputEditor } from "@components/controls";
+import { InputEditor, TextareaEditor } from "@components/controls";
 import { Button } from "@components/ui/button";
 import { RecipeIdContext, useRecipeCache } from "@hooks";
 import type { CachedIngredientData } from "@hooks/recipe-cache";
@@ -15,11 +15,13 @@ export function IngredientEditor({
 	);
 
 	return (
-		<div className="flex items-center justify-start">
+		<div className="flex items-start justify-start">
 			<Button
 				variant="ghost"
 				className="h-8 w-8 mr-1"
-				onClick={() => ingredient.id && removeIngredient.mutate({ id: ingredient.id })}
+				onClick={() =>
+					ingredient.id && removeIngredient.mutate({ id: ingredient.id })
+				}
 			>
 				<XIcon className="h-4 w-4" color="red" />
 			</Button>
@@ -31,18 +33,29 @@ export function IngredientEditor({
 					onSave={updateIngredientField(ingredient.id, "amount")}
 					resize
 				/>
-				<InputEditor
-					value={ingredient.units}
-					onSave={updateIngredientField(ingredient.id, "units")}
-					placeholder="units"
-					resize
-				/>
-				<InputEditor
-					value={ingredient.name}
-					onSave={updateIngredientField(ingredient.id, "name")}
-					placeholder="ingredient"
-					resize
-				/>
+				<div className="flex flex-wrap items-start gap-x-1">
+					<div className="flex gap-x-1">
+						<InputEditor
+							value={ingredient.units}
+							onSave={updateIngredientField(ingredient.id, "units")}
+							placeholder="units"
+							resize
+						/>
+						<InputEditor
+							value={ingredient.name}
+							onSave={updateIngredientField(ingredient.id, "name")}
+							placeholder="ingredient"
+							resize
+						/>
+					</div>
+					<TextareaEditor
+						className="ingredient__preparation"
+						value={ingredient.preparation}
+						onSave={updateIngredientField(ingredient.id, "preparation")}
+						placeholder="preparation"
+						resize
+					/>
+				</div>
 			</div>
 		</div>
 	);
