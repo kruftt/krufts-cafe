@@ -34,20 +34,18 @@ export function IngredientEditor({
 					resize
 				/>
 				<div className="flex flex-wrap items-start gap-x-1">
-					<div className="flex gap-x-1">
-						<InputEditor
-							value={ingredient.units}
-							onSave={updateIngredientField(ingredient.id, "units")}
-							placeholder="units"
-							resize
-						/>
-						<InputEditor
-							value={ingredient.name}
-							onSave={updateIngredientField(ingredient.id, "name")}
-							placeholder="ingredient"
-							resize
-						/>
-					</div>
+					<InputEditor
+						value={ingredient.units}
+						onSave={updateIngredientField(ingredient.id, "units")}
+						placeholder="units"
+						resize
+					/>
+					<TextareaEditor
+						value={ingredient.name}
+						onSave={updateIngredientField(ingredient.id, "name")}
+						placeholder="ingredient"
+						resize
+					/>
 					<TextareaEditor
 						className="ingredient__preparation"
 						value={ingredient.preparation}

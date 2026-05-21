@@ -83,16 +83,16 @@ export function StepEditor({ step, index }: Props) {
 					/>
 				))}
 
-				<Button
-					variant="ghost"
-					className="justify-start mt-1 px-2 min-w-80"
-					onClick={createInstruction}
-				>
-					<PlusIcon />
-					<span className="font-light text-muted-foreground ml-2">
+				<div className="text-center">
+					<Button
+						// variant="ghost"
+						className="justify-start mt-1 px-2"
+						onClick={createInstruction}
+					>
+						<PlusIcon />
 						Add Instruction
-					</span>
-				</Button>
+					</Button>
+				</div>
 			</Panel.Item>
 		</Panel.Section>
 	);

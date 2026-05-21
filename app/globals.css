@@ -267,7 +267,7 @@
 	}
 
 	.ingredient_group {
-		@apply break-inside-avoid mb-6 overflow-hidden;
+		@apply mb-6;
 	}
 
 	.ingredient_group__name {
@@ -312,6 +312,6 @@
 	}
 
 	.textarea {
-		@apply block bg-transparent border-none outline-none p-0 m-0 text-inherit! field-sizing-content;
+		@apply block bg-transparent border-none outline-none py-0 pr-0.5 m-0 text-inherit! field-sizing-content resize-none;
 	}
 }

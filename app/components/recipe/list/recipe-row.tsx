@@ -67,14 +67,6 @@ export function RecipeRow({
 						<BookmarkIcon fill={bookmarked ? "currentColor" : "none"} />
 					</Button>
 				)}
-				{edit && (
-					<Button
-						variant="ghost"
-						onClick={() => navigate(`/edit/${recipe.id}`)}
-					>
-						<EditIcon />
-					</Button>
-				)}
 			</div>
 			<DropdownMenu>
 				<DropdownMenuTrigger
@@ -84,12 +76,6 @@ export function RecipeRow({
 					<MenuIcon />
 				</DropdownMenuTrigger>
 				<DropdownMenuContent className="sm:hidden">
-					{edit && (
-						<DropdownMenuItem onClick={() => navigate(`/edit/${recipe.id}`)}>
-							<EditIcon />
-							Edit
-						</DropdownMenuItem>
-					)}
 					<DropdownMenuItem onClick={() => togglePin(recipe)}>
 						<PinIcon fill={pinned ? "currentColor" : "none"} />
 						{pinned ? "Unpin" : "Pin"}
@@ -103,6 +89,10 @@ export function RecipeRow({
 					{edit && (
 						<>
 							<DropdownMenuSeparator />
+							<DropdownMenuItem onClick={() => navigate(`/edit/${recipe.id}`)}>
+								<EditIcon />
+								Edit
+							</DropdownMenuItem>
 							<DropdownMenuItem variant="destructive">
 								<Trash2Icon />
 								Delete
@@ -130,6 +120,12 @@ export function RecipeRow({
 			/>
 			{edit && (
 				<div className="flex not-sm:hidden">
+					<Button
+						variant="ghost"
+						onClick={() => navigate(`/edit/${recipe.id}`)}
+					>
+						<EditIcon />
+					</Button>
 					<DeletionDialog
 						title="Delete Recipe"
 						message="The following recipe will be deleted:"

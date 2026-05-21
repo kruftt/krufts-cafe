@@ -8,7 +8,9 @@ interface Props extends React.ComponentProps<"div"> {
 export function IngredientGroup({ group, scale }: Props) {
 	return (
 		<div className="ingredient_group">
-			<h3 className="ingredient_group__name">{group.name}</h3>
+			{group.name !== '' &&
+				<h3 className="ingredient_group__name">{group.name}</h3>
+			}
 			{group.ingredients.map((ingredient) => (
 				<div key={ingredient.id} className="ingredient">
 					<span className="ingredient__amount">

@@ -4,7 +4,7 @@ import { Button, buttonVariants } from "@components/ui/button";
 import { useRecipeCache } from "@hooks";
 import type { CachedRecipeData } from "@hooks/recipe-cache";
 import { getNextIndex } from "@lib/utils";
-import { CheckSquareIcon, LinkIcon, SquareIcon } from "lucide-react";
+import { CheckSquareIcon, LinkIcon, PlusIcon, SquareIcon } from "lucide-react";
 import { Link } from "react-router";
 import { IngredientGroupEditor } from "./ingredient-group-editor";
 import { StepEditor } from "./step-editor";
@@ -164,7 +164,10 @@ export function RecipeEditor({ recipe }: { recipe: CachedRecipeData }) {
 				</Panel.Item>
 
 				<Panel.Item className="text-center">
-					<Button onClick={createIngredientGroup}>Add Ingredient Group</Button>
+					<Button onClick={createIngredientGroup}>
+						<PlusIcon />
+						Add Ingredient Group
+					</Button>
 				</Panel.Item>
 			</Panel.Section>
 
@@ -173,7 +176,10 @@ export function RecipeEditor({ recipe }: { recipe: CachedRecipeData }) {
 			))}
 
 			<div className="w-1/1 mt-6 text-center">
-				<Button onClick={createStep}>Add Step</Button>
+				<Button onClick={createStep}>
+					<PlusIcon />
+					Add Step
+				</Button>
 			</div>
 		</Container>
 	);
