@@ -39,7 +39,7 @@ export function IngredientGroupEditor({ group }: Props) {
 	}
 
 	return (
-		<div ref={groupRef} className="ingredient_group">
+		<div ref={groupRef} className="ingredient_group break-inside-avoid">
 			<div className="flex">
 				<InputEditor
 					placeholder="Group Name"
