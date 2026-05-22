@@ -1,6 +1,5 @@
 import { Input } from "@components/ui/input";
 import { ItemGroup } from "@components/ui/item";
-import { auth } from "@lib/auth-client";
 import type { RecipeRows } from "@services/recipe";
 import Fuse from "fuse.js";
 import { useMemo, useState } from "react";
@@ -17,7 +16,6 @@ export function RecipeList({
 	recipes: RecipeRows;
 	urlQuery?: string;
 }) {
-	const { data: session } = auth.useSession();
 	const [query, setQuery] = useState(urlQuery || "");
 	const [page, setPage] = useState(1);
 	const perPage = 20;
@@ -58,7 +56,6 @@ export function RecipeList({
 					<RecipeRow
 						key={recipe.id}
 						edit={!!edit}
-						isLoggedIn={!!session}
 						recipe={recipe}
 					/>
 				))}

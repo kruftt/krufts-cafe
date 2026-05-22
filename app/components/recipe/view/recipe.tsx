@@ -2,8 +2,8 @@ import { Container, Header, Panel } from "@components/app";
 import { Badge } from "@components/ui/badge";
 import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
-import { useBookmarks, usePins } from "@hooks";
-import { auth } from "@lib/auth-client";
+import { useBookmarks, usePins, useUser } from "@hooks";
+import { formatDuration } from "@lib/utils";
 import type { RecipeData } from "@services/recipe";
 import { BookmarkIcon, PinIcon } from "lucide-react";
 import { useState } from "react";
@@ -12,23 +12,21 @@ import { Step } from "./step";
 import { StepBar } from "./step-bar";
 
 interface Props extends React.ComponentProps<"div"> {
-  recipe: RecipeData;
+	recipe: RecipeData;
 }
 
 export function Recipe({ recipe }: Props) {
-  const { data: sessionData } = auth.useSession();
-  const loggedIn = !!sessionData;
+	const loggedIn = useUser() != null;
 
-  const { isPinned, togglePin } = usePins();
-  const pinned = isPinned(recipe.id);
+	const { isPinned, togglePin } = usePins();
+	const pinned = isPinned(recipe.id);
 
-  const { isBookmarked, toggleBookmark } = useBookmarks();
-  const bookmarked = isBookmarked(recipe.id);
+	const { isBookmarked, toggleBookmark } = useBookmarks();
+	const bookmarked = isBookmarked(recipe.id);
 
-  const [scale, setScale] = useState(1);
+	const [scale, setScale] = useState(1);
 
-
-  return (
+	return (
 		<>
 			<StepBar steps={recipe.steps} />
 			<Container>
@@ -40,10 +38,7 @@ export function Recipe({ recipe }: Props) {
 							<PinIcon fill={pinned ? "currentColor" : "none"} />
 						</Button>
 						{loggedIn && (
-							<Button
-								variant="ghost"
-								onClick={() => toggleBookmark(recipe.id)}
-							>
+							<Button variant="ghost" onClick={() => toggleBookmark(recipe.id)}>
 								<BookmarkIcon fill={bookmarked ? "currentColor" : "none"} />
 							</Button>
 						)}
@@ -65,21 +60,21 @@ export function Recipe({ recipe }: Props) {
 						<div>
 							<div className="recipe__duration_title">Prep</div>
 							<div className="recipe__duration_entry">
-								{`${recipe.prepTime} min`}
+								{formatDuration(recipe.prepTime)}
 							</div>
 						</div>
 						<div className="border-l" />
 						<div>
 							<div className="recipe__duration_title">Cook</div>
 							<div className="recipe__duration_entry">
-								{`${recipe.cookTime} min`}
+								{formatDuration(recipe.cookTime)}
 							</div>
 						</div>
 						<div className="border-l" />
 						<div>
 							<div className="recipe__duration_title">Total</div>
 							<div className="recipe__duration_entry">
-								{`${recipe.prepTime + recipe.cookTime} min`}
+								{formatDuration(recipe.prepTime + recipe.cookTime)}
 							</div>
 						</div>
 					</Header.Item>
@@ -90,11 +85,11 @@ export function Recipe({ recipe }: Props) {
 					</Header.Item>
 				</Header.Section>
 
-				<Panel.Section>
-					{recipe.intro && (
+				{ recipe.intro &&
+					<Panel.Section id="intro">
 						<div className="recipe__intro">{recipe.intro}</div>
-					)}
-				</Panel.Section>
+					</Panel.Section>
+				}
 
 				<Panel.Section id="ingredients">
 					<Panel.Title className="text-2xl justify-center">
@@ -102,14 +97,28 @@ export function Recipe({ recipe }: Props) {
 					</Panel.Title>
 
 					<Panel.Item className="text-center text-sm font-light -mt-4">
-						<div className="mr-4">Scale: {scale.toFixed(2)}</div>
-						<Input
-							className="max-w-40 px-0 accent-gray-700 shadow-none"
+						<div className="mb-2 flex justify-center items-baseline gap-2">
+							Scale:
+							<Input
+								className="font-bold w-12 h-6 text-center px-1 shadow-none border-none bg-primary-foreground/50"
+								type="number"
+								min={0.25}
+								max={4.0}
+								step={0.25}
+								value={scale}
+								onChange={(e) => {
+									const v = parseFloat(e.currentTarget.value);
+									if (!Number.isNaN(v)) setScale(Math.min(4, Math.max(0.25, v)));
+								}}
+							/>
+						</div>
+						<input
+							className="max-w-40 px-0 accent-gray-700"
 							type="range"
 							min={0.25}
 							max={4.0}
 							step={0.25}
-							defaultValue={1}
+							value={scale}
 							onChange={(e) => setScale(parseFloat(e.currentTarget.value))}
 						/>
 					</Panel.Item>
@@ -125,6 +134,7 @@ export function Recipe({ recipe }: Props) {
 					<Step key={step.id} step={step} index={i + 1} />
 				))}
 			</Container>
+			<div className="h-screen" />
 		</>
 	);
 }

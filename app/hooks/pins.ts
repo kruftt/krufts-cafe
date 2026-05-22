@@ -1,10 +1,10 @@
 import { pinnedRecipesAtom, pinsAtom } from "@atoms/user";
-import { auth } from "@lib/auth-client";
 import { useTRPC } from "@lib/trpc";
 import { useMutation } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { useEffect } from "react";
 import type { Route } from "../+types/root";
+import { useUser } from "./session";
 
 const LS_KEY = "pins";
 
@@ -24,8 +24,7 @@ function saveToStorage(recipes: PinnedRecipe[]) {
 
 
 export function usePins() {
-	const { data: session } = auth.useSession();
-	const isLoggedIn = !!session;
+	const isLoggedIn = useUser() != null;
 	const trpc = useTRPC();
 	const [pins, setPins] = useAtom(pinsAtom);
 	const [pinnedRecipes, setPinnedRecipes] = useAtom(pinnedRecipesAtom);

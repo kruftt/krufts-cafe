@@ -1,5 +1,5 @@
 import { themeAtom } from "@atoms/theme";
-import { bookmarksAtom, pinnedRecipesAtom, pinsAtom } from "@atoms/user";
+import { bookmarksAtom, pinnedRecipesAtom, pinsAtom, sessionUserAtom } from "@atoms/user";
 import { AppBar, PinBar } from "@components/app";
 import { Button } from "@components/ui/button";
 import { auth } from "@lib/auth-server";
@@ -36,7 +36,7 @@ function getQueryClient() {
 
 export async function loader({ request }: Route.LoaderArgs) {
 	const session = await auth.api.getSession({ headers: request.headers });
-	if (!session) return { pins: [], bookmarks: [], pinnedRecipes: [] };
+	if (!session) return { sessionUser: null, pins: [], bookmarks: [], pinnedRecipes: [] };
 
 	const [pins, bookmarks] = await Promise.all([
 		getPins(session.user.id),
@@ -44,6 +44,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 	]);
 
 	return {
+		sessionUser: session.user,
 		pins: pins.map((p) => p.recipeId),
 		pinnedRecipes: pins.map((p) => p.recipe),
 		bookmarks: bookmarks.map((b) => b.recipeId),
@@ -55,7 +56,7 @@ export function Layout({ children }: React.PropsWithChildren) {
 		<html lang="en" suppressHydrationWarning>
 			<head>
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
-				<link rel="icon" href="data:image/x-icon;base64,AA" />
+				<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 				<Links />
 				<script
 					dangerouslySetInnerHTML={{
@@ -69,15 +70,16 @@ export function Layout({ children }: React.PropsWithChildren) {
 }
 
 export default function App({ loaderData }: Route.ComponentProps) {
-	const { pins, bookmarks, pinnedRecipes } = loaderData;
+	const { sessionUser, pins, bookmarks, pinnedRecipes } = loaderData;
 
 	const store = useMemo(() => {
 		const s = createStore();
+		s.set(sessionUserAtom, sessionUser);
 		s.set(pinsAtom, new Set<number>(pins));
 		s.set(bookmarksAtom, new Set<number>(bookmarks));
 		s.set(pinnedRecipesAtom, pinnedRecipes);
 		return s;
-	}, [pins, bookmarks, pinnedRecipes]);
+	}, [sessionUser, pins, bookmarks, pinnedRecipes]);
 	const [theme, setTheme] = useAtom(themeAtom);
 	useEffect(() => {
 		document.documentElement.classList.toggle("dark", theme);

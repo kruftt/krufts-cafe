@@ -19,7 +19,7 @@ export function PinBar() {
 					{pinnedRecipes.map((recipe) => (
 						<div
 							key={recipe.id}
-							className={`${buttonVariants({ variant: "secondary", size: "sm" })} flex items-center gap-1 pl-1 max-w-40`}
+							className={`${buttonVariants({ variant: "secondary", size: "sm" })} flex items-center gap-1 pl-1 max-w-40 drop-shadow-sm/50`}
 						>
 							<button
 								type="button"

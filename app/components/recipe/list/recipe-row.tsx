@@ -16,6 +16,7 @@ import {
 } from "@components/ui/item";
 import { useBookmarks } from "@hooks/bookmark";
 import { usePins } from "@hooks/pins";
+import { useUser } from "@hooks/session";
 import { useTRPC } from "@lib/trpc";
 import { formatDuration } from "@lib/utils";
 import type { RecipeRowData } from "@services/recipe";
@@ -32,11 +33,9 @@ import { Link, useNavigate, useRevalidator } from "react-router";
 
 export function RecipeRow({
 	edit,
-	isLoggedIn,
 	recipe,
 }: {
 	edit: boolean;
-	isLoggedIn: boolean;
 	recipe: RecipeRowData;
 }) {
 	const navigate = useNavigate();
@@ -44,6 +43,7 @@ export function RecipeRow({
 	const trpc = useTRPC();
 	const { isPinned, togglePin } = usePins();
 	const { isBookmarked, toggleBookmark } = useBookmarks();
+	const isLoggedIn = useUser() !== null;
 	const pinned = isPinned(recipe.id);
 	const bookmarked = isBookmarked(recipe.id);
 
