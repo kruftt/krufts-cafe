@@ -1,6 +1,6 @@
 import { Button } from "@components/ui/button";
 import type { StepData } from "@services/recipe";
-import { ArrowUpIcon, ArrowUpToLineIcon, ForkKnifeIcon } from "lucide-react";
+import { ArrowUpToLineIcon, ForkKnifeIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 interface Props {
@@ -12,7 +12,8 @@ export function StepBar({ steps }: Props) {
   const [activeId, setActiveId] = useState<string | null>(null);
 
   useEffect(() => {
-    const ids = ["ingredients", ...steps.map((_, i) => `step_${i + 1}`)];
+    const introEl = document.getElementById("intro");
+    const ids = [...(introEl ? ["intro"] : []), "ingredients", ...steps.map((_, i) => `step_${i + 1}`)];
     let barH: number;
     let sections: { id: string, el: HTMLElement, top: number }[];
     recompute();
@@ -64,7 +65,7 @@ export function StepBar({ steps }: Props) {
 			ref={bar}
 			className="mb-4 pt-1.5 pb-1 bg-background flex gap-1 justify-center sticky top-0 border-b border-primary/70 light:shadow-[0_0_3px_3px_rgba(0,0,0,0.2)] dark:shadow-[0_0_3px_3px_rgba(0,0,0,0.5)]"
 		>
-			<Button className="border-secondary/40 min-w-10" variant={activeId === null ? "default" : "outline"} onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+			<Button className="border-secondary/40 min-w-10" variant={activeId === null || activeId === "intro" ? "default" : "outline"} onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
 				<ArrowUpToLineIcon />
 			</Button>
 			<Button className="border-secondary/40 min-w-10" variant={activeId === "ingredients" ? "default" : "outline"} onClick={() => scrollTo("ingredients")}>

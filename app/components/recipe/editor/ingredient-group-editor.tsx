@@ -42,7 +42,7 @@ export function IngredientGroupEditor({ group }: Props) {
 		<div ref={groupRef} className="ingredient_group break-inside-avoid">
 			<div className="flex">
 				<InputEditor
-					placeholder="Group Name"
+					placeholder="Group Name (optional)"
 					className="ingredient_group__name"
 					value={group.name}
 					onSave={onSaveName}

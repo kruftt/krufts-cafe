@@ -1,12 +1,15 @@
+import { parsedAmountsAtom, parsedServesAtom } from "@atoms/amount";
 import { Container, Header, Panel } from "@components/app";
 import { Badge } from "@components/ui/badge";
 import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
 import { useBookmarks, usePins, useUser } from "@hooks";
+import { formatAmount, parseAmount } from "@lib/amount";
 import { formatDuration } from "@lib/utils";
 import type { RecipeData } from "@services/recipe";
+import { useAtom, useSetAtom } from "jotai";
 import { BookmarkIcon, PinIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IngredientGroup } from "./ingredient-group";
 import { Step } from "./step";
 import { StepBar } from "./step-bar";
@@ -23,6 +26,22 @@ export function Recipe({ recipe }: Props) {
 
 	const { isBookmarked, toggleBookmark } = useBookmarks();
 	const bookmarked = isBookmarked(recipe.id);
+
+	const setParsedAmounts = useSetAtom(parsedAmountsAtom);
+	const [parsedServes, setParsedServes] = useAtom(parsedServesAtom);
+	useEffect(() => {
+		const amounts: Record<number, ReturnType<typeof parseAmount>> = {};
+		for (const group of recipe.ingredientGroups) {
+			for (const ingredient of group.ingredients) {
+				if (ingredient.id !== undefined) {
+					amounts[ingredient.id] = parseAmount(ingredient.amount);
+				}
+			}
+		}
+		setParsedAmounts(amounts);
+		setParsedServes(parseAmount(recipe.serves));
+		return () => { setParsedAmounts({}); setParsedServes(null); };
+	}, [recipe.ingredientGroups, recipe.serves, setParsedAmounts, setParsedServes]);
 
 	const [scale, setScale] = useState(1);
 
@@ -81,15 +100,15 @@ export function Recipe({ recipe }: Props) {
 
 					<Header.Item className="recipe__serves">
 						Serves
-						<span className="font-bold ml-1">{recipe.serves}</span>
+						<span className="font-bold ml-1">{parsedServes ? formatAmount(parsedServes, scale, { integer: true }) : recipe.serves}</span>
 					</Header.Item>
 				</Header.Section>
 
-				{ recipe.intro &&
+				{recipe.intro && (
 					<Panel.Section id="intro">
 						<div className="recipe__intro">{recipe.intro}</div>
 					</Panel.Section>
-				}
+				)}
 
 				<Panel.Section id="ingredients">
 					<Panel.Title className="text-2xl justify-center">
@@ -108,7 +127,8 @@ export function Recipe({ recipe }: Props) {
 								value={scale}
 								onChange={(e) => {
 									const v = parseFloat(e.currentTarget.value);
-									if (!Number.isNaN(v)) setScale(Math.min(4, Math.max(0.25, v)));
+									if (!Number.isNaN(v))
+										setScale(Math.min(4, Math.max(0.25, v)));
 								}}
 							/>
 						</div>
@@ -124,15 +144,25 @@ export function Recipe({ recipe }: Props) {
 					</Panel.Item>
 
 					<Panel.Item className="ingredient_groups">
-						{recipe.ingredientGroups.map((group) => (
-							<IngredientGroup key={group.id} group={group} scale={scale} />
-						))}
+						{(() => {
+							const single = recipe.ingredientGroups.length === 1;
+							return recipe.ingredientGroups.map((group) => (
+								<IngredientGroup
+									key={group.id}
+									group={group}
+									scale={scale}
+									single={single}
+								/>
+							));
+						})()}
 					</Panel.Item>
 				</Panel.Section>
 
-				{recipe.steps.map((step, i) => (
-					<Step key={step.id} step={step} index={i + 1} />
-				))}
+				{(() => {
+					const single = recipe.steps.length === 1;
+					return recipe.steps.map((step, i) => (
+					<Step key={step.id} step={step} index={i + 1} single={single} />
+				))})()}
 			</Container>
 			<div className="h-screen" />
 		</>

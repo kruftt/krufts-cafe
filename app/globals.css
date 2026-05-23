@@ -280,15 +280,15 @@
 	}
 
 	.ingredient {
-		@apply grow flex justify-start items-start py-1 gap-x-1 gap-y-0 max-w-full text-base break-inside-avoid;
+		@apply grow py-2 max-w-full text-base break-inside-avoid;
 	}
 
 	.ingredient__amount {
-		@apply font-bold;
+		@apply text-lg font-medium;
 	}
 
 	.ingredient__preparation {
-		@apply grow font-light italic;
+		@apply grow font-light italic text-[16px] -my-1;
 	}
 
 	.ingredients {

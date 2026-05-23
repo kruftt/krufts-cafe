@@ -73,9 +73,7 @@ export function useRecipeCache(recipeId: number) {
 
 	function updateRecipeField(id: number, field: keyof Recipe.Update) {
 		return (value: string, options: ProcedureOptions) => {
-			const v = (field.includes("Time") || field === "serves")
-					? parseInt(value, 10)
-					: value;
+			const v = field.includes("Time") ? parseInt(value, 10) : value;
 
 			const result = Recipe.Update.shape[field].safeParse(v);
 			if (result.success) {
@@ -171,7 +169,7 @@ export function useRecipeCache(recipeId: number) {
 				...old,
 				ingredientGroups: old.ingredientGroups.map((g) =>
 					g.id === vars.groupId
-						? { ...g, ingredients: [...g.ingredients, { ...vars, amount: 0, units: "", name: "", preparation: "", clientKey }] }
+						? { ...g, ingredients: [...g.ingredients, { ...vars, amount: "", units: "", name: "", preparation: "", clientKey }] }
 						: g,
 				),
 			}));
@@ -230,10 +228,9 @@ export function useRecipeCache(recipeId: number) {
 	function updateIngredientField(id: number | undefined, field: keyof Ingredient.Update) {
 		return (value: string, options: ProcedureOptions) => {
 			if (!id) return options.onError({ message: "Waiting for server..." });
-			const v = field === "amount" ? parseFloat(value) : value;
-			const result = Ingredient.Update.shape[field].safeParse(v);
+			const result = Ingredient.Update.shape[field].safeParse(value);
 			if (result.success) {
-				updateIngredient.mutate({ id, [field]: v }, options);
+				updateIngredient.mutate({ id, [field]: value }, options);
 			} else {
 				if (result.error.issues[0]) options.onError(result.error.issues[0]);
 			}

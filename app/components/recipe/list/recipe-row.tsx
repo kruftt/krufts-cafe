@@ -31,19 +31,15 @@ import {
 } from "lucide-react";
 import { Link, useNavigate, useRevalidator } from "react-router";
 
-export function RecipeRow({
-	edit,
-	recipe,
-}: {
-	edit: boolean;
-	recipe: RecipeRowData;
-}) {
+export function RecipeRow({ recipe }: { recipe: RecipeRowData }) {
 	const navigate = useNavigate();
 	const revalidator = useRevalidator();
 	const trpc = useTRPC();
 	const { isPinned, togglePin } = usePins();
 	const { isBookmarked, toggleBookmark } = useBookmarks();
-	const isLoggedIn = useUser() !== null;
+	const user = useUser();
+	const isLoggedIn = user !== null;
+	const edit = user?.id === recipe.userId;
 	const pinned = isPinned(recipe.id);
 	const bookmarked = isBookmarked(recipe.id);
 

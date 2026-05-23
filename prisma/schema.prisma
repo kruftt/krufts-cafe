@@ -27,7 +27,7 @@ model Recipe {
   published           Boolean       @default(false)
   prepTime            Int           @default(15)
   cookTime            Int           @default(15)
-  serves              Int           @default(4)
+  serves              String        @default("4")
   intro               String        @default("")
   ingredientGroups    IngredientGroup[]   
   steps               Step[]
@@ -51,7 +51,7 @@ model IngredientGroup {
 
 model Ingredient {
   id            Int               @id @default(autoincrement())
-  amount        Float             @default(0)
+  amount        String            @default("")
   units         String            @default("")
   name          String            @default("")
   preparation   String            @default("")

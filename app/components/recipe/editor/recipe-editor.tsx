@@ -143,7 +143,7 @@ export function RecipeEditor({ recipe }: { recipe: CachedRecipeData }) {
 					<TextareaEditor
 						className="recipe__intro"
 						onSave={updateRecipeField(recipe.id, "intro")}
-						placeholder="Recipe Introduction..."
+						placeholder="Recipe Introduction (optional)..."
 						value={recipe.intro}
 					/>
 				</Panel.Item>
@@ -181,6 +181,7 @@ export function RecipeEditor({ recipe }: { recipe: CachedRecipeData }) {
 					Add Step
 				</Button>
 			</div>
+			<div className="h-screen" />
 		</Container>
 	);
 }

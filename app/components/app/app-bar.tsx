@@ -3,15 +3,12 @@ import { useUser } from "@hooks/session";
 import { cn } from "@lib/utils";
 import { SearchIcon } from "lucide-react";
 import { BsCupHotFill } from "react-icons/bs";
-import { Link, useLocation } from "react-router";
+import { Link } from "react-router";
 import { LoginPopover, UserMenu } from "./menu";
 
 export function AppBar() {
 	const user = useUser();
 	const isLoggedIn = user !== null;
-	const location = useLocation();
-	const isHome = false;
-	// const isHome = location.pathname === "/";
 
 	return (
 		<header

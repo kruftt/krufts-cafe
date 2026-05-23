@@ -25,35 +25,37 @@ export function IngredientEditor({
 			>
 				<XIcon className="h-4 w-4" color="red" />
 			</Button>
-			<div className="ingredient">
+			<div className="ingredient flex flex-wrap items-baseline gap-x-1 gap-y-0">
 				<InputEditor
-					type="number"
 					className="ingredient__amount"
-					value={String(ingredient.amount)}
+					value={ingredient.amount}
 					onSave={updateIngredientField(ingredient.id, "amount")}
+					placeholder="#"
 					resize
 				/>
-				<div className="flex flex-wrap items-start gap-x-1">
-					<InputEditor
-						value={ingredient.units}
-						onSave={updateIngredientField(ingredient.id, "units")}
-						placeholder="units"
-						resize
-					/>
-					<TextareaEditor
-						value={ingredient.name}
-						onSave={updateIngredientField(ingredient.id, "name")}
-						placeholder="ingredient"
-						resize
-					/>
-					<TextareaEditor
-						className="ingredient__preparation"
-						value={ingredient.preparation}
-						onSave={updateIngredientField(ingredient.id, "preparation")}
-						placeholder="preparation"
-						resize
-					/>
-				</div>
+				{/* <div className="flex flex-wrap items-start gap-x-1"> */}
+				<InputEditor
+					value={ingredient.units}
+					onSave={updateIngredientField(ingredient.id, "units")}
+					placeholder="units"
+					resize
+				/>
+				<TextareaEditor
+					value={ingredient.name}
+					onSave={updateIngredientField(ingredient.id, "name")}
+					placeholder="name"
+					resize
+				/>
+				{/* <span className={`-ml-2 ${ ingredient.preparation === "" ? "text-muted-foreground" : "" }`}>,</span> */}
+				<TextareaEditor
+					className="ingredient__preparation grow"
+					styles="grow"
+					value={ingredient.preparation}
+					onSave={updateIngredientField(ingredient.id, "preparation")}
+					placeholder="preparation"
+					resize
+				/>
+				{/* </div> */}
 			</div>
 		</div>
 	);

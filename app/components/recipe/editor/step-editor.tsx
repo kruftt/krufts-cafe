@@ -67,9 +67,9 @@ export function StepEditor({ step, index }: Props) {
 
 			<Panel.Item>
 				<TextareaEditor
-					value={step.intro}
+				value={step.intro}
 					className="step__intro"
-					placeholder="Optional overview..."
+					placeholder="Step overview (optional)..."
 					onSave={updateStepField(step.id, "intro")}
 				/>
 			</Panel.Item>

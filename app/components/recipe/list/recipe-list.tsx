@@ -55,7 +55,6 @@ export function RecipeList({
 				{sliced.map((recipe) => (
 					<RecipeRow
 						key={recipe.id}
-						edit={!!edit}
 						recipe={recipe}
 					/>
 				))}
