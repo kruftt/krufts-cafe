@@ -23,7 +23,7 @@ export function AppBar() {
 				className={`${buttonVariants()} absolute top-3 left-2 h-10 rounded-2xl! drop-shadow-md/50`}
 			>
 				<BsCupHotFill className="w-5! h-5!" />
-				<h1 className="text-md mx-1 relative top-0.5 text-white">
+				<h1 className="text-md mx-1 relative top-0.5 text-white hidden sm:block">
 					Kruft's Cafe
 				</h1>
 			</Link>
