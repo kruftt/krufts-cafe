@@ -37,7 +37,7 @@ function parseValue(s: string): number | null {
 }
 
 function isFraction(s: string): boolean {
-	return s.includes('/')
+	return !s.includes('.')
 }
 
 // Rounds a float to the nearest 1/8
