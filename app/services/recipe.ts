@@ -27,6 +27,12 @@ export async function updateRecipeSearch(recipeId: number) {
 		select: {
 			name: true,
 			tags: true,
+			user: {
+				select: {
+					name: true,
+					handle: true,
+				}
+			},
 			ingredientGroups: {
 				select: {
 					ingredients: { select: { name: true } },
@@ -39,7 +45,7 @@ export async function updateRecipeSearch(recipeId: number) {
 		.flatMap((s) => s.ingredients)
 		.map((i) => i.name);
 
-	const search = [recipe.name, ...recipe.tags, ...ingredientNames]
+	const search = [recipe.name, recipe.user.name, recipe.user.handle, ...recipe.tags, ...ingredientNames]
 		.join(" ")
 		.toLowerCase();
 

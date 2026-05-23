@@ -20,7 +20,6 @@ export function IngredientGroup({ group, scale, single }: Props) {
 				const parsed = ingredient.id !== undefined ? parsedAmounts[ingredient.id] : null;
 				return (
 					<div key={ingredient.id} className="ingredient">
-						{/* <div className="flex flex-wrap gap-x-1 items-center"> */}
 						<span className="ingredient__amount mr-1">
 							{parsed ? formatAmount(parsed, scale) : ""}
 						</span>
@@ -31,7 +30,6 @@ export function IngredientGroup({ group, scale, single }: Props) {
 						<span className="ingredient__preparation ml-1">
 							{ingredient.preparation}
 						</span>
-						{/* </div> */}
 					</div>
 				);
 			})}

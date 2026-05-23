@@ -33,7 +33,6 @@ export function IngredientEditor({
 					placeholder="#"
 					resize
 				/>
-				{/* <div className="flex flex-wrap items-start gap-x-1"> */}
 				<InputEditor
 					value={ingredient.units}
 					onSave={updateIngredientField(ingredient.id, "units")}
@@ -46,7 +45,6 @@ export function IngredientEditor({
 					placeholder="name"
 					resize
 				/>
-				{/* <span className={`-ml-2 ${ ingredient.preparation === "" ? "text-muted-foreground" : "" }`}>,</span> */}
 				<TextareaEditor
 					className="ingredient__preparation grow"
 					styles="grow"
@@ -55,7 +53,6 @@ export function IngredientEditor({
 					placeholder="preparation"
 					resize
 				/>
-				{/* </div> */}
 			</div>
 		</div>
 	);
