@@ -104,5 +104,5 @@ export function formatAmount(parsed: ParsedAmount, scale: number, { integer = fa
 	if (parsed.high !== undefined) {
 		return `${fmt(parsed.value * scale)} - ${fmt(parsed.high * scale)}`
 	}
-	return fmt(parsed.value * scale)
+	return parsed.value > 0 ? fmt(parsed.value * scale) : "-"
 }
