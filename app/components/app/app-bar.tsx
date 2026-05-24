@@ -20,6 +20,7 @@ export function AppBar() {
 		>
 			<Link
 				to="/"
+				tabIndex={0}
 				className={`${buttonVariants()} absolute top-3 left-2 h-10 rounded-2xl! drop-shadow-md/50`}
 			>
 				<BsCupHotFill className="w-5! h-5!" />

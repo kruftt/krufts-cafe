@@ -18,7 +18,7 @@ export async function newRecipeName(userId: string) {
 		})
 		.filter((n) => n >= 0);
 
-	return `${base} (${Math.max(...numbers) + 1})`;
+	return `${base} (${(numbers.length ? Math.max(...numbers) : 0) + 1})`;
 }
 
 export async function updateRecipeSearch(recipeId: number) {

@@ -1,11 +1,11 @@
 import { themeAtom } from "@atoms/theme";
 import { bookmarksAtom, pinnedRecipesAtom, pinsAtom, sessionUserAtom } from "@atoms/user";
-import { AppBar, PinBar } from "@components/app";
+import { AppBar, Container, Header, PinBar } from "@components/app";
 import { Button } from "@components/ui/button";
 import { auth } from "@lib/auth-server";
 import { createStore, Provider, useAtom } from "jotai";
 import { BsMoonStarsFill, BsSunFill } from "react-icons/bs";
-import { Links, Outlet, Scripts } from "react-router";
+import { isRouteErrorResponse, Links, Outlet, Scripts, useRouteError } from "react-router";
 import "./globals.css";
 import { TRPCProvider } from "@lib/trpc";
 import { getBookmarks, getPins } from "@services/user";
@@ -100,7 +100,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
 		<Provider store={store}>
 			<QueryClientProvider client={queryClient}>
 				<TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
-					<IconContext.Provider value={{ color: `${theme ? "#DDD" : "#DDD"}` }}>
+					<IconContext.Provider value={{ color: "#DDD" }}>
 						<body className="pb-10">
 							<AppBar />
 							<PinBar />
@@ -120,4 +120,30 @@ export default function App({ loaderData }: Route.ComponentProps) {
 	);
 }
 
-export function ErrorBoundary() {}
+export function ErrorBoundary() {
+	const error = useRouteError();
+	const message = isRouteErrorResponse(error)
+		? `${error.status} ${error.statusText}`
+		: error instanceof Error
+			? error.message
+			: "Unknown error";
+
+	return (
+		<body>
+			<Container>
+				<Header.Section className="mt-16">
+					<Header.Item>
+						<h1 className="text-2xl font-bold">Something went wrong</h1>
+					</Header.Item>
+					<Header.Item>
+						<p className="text-muted-foreground">{message}</p>
+						<a href="/" className="underline">
+							Go home
+						</a>
+					</Header.Item>
+				</Header.Section>
+			</Container>
+			<Scripts />
+		</body>
+	);
+}

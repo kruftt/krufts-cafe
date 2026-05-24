@@ -26,6 +26,8 @@ export function InputEditor ({
 		{ clear, reset, type },
 	);
 
+	const errorId = rest.id ? `${rest.id}-error` : undefined;
+
 	return (
 		<div
 			className={cn(
@@ -41,6 +43,7 @@ export function InputEditor ({
 					inputStyle,
 				)}
 				aria-invalid={!!error}
+				aria-describedby={error ? errorId : undefined}
 				value={value}
 				disabled={busy}
 				aria-disabled={busy}
@@ -50,7 +53,7 @@ export function InputEditor ({
 				{...rest}
 			/>
 			{error && (
-				<span className="input__error">
+				<span id={errorId} className="input__error">
 					{error}
 				</span>
 			)}

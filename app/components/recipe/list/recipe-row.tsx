@@ -101,7 +101,10 @@ export function RecipeRow({ recipe }: { recipe: RecipeRowData }) {
 				className="py-1.5"
 				variant="default"
 				render={
-					<Link to={`/recipes/${recipe.user.handle}/${recipe.slug}`}>
+					<Link
+						to={`/recipes/${recipe.user.handle}/${recipe.slug}`}
+						tabIndex={0}
+					>
 						<ItemContent>
 							<ItemTitle>{recipe.name}</ItemTitle>
 							<ItemDescription>By {recipe.user.name}</ItemDescription>

@@ -38,7 +38,7 @@ export function DeletionDialog({
 				<div className="text-center">{item}</div>
 				<div className="flex gap-3 justify-around">
 					<DialogClose render={<Button />}>Cancel</DialogClose>
-					<Button variant="destructive" onClick={onConfirm}>
+					<Button variant="destructive" onClick={() => { onConfirm(); setOpen(false); }}>
 						Delete
 					</Button>
 				</div>

@@ -6,10 +6,10 @@ import {
 } from "@components/controls";
 import { Button } from "@components/ui/button";
 import type { CachedStepData } from "@hooks/recipe-cache";
-import { RecipeIdContext, useRecipeCache } from "@hooks/recipe-cache";
+import { useRecipeCache, useRecipeId } from "@hooks/recipe-cache";
 import { getNextIndex } from "@lib/utils";
 import { PlusIcon, XIcon } from "lucide-react";
-import { useContext, useRef } from "react";
+import { useRef } from "react";
 import { InstructionEditor } from "./instruction-editor";
 
 interface Props {
@@ -19,9 +19,7 @@ interface Props {
 
 export function StepEditor({ step, index }: Props) {
 	const instructionsRef = useRef<HTMLDivElement>(null);
-	const { updateStepField, removeStep, addInstruction } = useRecipeCache(
-		useContext(RecipeIdContext),
-	);
+	const { updateStepField, removeStep, addInstruction } = useRecipeCache(useRecipeId());
 
 	function deleteStep() {
 		if (step.id) removeStep.mutate({ id: step.id });

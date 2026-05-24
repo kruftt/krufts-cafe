@@ -1,9 +1,8 @@
 import { TextareaEditor } from "@components/controls";
 import { Button } from "@components/ui/button";
-import { RecipeIdContext, useRecipeCache } from "@hooks";
+import { useRecipeCache, useRecipeId } from "@hooks";
 import type { CachedInstructionData } from "@hooks/recipe-cache";
 import { XIcon } from "lucide-react";
-import { useContext } from "react";
 
 interface Props extends React.ComponentProps<"div"> {
 	index: number;
@@ -11,9 +10,7 @@ interface Props extends React.ComponentProps<"div"> {
 }
 
 export function InstructionEditor({ index, instruction }: Props) {
-	const { updateInstructionField, removeInstruction } = useRecipeCache(
-		useContext(RecipeIdContext),
-	);
+	const { updateInstructionField, removeInstruction } = useRecipeCache(useRecipeId());
 
 	return (
 		<div className="flex items-start justify-start gap-1">

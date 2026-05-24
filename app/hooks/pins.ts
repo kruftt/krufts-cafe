@@ -44,7 +44,7 @@ export function usePins() {
 	async function mergePins() {
 		const stored = loadFromStorage();
 		if (!stored.length) return;
-		await Promise.all(stored.map((recipe) =>
+		await Promise.allSettled(stored.map((recipe) =>
 			pinCreateMutation.mutateAsync({ id: recipe.id })
 		));
 		localStorage.removeItem(LS_KEY);

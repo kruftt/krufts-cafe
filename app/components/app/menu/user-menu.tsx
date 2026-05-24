@@ -24,13 +24,13 @@ export function UserMenu({ user }: { user: SessionUser }) {
 			<DropdownMenuContent>
 				<DropdownMenuGroup>
 					<DropdownMenuItem>
-						<Link className="w-1/1" to="/my-recipes/">My Recipes</Link>
+						<Link tabIndex={0} className="w-1/1" to="/my-recipes/">My Recipes</Link>
 					</DropdownMenuItem>
 					<DropdownMenuItem>
-						<Link className="w-1/1" to="/bookmarks/">Bookmarks</Link>
+						<Link tabIndex={0} className="w-1/1" to="/bookmarks/">Bookmarks</Link>
 					</DropdownMenuItem>
 					<DropdownMenuItem>
-						<Link className="w-1/1" to="/profile/">Profile</Link>
+						<Link tabIndex={0} className="w-1/1" to="/profile/">Profile</Link>
 					</DropdownMenuItem>
 				</DropdownMenuGroup>
 				<DropdownMenuSeparator />

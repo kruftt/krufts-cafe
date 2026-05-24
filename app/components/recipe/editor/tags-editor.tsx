@@ -2,16 +2,16 @@ import { Header } from "@components/app";
 import { InputEditor } from "@components/controls";
 import { Badge } from "@components/ui/badge";
 import { Button } from "@components/ui/button";
-import { type ProcedureOptions, RecipeIdContext, useRecipeCache } from "@hooks";
+import { type ProcedureOptions, useRecipeCache, useRecipeId } from "@hooks";
 import { XIcon } from "lucide-react";
-import { useContext, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 interface Props extends React.ComponentProps<"div"> {
 	tags: string[];
 }
 
 export function TagsEditor({ tags }: Props) {
-	const recipeId = useContext(RecipeIdContext);
+	const recipeId = useRecipeId();
 	const { updateRecipe } = useRecipeCache(recipeId);
 
 	const inputRef = useRef<HTMLInputElement>(null);

@@ -132,9 +132,10 @@ export function Recipe({ recipe }: Props) {
 					</Panel.Title>
 
 					<Panel.Item className="text-center text-sm font-light -mt-4">
-						<div className="mb-2 flex justify-center items-baseline gap-2">
+						<label htmlFor="scale-input" className="mb-2 flex justify-center items-baseline gap-2">
 							Scale:
 							<Input
+								id="scale-input"
 								className="font-bold w-12 h-6 text-center px-1 shadow-none border-none bg-primary-foreground/50"
 								type="number"
 								min={0.25}
@@ -145,10 +146,11 @@ export function Recipe({ recipe }: Props) {
 								onKeyDown={(e) => { if (e.key === "Enter") e.currentTarget.blur(); }}
 								onBlur={(e) => commitScale(e.currentTarget.value)}
 							/>
-						</div>
+						</label>
 						<input
 							className="max-w-40 px-0 accent-gray-700"
 							type="range"
+							aria-label="Scale"
 							min={0.25}
 							max={4.0}
 							step={0.25}

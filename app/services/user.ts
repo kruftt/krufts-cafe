@@ -1,7 +1,7 @@
 import { prisma } from "@lib/prisma"
 
 export async function generateHandle(name: string) {
-  const base = name.toLowerCase().replace(' ', '-')
+  const base = name.toLowerCase().replaceAll(' ', '-')
   
   const existing = await prisma.user.findMany({
     where: { handle: { startsWith: base }},
@@ -14,7 +14,7 @@ export async function generateHandle(name: string) {
     .map(user => parseInt(user.handle.replace(`${base}-`, '') || '1', 10))
     .filter(n => !Number.isNaN(n))
   
-  return `${base}-${Math.max(...indices) + 1}`
+  return indices.length > 0 ? `${base}-${Math.max(...indices) + 1}` : `${base}-1`;
 }
 
 

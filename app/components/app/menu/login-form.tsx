@@ -1,110 +1,49 @@
-import { PasswordInput, SubmitButton } from "@components/controls";
-import {
-	Field,
-	FieldError,
-	FieldGroup,
-	FieldLabel,
-} from "@components/ui/field";
+import { FormField, PasswordInput, SubmitButton } from "@components/controls";
+import { Field, FieldGroup } from "@components/ui/field";
 import { Input } from "@components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRequest } from "@hooks";
-import { usePins } from "@hooks/pins";
-import { auth } from "@lib/auth-client";
+import { useLogin } from "@hooks";
+import { User } from "@schema";
 import { useEffect, useRef } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { useRevalidator } from "react-router";
-import * as z from "zod";
-
-const loginSchema = z.object({
-	email: z.email(),
-	password: z.string(),
-});
-
-type LoginSchema = z.infer<typeof loginSchema>;
+import { useForm } from "react-hook-form";
 
 export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
 	const emailRef = useRef<HTMLInputElement>(null);
-	const request = useRequest();
-	const revalidator = useRevalidator();
-	const { mergePins } = usePins();
+	const { mutate, isPending, error } = useLogin(onSuccess);
 
 	useEffect(() => {
 		emailRef.current?.focus();
 	}, []);
 
-	const form = useForm<LoginSchema>({
-		resolver: zodResolver(loginSchema),
+	const form = useForm<User.Login>({
+		resolver: zodResolver(User.Login),
 		defaultValues: {
 			email: "",
 			password: "",
 		},
 	});
 
-	async function onSubmit(data: LoginSchema) {
-		await auth.signIn.email(data, {
-			onRequest: request.onRequest,
-			onResponse: request.onResponse,
-			onError: (ctx) => request.onError(ctx.error.message),
-			onSuccess: async () => {
-				await mergePins();
-				onSuccess?.();
-				revalidator.revalidate();
-			},
-		});
+	function onSubmit(data: User.Login) {
+		mutate(data);
 	}
 
 	return (
 		<form id="form-login" onSubmit={form.handleSubmit(onSubmit)}>
 			<FieldGroup>
 				<FieldGroup>
-					<Controller
-						name="email"
-						control={form.control}
-						render={({ field, fieldState }) => (
-							<Field data-invalid={fieldState.invalid}>
-								<FieldLabel htmlFor="form-login-email">Email</FieldLabel>
-								<Input
-									{...field}
-									id="form-login-email"
-									ref={emailRef}
-									type="email"
-									aria-invalid={fieldState.invalid}
-									placeholder="email@domain.com"
-									autoComplete="email"
-									disabled={request.inProgress}
-								/>
-								{fieldState.invalid && (
-									<FieldError errors={[fieldState.error]} />
-								)}
-							</Field>
+					<FormField name="email" control={form.control} label="Email" id="form-login-email">
+						{(field, invalid) => (
+							<Input {...field} id="form-login-email" ref={emailRef} type="email" aria-invalid={invalid} placeholder="email@domain.com" autoComplete="email" disabled={isPending} />
 						)}
-					/>
-					<Controller
-						name="password"
-						control={form.control}
-						render={({ field, fieldState }) => (
-							<Field data-invalid={fieldState.invalid}>
-								<FieldLabel htmlFor="form-login-password">Password</FieldLabel>
-								<PasswordInput
-									{...field}
-									id="form-login-password"
-									aria-invalid={fieldState.invalid}
-									placeholder="xxxxxxxx"
-									autoComplete="current-password"
-									disabled={request.inProgress}
-								/>
-								{fieldState.invalid && (
-									<FieldError errors={[fieldState.error]} />
-								)}
-								{/* TODO: password recovery workflow */}
-								{/* <a href="/">forgot password?</a> */}
-							</Field>
+					</FormField>
+					<FormField name="password" control={form.control} label="Password" id="form-login-password">
+						{(field, invalid) => (
+							<PasswordInput {...field} id="form-login-password" aria-invalid={invalid} placeholder="xxxxxxxx" autoComplete="current-password" disabled={isPending} />
 						)}
-					/>
+					</FormField>
 				</FieldGroup>
-
 				<Field>
-					<SubmitButton form="form-login" request={request}>
+					<SubmitButton form="form-login" inProgress={isPending} error={error?.message ?? ""}>
 						Login
 					</SubmitButton>
 				</Field>

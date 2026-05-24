@@ -1,18 +1,15 @@
 import { InputEditor, TextareaEditor } from "@components/controls";
 import { Button } from "@components/ui/button";
-import { RecipeIdContext, useRecipeCache } from "@hooks";
+import { useRecipeCache, useRecipeId } from "@hooks";
 import type { CachedIngredientData } from "@hooks/recipe-cache";
 import { XIcon } from "lucide-react";
-import { useContext } from "react";
 
 export function IngredientEditor({
 	ingredient,
 }: {
 	ingredient: CachedIngredientData;
 }) {
-	const { updateIngredientField, removeIngredient } = useRecipeCache(
-		useContext(RecipeIdContext),
-	);
+	const { updateIngredientField, removeIngredient } = useRecipeCache(useRecipeId());
 
 	return (
 		<div className="flex items-start justify-start">

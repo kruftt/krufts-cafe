@@ -13,8 +13,8 @@ export const Update = z.object({
 	name: Name.optional(),
 	tags: z.array(z.string()).optional(),
 	published: z.boolean().optional(),
-	prepTime: z.int().min(0).optional(),
-	cookTime: z.int().min(0).optional(),
+	prepTime: z.coerce.number().int().min(0).optional(),
+	cookTime: z.coerce.number().int().min(0).optional(),
 	serves: z.string().regex(SERVES_REGEX, "Invalid format").optional(),
 	intro: z.string().optional(),
 });

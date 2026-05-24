@@ -14,9 +14,11 @@ export type ParsedAmount = {
 function parseFraction(s: string): number | null {
 	const parts = s.split('/')
 	if (parts.length !== 2) return null
+	// biome-ignore lint/style/noNonNullAssertion: length checked above
 	const num = parseFloat(parts[0]!)
+	// biome-ignore lint/style/noNonNullAssertion: length checked above
 	const den = parseFloat(parts[1]!)
-	if (isNaN(num) || isNaN(den) || den === 0) return null
+	if (Number.isNaN(num) || Number.isNaN(den) || den === 0) return null
 	return num / den
 }
 
@@ -28,12 +30,12 @@ function parseValue(s: string): number | null {
 		// mixed fraction: "1 1/4"
 		const whole = parseFloat(s.slice(0, spaceIdx))
 		const frac = parseFraction(s.slice(spaceIdx + 1))
-		if (isNaN(whole) || frac === null) return null
+		if (Number.isNaN(whole) || frac === null) return null
 		return whole + frac
 	}
 	if (s.includes('/')) return parseFraction(s)
 	const n = parseFloat(s)
-	return isNaN(n) ? null : n
+	return Number.isNaN(n) ? null : n
 }
 
 function isFraction(s: string): boolean {
@@ -85,7 +87,9 @@ export function parseAmount(s: string): ParsedAmount | null {
 	const rangeParts = s.split(/\s*-\s*/)
 
 	if (rangeParts.length === 2) {
+		// biome-ignore lint/style/noNonNullAssertion: length checked above
 		const low = parseValue(rangeParts[0]!)
+		// biome-ignore lint/style/noNonNullAssertion: length checked above
 		const high = parseValue(rangeParts[1]!)
 		if (low === null || high === null) return null
 		const fraction = isFraction(s)

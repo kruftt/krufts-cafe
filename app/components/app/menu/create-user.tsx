@@ -1,4 +1,4 @@
-import { PasswordInput, SubmitButton } from "@components/controls";
+import { FormField, PasswordInput, SubmitButton } from "@components/controls";
 import { Button } from "@components/ui/button";
 import {
 	Dialog,
@@ -8,24 +8,18 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@components/ui/dialog";
-import {
-	Field,
-	FieldError,
-	FieldGroup,
-	FieldLabel,
-} from "@components/ui/field";
+import { FieldGroup } from "@components/ui/field";
 import { Input } from "@components/ui/input";
 import { Separator } from "@components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRequest } from "@hooks";
-import { auth } from "@lib/auth-client";
+import { useCreateUser } from "@hooks";
 import { User } from "@schema";
 import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 export function CreateUser() {
 	const [open, setOpen] = useState(false);
-	const request = useRequest();
+	const { mutate, isPending, error } = useCreateUser();
 
 	const form = useForm<User.Create>({
 		resolver: zodResolver(User.Create),
@@ -36,17 +30,8 @@ export function CreateUser() {
 		},
 	});
 
-	async function onSubmit(data: User.Create) {
-		await auth.signUp.email(data, {
-			onRequest: request.onRequest,
-			onResponse: request.onResponse,
-			onSuccess: () => {
-				setOpen(false);
-			},
-			onError: (ctx) => {
-				request.onError(ctx.error.message);
-			},
-		});
+	function onSubmit(data: User.Create) {
+		mutate(data, { onSuccess: () => setOpen(false) });
 	}
 
 	return (
@@ -69,74 +54,21 @@ export function CreateUser() {
 				</DialogHeader>
 				<form id="form-create-profile" onSubmit={form.handleSubmit(onSubmit)}>
 					<FieldGroup>
-						<Controller
-							name="name"
-							control={form.control}
-							render={({ field, fieldState }) => (
-								<Field data-invalid={fieldState.invalid}>
-									<FieldLabel htmlFor="form-create-profile-name">
-										Name
-									</FieldLabel>
-									<Input
-										{...field}
-										id="form-create-profile-name"
-										type="text"
-										aria-invalid={fieldState.invalid}
-										placeholder="John Smith"
-										autoComplete="off"
-										disabled={request.inProgress}
-									/>
-									{fieldState.invalid && (
-										<FieldError errors={[fieldState.error]} />
-									)}
-								</Field>
+						<FormField name="name" control={form.control} label="Name" id="form-create-profile-name">
+							{(field, invalid) => (
+								<Input {...field} id="form-create-profile-name" type="text" aria-invalid={invalid} placeholder="John Smith" autoComplete="off" disabled={isPending} />
 							)}
-						/>
-						<Controller
-							name="email"
-							control={form.control}
-							render={({ field, fieldState }) => (
-								<Field data-invalid={fieldState.invalid}>
-									<FieldLabel htmlFor="form-create-profile-email">
-										Email
-									</FieldLabel>
-									<Input
-										{...field}
-										id="form-create-profile-email"
-										type="email"
-										aria-invalid={fieldState.invalid}
-										placeholder="email@domain.com"
-										autoComplete="off"
-										disabled={request.inProgress}
-									/>
-									{fieldState.invalid && (
-										<FieldError errors={[fieldState.error]} />
-									)}
-								</Field>
+						</FormField>
+						<FormField name="email" control={form.control} label="Email" id="form-create-profile-email">
+							{(field, invalid) => (
+								<Input {...field} id="form-create-profile-email" type="email" aria-invalid={invalid} placeholder="email@domain.com" autoComplete="off" disabled={isPending} />
 							)}
-						/>
-						<Controller
-							name="password"
-							control={form.control}
-							render={({ field, fieldState }) => (
-								<Field data-invalid={fieldState.invalid}>
-									<FieldLabel htmlFor="form-create-profile-password">
-										Password
-									</FieldLabel>
-									<PasswordInput
-										{...field}
-										id="form-create-profile-password"
-										aria-invalid={fieldState.invalid}
-										placeholder="xxxxxxxx"
-										autoComplete="off"
-										disabled={request.inProgress}
-									/>
-									{fieldState.invalid && (
-										<FieldError errors={[fieldState.error]} />
-									)}
-								</Field>
+						</FormField>
+						<FormField name="password" control={form.control} label="Password" id="form-create-profile-password">
+							{(field, invalid) => (
+								<PasswordInput {...field} id="form-create-profile-password" aria-invalid={invalid} placeholder="xxxxxxxx" autoComplete="off" disabled={isPending} />
 							)}
-						/>
+						</FormField>
 					</FieldGroup>
 				</form>
 				<Separator />
@@ -144,7 +76,8 @@ export function CreateUser() {
 					<SubmitButton
 						className="w-1/1"
 						form="form-create-profile"
-						request={request}
+						inProgress={isPending}
+						error={error?.message ?? ""}
 					>
 						Create Account
 					</SubmitButton>

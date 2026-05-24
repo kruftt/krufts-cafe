@@ -22,8 +22,13 @@ const Model = z.object({
   password: Password,
 });
 
-export const Create = Model.omit({ 
+export const Create = Model.omit({
   handle: true,
+});
+
+export const Login = z.object({
+  email: z.email(),
+  password: z.string(),
 });
 
 export const Names = Model.omit({
@@ -33,5 +38,6 @@ export const Names = Model.omit({
 
 
 export type Create = z.infer<typeof Create>;
+export type Login = z.infer<typeof Login>;
 export type Names = z.infer<typeof Names>;
 export type Password = z.infer<typeof Password>;

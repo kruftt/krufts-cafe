@@ -15,8 +15,27 @@ import type {
 	StepData,
 } from "@services/recipe";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createContext } from "react";
+import { createContext, useContext } from "react";
+import type * as z from "zod";
 import type { ProcedureOptions } from "./editor";
+
+function makeFieldUpdater<S extends z.ZodObject<z.ZodRawShape>>(
+	schema: S,
+	// biome-ignore lint/suspicious/noExplicitAny: dynamic field construction requires any
+	mutation: { mutate: (vars: any, options: any) => void },
+) {
+	return (id: number | undefined, field: keyof z.infer<S>) => {
+		return (value: string, options: ProcedureOptions) => {
+			if (!id) return options.onError({ message: "Waiting for server..." });
+			const result = (schema.shape[field as string] as z.ZodType).safeParse(value);
+			if (result.success) {
+				mutation.mutate({ id, [field]: result.data }, options);
+			} else {
+				if (result.error.issues[0]) options.onError(result.error.issues[0]);
+			}
+		};
+	};
+}
 
 type WithClientKey<T> = Omit<T, "id"> & { id?: number; clientKey?: string }
 
@@ -35,7 +54,13 @@ export type CachedRecipeData = Omit<RecipeData, "ingredientGroups" | "steps"> & 
 	steps: CachedStepData[]
 }
 
-export const RecipeIdContext = createContext<number>(0);
+export const RecipeIdContext = createContext<number | null>(null);
+
+export function useRecipeId(): number {
+	const id = useContext(RecipeIdContext);
+	if (id === null) throw new Error("useRecipeId used outside RecipeIdContext.Provider");
+	return id;
+}
 
 export function recipeQueryKey(recipeId: number) {
 	return ["recipe", recipeId] as const;
@@ -71,18 +96,7 @@ export function useRecipeCache(recipeId: number) {
 		},
 	});
 
-	function updateRecipeField(id: number, field: keyof Recipe.Update) {
-		return (value: string, options: ProcedureOptions) => {
-			const v = field.includes("Time") ? parseInt(value, 10) : value;
-
-			const result = Recipe.Update.shape[field].safeParse(v);
-			if (result.success) {
-				updateRecipe.mutate({ id, [field]: v }, options);
-			} else {
-				if (result.error.issues[0]) options.onError(result.error.issues[0]);
-			}
-		};
-	}
+	const updateRecipeField = makeFieldUpdater(Recipe.Update, updateRecipe);
 
 	// Ingredient Groups
 	const addIngredientGroup = useMutation<
@@ -142,17 +156,7 @@ export function useRecipeCache(recipeId: number) {
 		onError: (_err, _vars, ctx) => restore(ctx?.previous),
 	});
 
-	function updateIngredientGroupField(id: number | undefined, field: keyof IngredientGroup.Update) {
-		return (value: string, options: ProcedureOptions) => {
-			if (!id) return options.onError({ message: "Waiting for server..." });
-			const result = IngredientGroup.Update.shape[field].safeParse(value);
-			if (result.success) {
-				updateIngredientGroup.mutate({ id, [field]: value }, options);
-			} else {
-				if (result.error.issues[0]) options.onError(result.error.issues[0]);
-			}
-		};
-	}
+	const updateIngredientGroupField = makeFieldUpdater(IngredientGroup.Update, updateIngredientGroup);
 
 	// Ingredients
 	const addIngredient = useMutation<
@@ -225,17 +229,7 @@ export function useRecipeCache(recipeId: number) {
 		onError: (_err, _vars, ctx) => restore(ctx?.previous),
 	});
 
-	function updateIngredientField(id: number | undefined, field: keyof Ingredient.Update) {
-		return (value: string, options: ProcedureOptions) => {
-			if (!id) return options.onError({ message: "Waiting for server..." });
-			const result = Ingredient.Update.shape[field].safeParse(value);
-			if (result.success) {
-				updateIngredient.mutate({ id, [field]: value }, options);
-			} else {
-				if (result.error.issues[0]) options.onError(result.error.issues[0]);
-			}
-		};
-	}
+	const updateIngredientField = makeFieldUpdater(Ingredient.Update, updateIngredient);
 
 	// Steps
 	const addStep = useMutation<
@@ -295,17 +289,7 @@ export function useRecipeCache(recipeId: number) {
 		onError: (_err, _vars, ctx) => restore(ctx?.previous),
 	});
 
-	function updateStepField(id: number | undefined, field: keyof Step.Update) {
-		return (value: string, options: ProcedureOptions) => {
-			if (!id) return options.onError({ message: "Waiting for server..." });
-			const result = Step.Update.shape[field].safeParse(value);
-			if (result.success) {
-				updateStep.mutate({ id, [field]: value }, options);
-			} else {
-				if (result.error.issues[0]) options.onError(result.error.issues[0]);
-			}
-		};
-	}
+	const updateStepField = makeFieldUpdater(Step.Update, updateStep);
 
 	// Instructions
 	const addInstruction = useMutation<
@@ -378,17 +362,7 @@ export function useRecipeCache(recipeId: number) {
 		onError: (_err, _vars, ctx) => restore(ctx?.previous),
 	});
 
-	function updateInstructionField(id: number | undefined, field: keyof Instruction.Update) {
-		return (value: string, options: ProcedureOptions) => {
-			if (!id) return options.onError({ message: "Waiting for server..." });
-			const result = Instruction.Update.shape[field].safeParse(value);
-			if (result.success) {
-				updateInstruction.mutate({ id, [field]: value }, options);
-			} else {
-				if (result.error.issues[0]) options.onError(result.error.issues[0]);
-			}
-		};
-	}
+	const updateInstructionField = makeFieldUpdater(Instruction.Update, updateInstruction);
 
 	return {
 		updateRecipe,

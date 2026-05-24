@@ -72,6 +72,7 @@ export function RecipeEditor({ recipe }: { recipe: CachedRecipeData }) {
 							)}
 						</Button>
 						<Link
+							tabIndex={0}
 							to={`/recipes/${recipe.user.handle}/${recipe.slug}`}
 							className={`${buttonVariants({ variant: "outline", size: "sm" })}`}
 						>

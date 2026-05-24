@@ -1,15 +1,10 @@
-import { PasswordInput, SubmitButton } from "@components/controls";
-import {
-	Field,
-	FieldError,
-	FieldGroup,
-	FieldLabel,
-} from "@components/ui/field";
+import { FormField, PasswordInput, SubmitButton } from "@components/controls";
+import { FieldGroup } from "@components/ui/field";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRequest } from "@hooks";
-import { auth } from "@lib/auth-client";
+import { useChangePassword } from "@hooks";
 import { User } from "@schema";
-import { Controller, useForm } from "react-hook-form";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 const Schema = z.object({
@@ -20,7 +15,8 @@ const Schema = z.object({
 type Schema = z.infer<typeof Schema>;
 
 export function PasswordForm() {
-	const request = useRequest();
+	const mutation = useChangePassword();
+	const { mutate, isPending, isSuccess, error } = mutation;
 
 	const form = useForm<Schema>({
 		resolver: zodResolver(Schema),
@@ -30,66 +26,36 @@ export function PasswordForm() {
 		},
 	});
 
-	async function submit(data: Schema) {
-		await auth.changePassword(
-			{ ...data, revokeOtherSessions: true },
-			{
-				onRequest: request.onRequest,
-				onResponse: request.onResponse,
-				onError: (ctx) => request.onError(ctx.error.message),
-			},
-		);
+	useEffect(() => {
+		const { unsubscribe } = form.watch(() => mutation.reset());
+		return unsubscribe;
+	}, [form.watch, mutation.reset]);
+
+	function submit(data: Schema) {
+		mutate(data);
 	}
 
 	return (
 		<form id="form-change-password" onSubmit={form.handleSubmit(submit)}>
 			<FieldGroup>
 				<h3 className="text-center text-xl">Change Password</h3>
-				<Controller
-					name="currentPassword"
-					control={form.control}
-					render={({ field, fieldState }) => (
-						<Field data-invalid={fieldState.invalid}>
-							<FieldLabel htmlFor="form-change-password-current">
-								Current Password:
-							</FieldLabel>
-							<PasswordInput
-								{...field}
-								id="form-change-password-current"
-								aria-invalid={fieldState.invalid}
-								placeholder="Current Password"
-								autoComplete="off"
-								disabled={request.inProgress}
-							/>
-							{fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-						</Field>
+				<FormField name="currentPassword" control={form.control} label="Current Password:" id="form-change-password-current">
+					{(field, invalid) => (
+						<PasswordInput {...field} id="form-change-password-current" aria-invalid={invalid} placeholder="Current Password" autoComplete="off" disabled={isPending} />
 					)}
-				/>
-				<Controller
-					name="newPassword"
-					control={form.control}
-					render={({ field, fieldState }) => (
-						<Field data-invalid={fieldState.invalid}>
-							<FieldLabel htmlFor="form-change-password-new">
-								New Password:
-							</FieldLabel>
-							<PasswordInput
-								{...field}
-								id="form-change-password-new"
-								aria-invalid={fieldState.invalid}
-								placeholder="New Password"
-								autoComplete="off"
-								disabled={request.inProgress}
-							/>
-							{fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-						</Field>
+				</FormField>
+				<FormField name="newPassword" control={form.control} label="New Password:" id="form-change-password-new">
+					{(field, invalid) => (
+						<PasswordInput {...field} id="form-change-password-new" aria-invalid={invalid} placeholder="New Password" autoComplete="off" disabled={isPending} />
 					)}
-				/>
+				</FormField>
 			</FieldGroup>
 			<SubmitButton
 				className="mt-6"
 				form="form-change-password"
-				request={request}
+				inProgress={isPending}
+				success={isSuccess}
+				error={error?.message ?? ""}
 			>
 				Update Password
 			</SubmitButton>

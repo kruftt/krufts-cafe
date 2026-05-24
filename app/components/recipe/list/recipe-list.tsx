@@ -51,6 +51,11 @@ export function RecipeList({
 				placeholder="Filter by name, tags, or ingredients.."
 			/>
 
+			{sliced.length === 0 && (
+				<p className="text-muted-foreground text-sm">
+					{query ? "No recipes match your search." : "No recipes yet."}
+				</p>
+			)}
 			<ItemGroup className="gap-1!">
 				{sliced.map((recipe) => (
 					<RecipeRow

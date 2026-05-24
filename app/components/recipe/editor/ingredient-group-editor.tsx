@@ -1,11 +1,10 @@
 import { DeletionDialog, InputEditor } from "@components/controls";
 import { Button } from "@components/ui/button";
-import { RecipeIdContext } from "@hooks";
 import type { CachedIngredientGroupData } from "@hooks/recipe-cache";
-import { useRecipeCache } from "@hooks/recipe-cache";
+import { useRecipeCache, useRecipeId } from "@hooks/recipe-cache";
 import { getNextIndex } from "@lib/utils";
 import { PlusIcon, XIcon } from "lucide-react";
-import { useContext, useRef } from "react";
+import { useRef } from "react";
 import { IngredientEditor } from "./ingredient-editor";
 
 interface Props {
@@ -15,7 +14,7 @@ interface Props {
 export function IngredientGroupEditor({ group }: Props) {
 	const groupRef = useRef<HTMLDivElement>(null);
 	const { updateIngredientGroupField, removeIngredientGroup, addIngredient } =
-		useRecipeCache(useContext(RecipeIdContext));
+		useRecipeCache(useRecipeId());
 
 	const onSaveName = updateIngredientGroupField(group.id, "name");
 
