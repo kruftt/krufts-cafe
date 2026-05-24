@@ -27,7 +27,7 @@ export function useScrollNavigation(steps: StepData[]): ScrollNavigation {
     const ids = [...(introEl ? ["intro"] : []), "ingredients", ...steps.map((_, i) => `step_${i + 1}`)];
 
     let prevViewportMiddle = window.scrollY + window.innerHeight / 2;
-    let sections: { id: string; top: number; bottom: number; center: number }[] = [];
+    let sections: { id: string; top: number; bottom: number }[] = [];
 
     recompute();
 
@@ -38,8 +38,7 @@ export function useScrollNavigation(steps: StepData[]): ScrollNavigation {
         if (!el) return [];
         const top = el.offsetTop - barH;
         const bottom = el.offsetTop + el.offsetHeight;
-        const center = el.offsetTop + el.offsetHeight / 2;
-        return [{ id, top, bottom, center }];
+        return [{ id, top, bottom }];
       });
     }
 
@@ -55,11 +54,11 @@ export function useScrollNavigation(steps: StepData[]): ScrollNavigation {
       let next: string | null | undefined;
       if (down) {
         for (const s of sections) {
-          if (s.center > prevViewportMiddle && s.center <= viewportMiddle) next = s.id;
+          if (s.top <= viewportMiddle) next = s.id;
         }
       } else {
         for (const s of sections) {
-          if (s.center < prevViewportMiddle && s.center >= viewportMiddle) { next = s.id; break; }
+          if (s.bottom >= viewportMiddle) { next = s.id; break; }
         }
       }
 
