@@ -1,9 +1,11 @@
 import { parsedAmountsAtom, parsedServesAtom } from "@atoms/amount";
+import { activeStepIdAtom } from "@atoms/recipe";
 import { Container, Header, Panel } from "@components/app";
 import { Badge } from "@components/ui/badge";
 import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
 import { useBookmarks, usePins, useUser } from "@hooks";
+import { ScrollNavigationContext, useScrollNavigation } from "@hooks/scroll-navigation";
 import { formatAmount, parseAmount } from "@lib/amount";
 import { formatDuration } from "@lib/utils";
 import type { RecipeData } from "@services/recipe";
@@ -27,6 +29,8 @@ export function Recipe({ recipe }: Props) {
 	const { isBookmarked, toggleBookmark } = useBookmarks();
 	const bookmarked = isBookmarked(recipe.id);
 
+	const [activeStepId, setActiveStepId] = useAtom(activeStepIdAtom);
+	const scrollNav = useScrollNavigation(recipe.steps);
 	const setParsedAmounts = useSetAtom(parsedAmountsAtom);
 	const [parsedServes, setParsedServes] = useAtom(parsedServesAtom);
 	useEffect(() => {
@@ -40,13 +44,21 @@ export function Recipe({ recipe }: Props) {
 		}
 		setParsedAmounts(amounts);
 		setParsedServes(parseAmount(recipe.serves));
-		return () => { setParsedAmounts({}); setParsedServes(null); };
-	}, [recipe.ingredientGroups, recipe.serves, setParsedAmounts, setParsedServes]);
+		return () => { setParsedAmounts({}); setParsedServes(null); setActiveStepId(null); };
+	}, [recipe.ingredientGroups, recipe.serves, setParsedAmounts, setParsedServes, setActiveStepId]);
 
 	const [scale, setScale] = useState(1);
+	const [scaleInput, setScaleInput] = useState("1");
+
+	function commitScale(raw: string) {
+		const v = parseFloat(raw);
+		const clamped = Number.isNaN(v) ? 1 : Math.min(4, Math.max(0.25, v));
+		setScale(clamped);
+		setScaleInput(String(clamped));
+	}
 
 	return (
-		<>
+		<ScrollNavigationContext value={scrollNav}>
 			<StepBar steps={recipe.steps} />
 			<Container>
 				<Header.Section>
@@ -100,17 +112,21 @@ export function Recipe({ recipe }: Props) {
 
 					<Header.Item className="recipe__serves">
 						Serves
-						<span className="font-bold ml-1">{parsedServes ? formatAmount(parsedServes, scale, { integer: true }) : recipe.serves}</span>
+						<span className="font-bold ml-1">
+							{parsedServes
+								? formatAmount(parsedServes, scale, { integer: true })
+								: recipe.serves}
+						</span>
 					</Header.Item>
 				</Header.Section>
 
 				{recipe.intro && (
-					<Panel.Section id="intro">
+					<Panel.Section id="intro" className={activeStepId === null ? "panel__section--active" : undefined} onClick={() => scrollNav.scrollTo(null)}>
 						<div className="recipe__intro">{recipe.intro}</div>
 					</Panel.Section>
 				)}
 
-				<Panel.Section id="ingredients">
+				<Panel.Section id="ingredients" className={activeStepId === "ingredients" ? "panel__section--active" : undefined} onClick={() => scrollNav.scrollTo("ingredients")}>
 					<Panel.Title className="text-2xl justify-center">
 						Ingredients
 					</Panel.Title>
@@ -124,12 +140,10 @@ export function Recipe({ recipe }: Props) {
 								min={0.25}
 								max={4.0}
 								step={0.25}
-								value={scale}
-								onChange={(e) => {
-									const v = parseFloat(e.currentTarget.value);
-									if (!Number.isNaN(v))
-										setScale(Math.min(4, Math.max(0.25, v)));
-								}}
+								value={scaleInput}
+								onChange={(e) => setScaleInput(e.currentTarget.value)}
+								onKeyDown={(e) => { if (e.key === "Enter") e.currentTarget.blur(); }}
+								onBlur={(e) => commitScale(e.currentTarget.value)}
 							/>
 						</div>
 						<input
@@ -139,7 +153,11 @@ export function Recipe({ recipe }: Props) {
 							max={4.0}
 							step={0.25}
 							value={scale}
-							onChange={(e) => setScale(parseFloat(e.currentTarget.value))}
+							onChange={(e) => {
+								const v = parseFloat(e.currentTarget.value);
+								setScale(v);
+								setScaleInput(String(v));
+							}}
 						/>
 					</Panel.Item>
 
@@ -161,10 +179,10 @@ export function Recipe({ recipe }: Props) {
 				{(() => {
 					const single = recipe.steps.length === 1;
 					return recipe.steps.map((step, i) => (
-					<Step key={step.id} step={step} index={i + 1} single={single} />
-				))})()}
+						<Step key={step.id} step={step} index={i + 1} single={single} />
+					));
+				})()}
 			</Container>
-			<div className="h-screen" />
-		</>
+		</ScrollNavigationContext>
 	);
 }

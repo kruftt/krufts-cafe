@@ -183,7 +183,7 @@
 
 @layer components {
 	.content_container {
-		@apply m-auto max-w-200 px-4;
+		@apply m-auto max-w-200 px-1;
 	}
 
 	.header__section {
