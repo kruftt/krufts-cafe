@@ -121,12 +121,20 @@ export function Recipe({ recipe }: Props) {
 				</Header.Section>
 
 				{recipe.intro && (
-					<Panel.Section id="intro" className={activeStepId === null ? "panel__section--active" : undefined} onClick={() => scrollNav.scrollTo(null)}>
+					<Panel.Section id="intro" className={activeStepId === null ? "panel__section--active" : undefined} onClick={(e) => {
+						if (e.target !== e.currentTarget) return;
+						if (window.getSelection()?.toString()) return;
+						scrollNav.scrollTo(null);
+					}}>
 						<div className="recipe__intro">{recipe.intro}</div>
 					</Panel.Section>
 				)}
 
-				<Panel.Section id="ingredients" className={activeStepId === "ingredients" ? "panel__section--active" : undefined} onClick={() => scrollNav.scrollTo("ingredients")}>
+				<Panel.Section id="ingredients" className={activeStepId === "ingredients" ? "panel__section--active" : undefined} onClick={(e) => {
+						if (e.target !== e.currentTarget) return;
+						if (window.getSelection()?.toString()) return;
+						scrollNav.scrollTo("ingredients");
+					}}>
 					<Panel.Title className="text-2xl justify-center">
 						Ingredients
 					</Panel.Title>

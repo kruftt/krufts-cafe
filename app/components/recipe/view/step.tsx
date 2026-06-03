@@ -19,7 +19,12 @@ export function Step({ index, single, step }: Props) {
     <Panel.Section
       id={id}
       className={activeId === id ? "panel__section--active" : undefined}
-      onClick={() => scrollTo(id)}
+      onClick={(e) => {
+        if (e.target !== e.currentTarget) return;
+        if (window.getSelection()?.toString()) return;
+        console.log(e);
+        scrollTo(id);
+      }}
     >
       {!single && (
         <Panel.Title>
