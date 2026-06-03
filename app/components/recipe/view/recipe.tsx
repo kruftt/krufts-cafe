@@ -3,10 +3,9 @@ import { activeStepIdAtom } from "@atoms/recipe";
 import { Container, Header, Panel } from "@components/app";
 import { Badge } from "@components/ui/badge";
 import { Button } from "@components/ui/button";
-import { Input } from "@components/ui/input";
 import { useBookmarks, usePins, useUser } from "@hooks";
 import { ScrollNavigationContext, useScrollNavigation } from "@hooks/scroll-navigation";
-import { formatAmount, parseAmount } from "@lib/amount";
+import { parseAmount } from "@lib/amount";
 import { formatDuration } from "@lib/utils";
 import type { RecipeData } from "@services/recipe";
 import { useAtom, useSetAtom } from "jotai";
@@ -48,14 +47,6 @@ export function Recipe({ recipe }: Props) {
 	}, [recipe.ingredientGroups, recipe.serves, setParsedAmounts, setParsedServes, setActiveStepId]);
 
 	const [scale, setScale] = useState(1);
-	const [scaleInput, setScaleInput] = useState("1");
-
-	function commitScale(raw: string) {
-		const v = parseFloat(raw);
-		const clamped = Number.isNaN(v) ? 1 : Math.min(4, Math.max(0.25, v));
-		setScale(clamped);
-		setScaleInput(String(clamped));
-	}
 
 	return (
 		<ScrollNavigationContext value={scrollNav}>
@@ -111,12 +102,23 @@ export function Recipe({ recipe }: Props) {
 					</Header.Item>
 
 					<Header.Item className="recipe__serves">
-						Serves
-						<span className="font-bold ml-1">
-							{parsedServes
-								? formatAmount(parsedServes, scale, { integer: true })
-								: recipe.serves}
-						</span>
+						<div className="mb-2 flex justify-center items-baseline gap-2">
+							Serves:
+							<span className="font-bold">
+								{parsedServes ? Math.round(parsedServes.value * scale) : recipe.serves}
+								{parsedServes?.high !== undefined && ` - ${Math.round(parsedServes.high * scale)}`}
+							</span>
+						</div>
+						<input
+							className="max-w-40 px-0 accent-gray-700"
+							type="range"
+							aria-label="Scale"
+							min={0.25}
+							max={4.0}
+							step={0.25}
+							value={scale}
+							onChange={(e) => setScale(parseFloat(e.currentTarget.value))}
+						/>
 					</Header.Item>
 				</Header.Section>
 
@@ -138,38 +140,6 @@ export function Recipe({ recipe }: Props) {
 					<Panel.Title className="text-2xl justify-center">
 						Ingredients
 					</Panel.Title>
-
-					<Panel.Item className="text-center text-sm font-light -mt-4">
-						<label htmlFor="scale-input" className="mb-2 flex justify-center items-baseline gap-2">
-							Scale:
-							<Input
-								id="scale-input"
-								className="font-bold w-12 h-6 text-center px-1 shadow-none border-none bg-primary-foreground/50"
-								type="number"
-								min={0.25}
-								max={4.0}
-								step={0.25}
-								value={scaleInput}
-								onChange={(e) => setScaleInput(e.currentTarget.value)}
-								onKeyDown={(e) => { if (e.key === "Enter") e.currentTarget.blur(); }}
-								onBlur={(e) => commitScale(e.currentTarget.value)}
-							/>
-						</label>
-						<input
-							className="max-w-40 px-0 accent-gray-700"
-							type="range"
-							aria-label="Scale"
-							min={0.25}
-							max={4.0}
-							step={0.25}
-							value={scale}
-							onChange={(e) => {
-								const v = parseFloat(e.currentTarget.value);
-								setScale(v);
-								setScaleInput(String(v));
-							}}
-						/>
-					</Panel.Item>
 
 					<Panel.Item className="ingredient_groups">
 						{(() => {
